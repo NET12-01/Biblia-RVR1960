@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblia RVR1960 · Consulta con Música Celestial</title>
+
+    <!-- Favicon con el logo -->
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="apple-touch-icon" href="img/logo.png">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #f7f3ed 0%, #ede7df 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contenedor {
+            background: #ffffff;
+            max-width: 860px;
+            width: 100%;
+            border-radius: 32px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.07), 0 8px 20px rgba(0,0,0,0.05);
+            padding: 42px 38px 36px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2e2216;
+            text-align: center;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            border-radius: 50%;
+            filter: drop-shadow(0 4px 10px rgba(62, 46, 31, 0.18));
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-3deg);
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #9b8b78;
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+            letter-spacing: 0.3px;
+        }
+
+        .fila-selectores {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .selector-grupo {
+            flex: 1 1 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .selector-grupo label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #a89886;
+            padding-left: 4px;
+        }
+
+        .selector-grupo select {
+            padding: 14px 18px;
+            border: 2px solid #e8e0d5;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            background: #faf8f5;
+            color: #3e2e1f;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b8a48c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .selector-grupo select:focus {
+            border-color: #c4b09a;
+            box-shadow: 0 0 0 4px rgba(196,176,154,0.15);
+            background-color: #ffffff;
+        }
+
+        .fila-campos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .campo {
+            flex: 1 1 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .campo label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #a89886;
+            padding-left: 4px;
+        }
+
+        .campo input {
+            padding: 14px 18px;
+            border: 2px solid #e8e0d5;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: #faf8f5;
+            color: #3e2e1f;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .campo input:focus {
+            border-color: #c4b09a;
+            box-shadow: 0 0 0 4px rgba(196,176,154,0.15);
+            background: #ffffff;
+        }
+
+        .campo input::placeholder { color: #c5b8a8; font-weight: 300; }
+
+        .botones-principales {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 0.3px;
+            transition: background 0.25s, transform 0.15s, box-shadow 0.25s, opacity 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-principal {
+            flex: 1;
+            padding: 16px 28px;
+            background: #3e2e1f;
+            color: #f5f0e8;
+            box-shadow: 0 6px 18px rgba(62,46,31,0.22);
+        }
+
+        .btn-principal:hover {
+            background: #5a4632;
+            box-shadow: 0 8px 24px rgba(62,46,31,0.28);
+            transform: translateY(-1px);
+        }
+
+        .btn-secundario {
+            padding: 16px 24px;
+            background: #ede7df;
+            color: #5a4a38;
+            flex: 0 0 auto;
+        }
+
+        .btn-secundario:hover { background: #ddd3c7; transform: translateY(-1px); }
+        .btn-secundario.silenciado { background: #f0e2d0; color: #a0846a; }
+
+        .btn-copiar {
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            background: #e8e0d5;
+            color: #5a4a38;
+            border-radius: 10px;
+            align-self: flex-start;
+            margin-top: 14px;
+            opacity: 0.9;
+        }
+
+        .btn-copiar:hover { background: #ddd3c7; opacity: 1; }
+        .btn-copiar:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        .resultado {
+            background: #faf8f5;
+            border-radius: 22px;
+            padding: 30px 28px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid #ede7df;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .resultado.error { background: #fdf2ef; border-color: #f0d0c8; }
+
+        .referencia {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: #b8a48c;
+            margin-bottom: 12px;
+        }
+
+        .texto-versiculo {
+            font-size: 1.28rem;
+            line-height: 1.75;
+            color: #3e2e1f;
+            word-wrap: break-word;
+        }
+
+        .texto-versiculo .cita {
+            font-style: italic;
+            color: #8b7a66;
+            font-size: 0.95rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 3px solid #e4dbd0;
+            border-top-color: #b8a48c;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .historial-seccion {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid #ede7df;
+        }
+
+        .historial-titulo {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+            color: #a89886;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .historial-lista { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        .historial-item {
+            background: #f5f0e8;
+            border: 1px solid #e8e0d5;
+            border-radius: 12px;
+            padding: 9px 16px;
+            font-size: 0.85rem;
+            color: #5a4a38;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .historial-item:hover {
+            background: #ede7df;
+            border-color: #d4c8b8;
+            transform: translateY(-1px);
+        }
+
+        .historial-vacio { font-size: 0.85rem; color: #c5b8a8; font-style: italic; }
+
+        .pie {
+            margin-top: 26px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #c5b8a8;
+            letter-spacing: 0.3px;
+        }
+
+        @media (max-width: 640px) {
+            .contenedor { padding: 28px 20px 24px; border-radius: 24px; }
+            h1 { font-size: 1.5rem; gap: 10px; }
+            .logo { width: 38px; height: 38px; }
+            .fila-selectores { flex-direction: column; gap: 14px; }
+            .fila-campos { flex-direction: column; gap: 14px; }
+            .botones-principales { flex-direction: column; }
+            .btn-secundario { flex: 1; }
+            .texto-versiculo { font-size: 1.1rem; }
+            .resultado { padding: 24px 20px; }
+            .historial-item { font-size: 0.8rem; padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor">
+    <h1>
+        <img src="img/logo.png" alt="Logo Biblia RVR1960" class="logo">
+        Biblia RVR1960
+    </h1>
+    <p class="subtitulo">Consulta en línea · Reina Valera 1960 · Música celestial</p>
+
+    <div class="fila-selectores">
+        <div class="selector-grupo">
+            <label for="selectorLibro">Libro</label>
+            <select id="selectorLibro">
+                <optgroup label="Antiguo Testamento">
+                    <option value="genesis">Génesis</option>
+                    <option value="exodo">Éxodo</option>
+                    <option value="salmos">Salmos</option>
+                    <option value="proverbios">Proverbios</option>
+                    <option value="isaias">Isaías</option>
+                    <option value="jeremias">Jeremías</option>
+                    <option value="daniel">Daniel</option>
+                    <option value="jonas">Jonás</option>
+                </optgroup>
+                <optgroup label="Nuevo Testamento">
+                    <option value="mateo">Mateo</option>
+                    <option value="marcos">Marcos</option>
+                    <option value="lucas">Lucas</option>
+                    <option value="juan" selected>Juan</option>
+                    <option value="hechos">Hechos</option>
+                    <option value="romanos">Romanos</option>
+                    <option value="1corintios">1 Corintios</option>
+                    <option value="efesios">Efesios</option>
+                    <option value="filipenses">Filipenses</option>
+                    <option value="hebreos">Hebreos</option>
+                    <option value="santiago">Santiago</option>
+                    <option value="1pedro">1 Pedro</option>
+                    <option value="1juan">1 Juan</option>
+                    <option value="apocalipsis">Apocalipsis</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="selector-grupo">
+            <label for="selectorMusica">🎵 Música de fondo</label>
+            <select id="selectorMusica">
+                <option value="celestial" selected>✨ Melodía celestial (generada)</option>
+                <option value="alegre">🌅 Amanecer gozoso (generada)</option>
+                <option value="adoracion">🕊️ Adoración serena (generada)</option>
+                <option value="https://cdn.pixabay.com/audio/2022/03/10/audio_5e4b7b8c6e.mp3">🎻 Orquestal suave (Pixabay)</option>
+                <option value="https://cdn.pixabay.com/audio/2022/10/30/audio_349d0c0f2c.mp3">🎹 Piano inspirador (Pixabay)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="fila-campos">
+        <div class="campo">
+            <label for="capitulo">Capítulo</label>
+            <input type="number" id="capitulo" placeholder="Ej: 3" value="3" min="1">
+        </div>
+        <div class="campo">
+            <label for="versiculo">Versículo</label>
+            <input type="number" id="versiculo" placeholder="Ej: 16" value="16" min="1">
+        </div>
+    </div>
+
+    <div class="botones-principales">
+        <button class="btn btn-principal" id="btnConsultar">🔍 Consultar versículo</button>
+        <button class="btn btn-secundario" id="btnSonido" title="Activar/desactivar música">🔊</button>
+    </div>
+
+    <div class="resultado" id="resultado">
+        <div class="referencia" id="referencia"></div>
+        <div class="texto-versiculo" id="textoVersiculo">
+            Selecciona un libro, capítulo y versículo para comenzar.
+        </div>
+        <button class="btn btn-copiar" id="btnCopiar" disabled>📋 Copiar versículo</button>
+    </div>
+
+    <div class="historial-seccion">
+        <div class="historial-titulo"><span>🕐</span> Consultas recientes</div>
+        <div class="historial-lista" id="historialLista">
+            <span class="historial-vacio">Aún no hay consultas.</span>
+        </div>
+    </div>
+
+    <p class="pie">Datos: Midvash API · Música: Web Audio API / Pixabay</p>
+</div>
+
+<audio id="audioFondo" loop preload="auto">
+    <source id="fuenteAudio" src="" type="audio/mpeg">
+</audio>
+
+<script>
+// ============================================================
+//  CONFIGURACIÓN
+// ============================================================
+const API_BASE = 'https://api.midvash.com/v1';
+const VERSION  = 'rvr1960';
+
+const selectorLibro     = document.getElementById('selectorLibro');
+const selectorMusica    = document.getElementById('selectorMusica');
+const inputCapitulo     = document.getElementById('capitulo');
+const inputVersiculo    = document.getElementById('versiculo');
+const btnConsultar      = document.getElementById('btnConsultar');
+const btnSonido         = document.getElementById('btnSonido');
+const btnCopiar         = document.getElementById('btnCopiar');
+const resultadoDiv      = document.getElementById('resultado');
+const referenciaDiv     = document.getElementById('referencia');
+const textoVersiculoDiv = document.getElementById('textoVersiculo');
+const historialLista    = document.getElementById('historialLista');
+const audioFondo        = document.getElementById('audioFondo');
+const fuenteAudio       = document.getElementById('fuenteAudio');
+
+let sonidoActivo = true;
+let versiculoActual = null;
+let historial = [];
+let modoMusica = 'celestial';
+
+// ============================================================
+//  MOTOR DE MÚSICA PROCEDURAL (Web Audio API)
+// ============================================================
+const MusicEngine = (() => {
+    let ctx = null;
+    let masterGain = null;
+    let reverbGain = null;
+    let isPlaying = false;
+    let currentProgression = null;
+    let loopTimer = null;
+    let activeOscillators = [];
+
+    const PROGRESIONES = {
+        celestial: {
+            chords: [
+                [261.63, 329.63, 392.00, 523.25],
+                [220.00, 261.63, 329.63, 440.00],
+                [174.61, 220.00, 261.63, 349.23],
+                [196.00, 246.94, 293.66, 392.00]
+            ],
+            melody: [
+                523.25, 587.33, 659.25, 783.99, 659.25, 587.33,
+                523.25, 440.00, 523.25, 659.25, 587.33, 523.25,
+                440.00, 392.00, 440.00, 523.25, 587.33, 523.25,
+                392.00, 440.00, 493.88, 523.25, 587.33, 523.25
+            ],
+            tempo: 4.0,
+            waveform: 'sine',
+            melodyWave: 'triangle'
+        },
+        alegre: {
+            chords: [
+                [174.61, 220.00, 261.63, 349.23],
+                [261.63, 329.63, 392.00, 523.25],
+                [196.00, 246.94, 293.66, 392.00],
+                [220.00, 261.63, 329.63, 440.00]
+            ],
+            melody: [
+                698.46, 659.25, 587.33, 523.25, 587.33, 659.25,
+                783.99, 698.46, 659.25, 587.33, 523.25, 587.33,
+                659.25, 587.33, 523.25, 440.00, 523.25, 587.33,
+                659.25, 698.46, 659.25, 587.33, 523.25, 587.33
+            ],
+            tempo: 3.5,
+            waveform: 'triangle',
+            melodyWave: 'sine'
+        },
+        adoracion: {
+            chords: [
+                [261.63, 329.63, 392.00, 523.25],
+                [246.94, 293.66, 392.00, 493.88],
+                [220.00, 261.63, 329.63, 440.00],
+                [174.61, 220.00, 261.63, 349.23]
+            ],
+            melody: [
+                523.25, 659.25, 783.99, 659.25, 587.33, 523.25,
+                493.88, 587.33, 659.25, 587.33, 523.25, 440.00,
+                523.25, 659.25, 783.99, 880.00, 783.99, 659.25,
+                587.33, 523.25, 440.00, 392.00, 440.00, 523.25
+            ],
+            tempo: 4.5,
+            waveform: 'sine',
+            melodyWave: 'triangle'
+        }
+    };
+
+    function init() {
+        if (ctx) return;
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+        masterGain = ctx.createGain();
+        masterGain.gain.value = 0.18;
+        masterGain.connect(ctx.destination);
+
+        const convolver = ctx.createConvolver();
+        convolver.buffer = crearImpulsoReverb(ctx, 3.5, 2.5);
+
+        reverbGain = ctx.createGain();
+        reverbGain.gain.value = 0.45;
+
+        reverbGain.connect(convolver);
+        convolver.connect(masterGain);
+    }
+
+    function crearImpulsoReverb(ctx, duracion, decay) {
+        const rate = ctx.sampleRate;
+        const length = rate * duracion;
+        const impulse = ctx.createBuffer(2, length, rate);
+        for (let canal = 0; canal < 2; canal++) {
+            const data = impulse.getChannelData(canal);
+            for (let i = 0; i < length; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+            }
+        }
+        return impulse;
+    }
+
+    function playNote(freq, startTime, duration, waveform, gainValue) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = waveform;
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(gainValue, startTime + duration * 0.2);
+        gain.gain.linearRampToValueAtTime(gainValue * 0.6, startTime + duration * 0.5);
+        gain.gain.linearRampToValueAtTime(0, startTime + duration);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+        gain.connect(reverbGain);
+
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+
+        activeOscillators.push(osc);
+        osc.onended = () => {
+            const idx = activeOscillators.indexOf(osc);
+            if (idx > -1) activeOscillators.splice(idx, 1);
+        };
+    }
+
+    function programarCiclo() {
+        if (!isPlaying || !currentProgression) return;
+
+        const prog = PROGRESIONES[currentProgression];
+        const now = ctx.currentTime + 0.1;
+        const segPorAcorde = prog.tempo;
+
+        prog.chords.forEach((chord, i) => {
+            const startTime = now + i * segPorAcorde;
+            chord.forEach((freq, j) => {
+                const offset = j * 0.05;
+                const ganancia = 0.12 / (j + 1);
+                playNote(freq, startTime + offset, segPorAcorde * 1.1, prog.waveform, ganancia);
+                playNote(freq * 2, startTime + offset + 0.02, segPorAcorde * 0.9, prog.waveform, ganancia * 0.35);
+            });
+        });
+
+        const duracionMelodia = segPorAcorde / 2;
+        prog.melody.forEach((freq, i) => {
+            const startTime = now + i * duracionMelodia;
+            playNote(freq, startTime, duracionMelodia * 1.4, prog.melodyWave, 0.09);
+        });
+
+        const duracionCiclo = prog.chords.length * segPorAcorde;
+        loopTimer = setTimeout(() => {
+            if (isPlaying) programarCiclo();
+        }, duracionCiclo * 1000 - 100);
+    }
+
+    async function start(progression) {
+        init();
+        if (ctx.state === 'suspended') await ctx.resume();
+
+        currentProgression = progression;
+        if (isPlaying) return;
+
+        isPlaying = true;
+        masterGain.gain.cancelScheduledValues(ctx.currentTime);
+        masterGain.gain.setValueAtTime(0, ctx.currentTime);
+        masterGain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 2);
+
+        programarCiclo();
+    }
+
+    function stop() {
+        isPlaying = false;
+        if (loopTimer) {
+            clearTimeout(loopTimer);
+            loopTimer = null;
+        }
+        if (ctx && masterGain) {
+            masterGain.gain.cancelScheduledValues(ctx.currentTime);
+            masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+            masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+        }
+        setTimeout(() => {
+            activeOscillators.forEach(osc => {
+                try { osc.stop(); } catch (e) {}
+            });
+            activeOscillators = [];
+        }, 1100);
+    }
+
+    function changeProgression(progression) {
+        if (currentProgression === progression) return;
+        currentProgression = progression;
+        if (isPlaying) {
+            activeOscillators.forEach(osc => {
+                try { osc.stop(); } catch (e) {}
+            });
+            activeOscillators = [];
+            if (loopTimer) clearTimeout(loopTimer);
+            programarCiclo();
+        }
+    }
+
+    return { start, stop, changeProgression, isPlaying: () => isPlaying };
+})();
+
+// ============================================================
+//  CONTROL DE MÚSICA
+// ============================================================
+async function activarMusica() {
+    if (!sonidoActivo) return;
+
+    if (modoMusica === 'url') {
+        const url = selectorMusica.value;
+        if (fuenteAudio.src !== url) {
+            fuenteAudio.src = url;
+            audioFondo.load();
+        }
+        audioFondo.currentTime = 0;
+        audioFondo.volume = 0.35;
+        const p = audioFondo.play();
+        if (p !== undefined) p.catch(() => {});
+    } else {
+        audioFondo.pause();
+        await MusicEngine.start(modoMusica);
+    }
+}
+
+function desactivarMusica() {
+    MusicEngine.stop();
+    audioFondo.pause();
+}
+
+function toggleSonido() {
+    sonidoActivo = !sonidoActivo;
+
+    if (sonidoActivo) {
+        btnSonido.textContent = '🔊';
+        btnSonido.title = 'Desactivar música';
+        btnSonido.classList.remove('silenciado');
+        if (versiculoActual) activarMusica();
+    } else {
+        btnSonido.textContent = '🔇';
+        btnSonido.title = 'Activar música';
+        btnSonido.classList.add('silenciado');
+        desactivarMusica();
+    }
+}
+
+selectorMusica.addEventListener('change', async () => {
+    const valor = selectorMusica.value;
+
+    if (valor.startsWith('http')) {
+        modoMusica = 'url';
+    } else {
+        modoMusica = valor;
+        MusicEngine.stop();
+        audioFondo.pause();
+    }
+
+    if (sonidoActivo && versiculoActual) {
+        await activarMusica();
+    }
+});
+
+// ============================================================
+//  CONSULTAR VERSÍCULO
+// ============================================================
+async function consultarVersiculo() {
+    const libro = selectorLibro.value;
+    const capitulo = inputCapitulo.value.trim();
+    const versiculo = inputVersiculo.value.trim();
+
+    if (!capitulo || !versiculo) {
+        mostrarError('Completa el capítulo y el versículo.');
+        return;
+    }
+
+    const capNum = Number(capitulo);
+    const verNum = Number(versiculo);
+    if (!Number.isInteger(capNum) || !Number.isInteger(verNum) || capNum < 1 || verNum < 1) {
+        mostrarError('El capítulo y el versículo deben ser números enteros positivos.');
+        return;
+    }
+
+    mostrarCargando();
+    btnCopiar.disabled = true;
+
+    try {
+        const url = `${API_BASE}/${VERSION}/${libro}/${capNum}/${verNum}`;
+        const respuesta = await fetch(url);
+
+        if (!respuesta.ok) {
+            if (respuesta.status === 404) {
+                throw new Error(`No se encontró ${libro} ${capNum}:${verNum}. Verifica los datos.`);
+            } else {
+                throw new Error(`Error en la consulta (código ${respuesta.status}).`);
+            }
+        }
+
+        const datos = await respuesta.json();
+        if (!datos.data || !datos.data.text) {
+            throw new Error('La respuesta de la API no contiene el texto del versículo.');
+        }
+
+        const ref = `${datos.data.book} ${datos.data.chapter}:${datos.data.verse}`;
+        const textoLimpio = datos.data.text.replace(/\n+/g, ' ').trim();
+
+        versiculoActual = { referencia: ref, texto: textoLimpio };
+        mostrarVersiculo(ref, textoLimpio);
+        agregarAlHistorial(ref, capNum, verNum, libro);
+        activarMusica();
+
+    } catch (error) {
+        console.error(error);
+        mostrarError(error.message || 'Error al consultar. Intenta de nuevo.');
+        versiculoActual = null;
+    }
+}
+
+// ============================================================
+//  MOSTRAR ESTADOS
+// ============================================================
+function mostrarCargando() {
+    resultadoDiv.className = 'resultado';
+    referenciaDiv.textContent = '';
+    textoVersiculoDiv.innerHTML = '<span class="spinner"></span> Consultando la Palabra...';
+}
+
+function mostrarVersiculo(referencia, texto) {
+    resultadoDiv.className = 'resultado';
+    referenciaDiv.textContent = referencia;
+    textoVersiculoDiv.innerHTML = `"${texto}" <span class="cita">— RVR1960</span>`;
+    btnCopiar.disabled = false;
+}
+
+function mostrarError(mensaje) {
+    resultadoDiv.className = 'resultado error';
+    referenciaDiv.textContent = '';
+    textoVersiculoDiv.innerHTML = `<span style="color:#b85c4a;">⚠️ ${mensaje}</span>`;
+    btnCopiar.disabled = true;
+}
+
+// ============================================================
+//  COPIAR VERSÍCULO
+// ============================================================
+btnCopiar.addEventListener('click', async () => {
+    if (!versiculoActual) return;
+    const textoCompleto = `"${versiculoActual.texto}" — ${versiculoActual.referencia} (RVR1960)`;
+
+    try {
+        await navigator.clipboard.writeText(textoCompleto);
+        btnCopiar.textContent = '✅ Copiado';
+        setTimeout(() => { btnCopiar.textContent = '📋 Copiar versículo'; }, 1800);
+    } catch (err) {
+        const textarea = document.createElement('textarea');
+        textarea.value = textoCompleto;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        btnCopiar.textContent = '✅ Copiado';
+        setTimeout(() => { btnCopiar.textContent = '📋 Copiar versículo'; }, 1800);
+    }
+});
+
+// ============================================================
+//  HISTORIAL
+// ============================================================
+function agregarAlHistorial(referencia, capitulo, versiculo, libro) {
+    if (historial.length > 0 && historial[0].referencia === referencia) return;
+    historial.unshift({ referencia, capitulo, versiculo, libro });
+    if (historial.length > 8) historial.pop();
+    renderizarHistorial();
+}
+
+function renderizarHistorial() {
+    if (historial.length === 0) {
+        historialLista.innerHTML = '<span class="historial-vacio">Aún no hay consultas.</span>';
+        return;
+    }
+
+    historialLista.innerHTML = historial.map(item =>
+        `<button class="historial-item" data-libro="${item.libro}" data-capitulo="${item.capitulo}" data-versiculo="${item.versiculo}">${item.referencia}</button>`
+    ).join('');
+
+    historialLista.querySelectorAll('.historial-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectorLibro.value = btn.dataset.libro;
+            inputCapitulo.value = btn.dataset.capitulo;
+            inputVersiculo.value = btn.dataset.versiculo;
+            consultarVersiculo();
+        });
+    });
+}
+
+// ============================================================
+//  EVENTOS
+// ============================================================
+btnConsultar.addEventListener('click', consultarVersiculo);
+btnSonido.addEventListener('click', toggleSonido);
+
+[inputCapitulo, inputVersiculo].forEach(input => {
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); consultarVersiculo(); }
+    });
+});
+
+audioFondo.load();
+</script>
+
+</body>
+</html>
