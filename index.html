@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblia RVR1960 · Consulta con Música Celestial</title>
-
-    <!-- Favicon con el logo -->
+    <title>Biblia RVR1960 · Consulta con Voz y Música</title>
     <link rel="icon" type="image/png" href="img/logo.png">
     <link rel="apple-touch-icon" href="img/logo.png">
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -24,7 +21,7 @@
 
         .contenedor {
             background: #ffffff;
-            max-width: 860px;
+            max-width: 880px;
             width: 100%;
             border-radius: 32px;
             box-shadow: 0 24px 48px rgba(0,0,0,0.07), 0 8px 20px rgba(0,0,0,0.05);
@@ -54,9 +51,7 @@
             flex-shrink: 0;
         }
 
-        .logo:hover {
-            transform: scale(1.05) rotate(-3deg);
-        }
+        .logo:hover { transform: scale(1.05) rotate(-3deg); }
 
         .subtitulo {
             text-align: center;
@@ -74,7 +69,7 @@
         }
 
         .selector-grupo {
-            flex: 1 1 220px;
+            flex: 1 1 200px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -178,6 +173,7 @@
         }
 
         .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
         .btn-principal {
             flex: 1;
@@ -187,35 +183,83 @@
             box-shadow: 0 6px 18px rgba(62,46,31,0.22);
         }
 
-        .btn-principal:hover {
+        .btn-principal:hover:not(:disabled) {
             background: #5a4632;
             box-shadow: 0 8px 24px rgba(62,46,31,0.28);
             transform: translateY(-1px);
         }
 
         .btn-secundario {
-            padding: 16px 24px;
+            padding: 16px 22px;
             background: #ede7df;
             color: #5a4a38;
             flex: 0 0 auto;
         }
 
-        .btn-secundario:hover { background: #ddd3c7; transform: translateY(-1px); }
+        .btn-secundario:hover:not(:disabled) { background: #ddd3c7; transform: translateY(-1px); }
         .btn-secundario.silenciado { background: #f0e2d0; color: #a0846a; }
 
-        .btn-copiar {
-            padding: 10px 18px;
-            font-size: 0.85rem;
-            background: #e8e0d5;
-            color: #5a4a38;
-            border-radius: 10px;
-            align-self: flex-start;
-            margin-top: 14px;
-            opacity: 0.9;
+        /* --- Controles de lectura por voz --- */
+        .controles-voz {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 22px;
+            padding: 16px 20px;
+            background: #faf8f5;
+            border: 1px solid #ede7df;
+            border-radius: 18px;
         }
 
-        .btn-copiar:hover { background: #ddd3c7; opacity: 1; }
-        .btn-copiar:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .controles-voz .grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1 1 160px;
+        }
+
+        .controles-voz label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #a89886;
+            padding-left: 2px;
+        }
+
+        .controles-voz select,
+        .controles-voz input[type="range"] {
+            padding: 10px 14px;
+            border: 2px solid #e8e0d5;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #3e2e1f;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .controles-voz input[type="range"] {
+            padding: 0;
+            accent-color: #5a4632;
+            cursor: pointer;
+        }
+
+        .btn-voz {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            background: #5a4632;
+            color: #f5f0e8;
+            border-radius: 12px;
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        .btn-voz:hover:not(:disabled) { background: #6d5540; transform: translateY(-1px); }
+        .btn-voz.detener { background: #b85c4a; }
+        .btn-voz.detener:hover { background: #c96b58; }
 
         .resultado {
             background: #faf8f5;
@@ -230,6 +274,7 @@
         }
 
         .resultado.error { background: #fdf2ef; border-color: #f0d0c8; }
+        .resultado.leyendo { background: #f5f0e8; border-color: #d4c8b8; }
 
         .referencia {
             font-size: 0.82rem;
@@ -266,6 +311,29 @@
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        .acciones-resultado {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-accion {
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            background: #e8e0d5;
+            color: #5a4a38;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-accion:hover:not(:disabled) { background: #ddd3c7; transform: translateY(-1px); }
+        .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .historial-seccion {
             margin-top: 28px;
@@ -327,6 +395,7 @@
             .texto-versiculo { font-size: 1.1rem; }
             .resultado { padding: 24px 20px; }
             .historial-item { font-size: 0.8rem; padding: 8px 12px; }
+            .controles-voz { padding: 14px 16px; }
         }
     </style>
 </head>
@@ -337,8 +406,9 @@
         <img src="img/logo.png" alt="Logo Biblia RVR1960" class="logo">
         Biblia RVR1960
     </h1>
-    <p class="subtitulo">Consulta en línea · Reina Valera 1960 · Música celestial</p>
+    <p class="subtitulo">Consulta · Lectura en voz alta · Música celestial</p>
 
+    <!-- Selectores -->
     <div class="fila-selectores">
         <div class="selector-grupo">
             <label for="selectorLibro">Libro</label>
@@ -346,27 +416,39 @@
                 <optgroup label="Antiguo Testamento">
                     <option value="genesis">Génesis</option>
                     <option value="exodo">Éxodo</option>
-                    <option value="salmos">Salmos</option>
+                    <option value="deuteronomio">Deuteronomio</option>
+                    <option value="josue">Josué</option>
+                    <option value="salmos" selected>Salmos</option>
                     <option value="proverbios">Proverbios</option>
                     <option value="isaias">Isaías</option>
                     <option value="jeremias">Jeremías</option>
+                    <option value="ezequiel">Ezequiel</option>
                     <option value="daniel">Daniel</option>
+                    <option value="oseas">Oseas</option>
                     <option value="jonas">Jonás</option>
+                    <option value="habacuc">Habacuc</option>
+                    <option value="sofonias">Sofonías</option>
                 </optgroup>
                 <optgroup label="Nuevo Testamento">
                     <option value="mateo">Mateo</option>
                     <option value="marcos">Marcos</option>
                     <option value="lucas">Lucas</option>
-                    <option value="juan" selected>Juan</option>
+                    <option value="juan">Juan</option>
                     <option value="hechos">Hechos</option>
                     <option value="romanos">Romanos</option>
                     <option value="1corintios">1 Corintios</option>
+                    <option value="2corintios">2 Corintios</option>
+                    <option value="galatas">Gálatas</option>
                     <option value="efesios">Efesios</option>
                     <option value="filipenses">Filipenses</option>
+                    <option value="colosenses">Colosenses</option>
+                    <option value="1tesalonicenses">1 Tesalonicenses</option>
+                    <option value="2timoteo">2 Timoteo</option>
                     <option value="hebreos">Hebreos</option>
                     <option value="santiago">Santiago</option>
                     <option value="1pedro">1 Pedro</option>
                     <option value="1juan">1 Juan</option>
+                    <option value="judas">Judas</option>
                     <option value="apocalipsis">Apocalipsis</option>
                 </optgroup>
             </select>
@@ -384,14 +466,15 @@
         </div>
     </div>
 
+    <!-- Campos -->
     <div class="fila-campos">
         <div class="campo">
             <label for="capitulo">Capítulo</label>
-            <input type="number" id="capitulo" placeholder="Ej: 3" value="3" min="1">
+            <input type="number" id="capitulo" placeholder="Ej: 23" value="23" min="1">
         </div>
         <div class="campo">
             <label for="versiculo">Versículo</label>
-            <input type="number" id="versiculo" placeholder="Ej: 16" value="16" min="1">
+            <input type="number" id="versiculo" placeholder="Ej: 1" value="1" min="1">
         </div>
     </div>
 
@@ -400,14 +483,38 @@
         <button class="btn btn-secundario" id="btnSonido" title="Activar/desactivar música">🔊</button>
     </div>
 
+    <!-- Controles de voz -->
+    <div class="controles-voz">
+        <div class="grupo">
+            <label for="selectorVoz">🗣️ Voz</label>
+            <select id="selectorVoz">
+                <option value="">Cargando voces...</option>
+            </select>
+        </div>
+        <div class="grupo">
+            <label for="velocidadVoz">⚡ Velocidad: <span id="valorVelocidad">1.0</span>x</label>
+            <input type="range" id="velocidadVoz" min="0.6" max="1.5" step="0.1" value="1.0">
+        </div>
+        <div class="grupo">
+            <label for="volumenVoz">🔉 Volumen voz</label>
+            <input type="range" id="volumenVoz" min="0" max="1" step="0.05" value="1">
+        </div>
+        <button class="btn btn-voz" id="btnLeer" disabled>🔊 Leer</button>
+        <button class="btn btn-voz detener" id="btnDetenerVoz" disabled>⏹ Detener</button>
+    </div>
+
+    <!-- Resultado -->
     <div class="resultado" id="resultado">
         <div class="referencia" id="referencia"></div>
         <div class="texto-versiculo" id="textoVersiculo">
             Selecciona un libro, capítulo y versículo para comenzar.
         </div>
-        <button class="btn btn-copiar" id="btnCopiar" disabled>📋 Copiar versículo</button>
+        <div class="acciones-resultado">
+            <button class="btn-accion" id="btnCopiar" disabled>📋 Copiar versículo</button>
+        </div>
     </div>
 
+    <!-- Historial -->
     <div class="historial-seccion">
         <div class="historial-titulo"><span>🕐</span> Consultas recientes</div>
         <div class="historial-lista" id="historialLista">
@@ -415,7 +522,7 @@
         </div>
     </div>
 
-    <p class="pie">Datos: Midvash API · Música: Web Audio API / Pixabay</p>
+    <p class="pie">Datos: Midvash API + base local RVR1960 · Voz: Web Speech API · Música: Web Audio API / Pixabay</p>
 </div>
 
 <audio id="audioFondo" loop preload="auto">
@@ -424,6 +531,1056 @@
 
 <script>
 // ============================================================
+//  BASE DE DATOS LOCAL RVR1960
+//  Versículos muy conocidos y citados
+// ============================================================
+const BIBLIA_LOCAL = {
+    // ==================== ANTIGUO TESTAMENTO ====================
+    "genesis": {
+        "1": {
+            "1": "En el principio creó Dios los cielos y la tierra.",
+            "2": "Y la tierra estaba desordenada y vacía, y las tinieblas estaban sobre la faz del abismo, y el Espíritu de Dios se movía sobre la faz de las aguas.",
+            "3": "Y dijo Dios: Sea la luz; y fue la luz.",
+            "4": "Y vio Dios que la luz era buena; y separó Dios la luz de las tinieblas.",
+            "5": "Y llamó Dios a la luz Día, y a las tinieblas llamó Noche. Y fue la tarde y la mañana un día.",
+            "6": "Luego dijo Dios: Haya expansión en medio de las aguas, y separe las aguas de las aguas.",
+            "7": "E hizo Dios la expansión, y separó las aguas que estaban debajo de la expansión, de las aguas que estaban sobre la expansión. Y fue así.",
+            "8": "Y llamó Dios a la expansión Cielos. Y fue la tarde y la mañana el día segundo.",
+            "9": "Dijo también Dios: Júntense las aguas que están debajo de los cielos en un lugar, y descúbrase lo seco. Y fue así.",
+            "10": "Y llamó Dios a lo seco Tierra, y a la reunión de las aguas llamó Mares. Y vio Dios que era bueno.",
+            "11": "Después dijo Dios: Produzca la tierra hierba verde, hierba que dé semilla; árbol de fruto que dé fruto según su género, que su semilla esté en él, sobre la tierra. Y fue así.",
+            "12": "Produjo, pues, la tierra hierba verde, hierba que da semilla según su naturaleza, y árbol que da fruto, cuya semilla está en él, según su género. Y vio Dios que era bueno.",
+            "13": "Y fue la tarde y la mañana el día tercero.",
+            "14": "Dijo luego Dios: Haya lumbreras en la expansión de los cielos para separar el día de la noche; y sirvan de señales para las estaciones, para días y años,",
+            "15": "y sean por lumbreras en la expansión de los cielos para alumbrar sobre la tierra. Y fue así.",
+            "16": "E hizo Dios las dos grandes lumbreras; la lumbrera mayor para que señorease en el día, y la lumbrera menor para que señorease en la noche; hizo también las estrellas.",
+            "17": "Y las puso Dios en la expansión de los cielos para alumbrar sobre la tierra,",
+            "18": "y para señorear en el día y en la noche, y para separar la luz de las tinieblas. Y vio Dios que era bueno.",
+            "19": "Y fue la tarde y la mañana el día cuarto.",
+            "20": "Dijo Dios: Produzcan las aguas seres vivientes, y aves que vuelen sobre la tierra, en la abierta expansión de los cielos.",
+            "21": "Y creó Dios los grandes monstruos marinos, y todo ser viviente que se mueve, que las aguas produjeron según su género, y toda ave alada según su especie. Y vio Dios que era bueno.",
+            "22": "Y Dios los bendijo, diciendo: Fructificad y multiplicaos, y llenad las aguas en los mares, y multiplíquense las aves en la tierra.",
+            "23": "Y fue la tarde y la mañana el día quinto.",
+            "24": "Luego dijo Dios: Produzca la tierra seres vivientes según su género, bestias y serpientes y animales de la tierra según su especie. Y fue así.",
+            "25": "E hizo Dios animales de la tierra según su género, y ganado según su género, y todo animal que se arrastra sobre la tierra según su especie. Y vio Dios que era bueno.",
+            "26": "Entonces dijo Dios: Hagamos al hombre a nuestra imagen, conforme a nuestra semejanza; y señoree en los peces del mar, en las aves de los cielos, en las bestias, en toda la tierra, y en todo animal que se arrastra sobre la tierra.",
+            "27": "Y creó Dios al hombre a su imagen, a imagen de Dios lo creó; varón y hembra los creó.",
+            "28": "Y los bendijo Dios, y les dijo: Fructificad y multiplicaos; llenad la tierra, y sojuzgadla, y señoread en los peces del mar, en las aves de los cielos, y en todas las bestias que se mueven sobre la tierra.",
+            "29": "Y dijo Dios: He aquí que os he dado toda planta que da semilla, que está sobre toda la tierra, y todo árbol en que hay fruto y que da semilla; os serán para comer.",
+            "30": "Y a toda bestia de la tierra, y a todas las aves de los cielos, y a todo lo que se arrastra sobre la tierra, en que hay vida, toda planta verde les será para comer. Y fue así.",
+            "31": "Y vio Dios todo lo que había hecho, y he aquí que era bueno en gran manera. Y fue la tarde y la mañana el día sexto."
+        },
+        "2": {
+            "1": "Fueron, pues, acabados los cielos y la tierra, y todo el ejército de ellos.",
+            "2": "Y acabó Dios en el día séptimo la obra que hizo; y reposó el día séptimo de toda la obra que hizo.",
+            "3": "Y bendijo Dios al día séptimo, y lo santificó, porque en él reposó de toda la obra que había hecho en la creación.",
+            "7": "Entonces Jehová Dios formó al hombre del polvo de la tierra, y sopló en su nariz aliento de vida, y fue el hombre un ser viviente.",
+            "18": "Y dijo Jehová Dios: No es bueno que el hombre esté solo; le haré ayuda idónea para él.",
+            "24": "Por tanto, dejará el hombre a su padre y a su madre, y se unirá a su mujer, y serán una sola carne."
+        },
+        "3": {
+            "15": "Y pondré enemistad entre ti y la mujer, y entre tu simiente y la simiente suya; ésta te herirá en la cabeza, y tú le herirás en el calcañar."
+        },
+        "6": {
+            "8": "Pero Noé halló gracia ante los ojos de Jehová.",
+            "9": "Estas son las generaciones de Noé: Noé, varón justo, era perfecto en sus generaciones; con Dios caminó Noé."
+        },
+        "12": {
+            "2": "Y haré de ti una nación grande, y te bendeciré, y engrandeceré tu nombre, y serás bendición.",
+            "3": "Bendeciré a los que te bendijeren, y a los que te maldijeren maldeciré; y serán benditas en ti todas las familias de la tierra."
+        },
+        "15": {
+            "6": "Y creyó a Jehová, y le fue contado por justicia."
+        },
+        "22": {
+            "14": "Y llamó Abraham el nombre de aquel lugar, Jehová proveerá. Por tanto se dice hoy: En el monte de Jehová será provisto."
+        },
+        "28": {
+            "15": "He aquí, yo estoy contigo, y te guardaré por dondequiera que fueres, y volveré a traerte a esta tierra; porque no te dejaré hasta que haya hecho lo que te he dicho."
+        },
+        "50": {
+            "20": "Vosotros pensasteis mal contra mí, mas Dios lo encaminó a bien, para hacer lo que vemos hoy, para mantener en vida a mucho pueblo."
+        }
+    },
+    "exodo": {
+        "3": {
+            "14": "Y respondió Dios a Moisés: YO SOY EL QUE SOY. Y dijo: Así dirás a los hijos de Israel: YO SOY me envió a vosotros."
+        },
+        "14": {
+            "14": "Jehová peleará por vosotros, y vosotros estaréis tranquilos.",
+            "21": "Y extendió Moisés su mano sobre el mar, e hizo Jehová que el mar se retirase por recio viento oriental toda aquella noche; y volvió el mar en seco, y las aguas quedaron divididas."
+        },
+        "15": {
+            "2": "Jehová es mi fortaleza y mi cántico, y ha sido mi salvación. Este es mi Dios, y lo alabaré; Dios de mi padre, y lo enalteceré.",
+            "26": "Y dijo: Si oyeres atentamente la voz de Jehová tu Dios, e hicieres lo recto delante de sus ojos, y dieres oído a sus mandamientos, y guardares todos sus estatutos, ninguna enfermedad de las que envié a los egipcios te enviaré a ti; porque yo soy Jehová tu sanador."
+        },
+        "20": {
+            "3": "No tendrás dioses ajenos delante de mí.",
+            "7": "No tomarás el nombre de Jehová tu Dios en vano; porque no dará por inocente Jehová al que tomare su nombre en vano.",
+            "12": "Honra a tu padre y a tu madre, para que tus días se alarguen en la tierra que Jehová tu Dios te da.",
+            "13": "No matarás.",
+            "14": "No cometerás adulterio.",
+            "15": "No hurtarás.",
+            "16": "No hablarás contra tu prójimo falso testimonio."
+        },
+        "33": {
+            "14": "Y él dijo: Mi presencia irá contigo, y te daré descanso.",
+            "19": "Y Jehová descendió en la nube, y estuvo allí con él, proclamando el nombre de Jehová."
+        }
+    },
+    "deuteronomio": {
+        "4": {
+            "29": "Pero si desde allí buscas a Jehová tu Dios, lo hallarás, si lo buscas de todo tu corazón y de toda tu alma."
+        },
+        "6": {
+            "5": "Y amarás a Jehová tu Dios de todo tu corazón, y de toda tu alma, y con todas tus fuerzas."
+        },
+        "7": {
+            "9": "Conoce, pues, que Jehová tu Dios es Dios, Dios fiel, que guarda el pacto y la misericordia a los que le aman y guardan sus mandamientos, hasta mil generaciones."
+        },
+        "8": {
+            "3": "Y te afligió, y te hizo tener hambre, y te sustentó con maná, comida que no conocías tú, ni tus padres la habían conocido, para hacerte saber que no sólo de pan vivirá el hombre, mas de todo lo que sale de la boca de Jehová vivirá el hombre."
+        },
+        "10": {
+            "12": "Ahora, pues, Israel, ¿qué pide Jehová tu Dios de ti, sino que temas a Jehová tu Dios, que andes en todos sus caminos, y que lo ames, y sirvas a Jehová tu Dios con todo tu corazón y con toda tu alma?",
+            "13": "que guardes los mandamientos de Jehová y sus estatutos, que yo te prescribo hoy, para que tengas prosperidad?"
+        },
+        "28": {
+            "1": "Acontecerá que si oyeres atentamente la voz de Jehová tu Dios, para guardar y poner por obra todos sus mandamientos que yo te prescribo hoy, también Jehová tu Dios te exaltará sobre todas las naciones de la tierra."
+        },
+        "31": {
+            "6": "Esforzaos y cobrad ánimo; no temáis, ni tengáis miedo de ellos, porque Jehová tu Dios es el que va contigo; no te dejará, ni te desamparará.",
+            "8": "Y Jehová va delante de ti; él estará contigo, no te dejará, ni te desamparará; no temas ni te intimides."
+        }
+    },
+    "josue": {
+        "1": {
+            "5": "Nadie te podrá hacer frente en todos los días de tu vida; como estuve con Moisés, estaré contigo; no te dejaré, ni te desampararé.",
+            "6": "Esfuérzate y sé valiente; porque tú repartirás a este pueblo por heredad la tierra de la cual juré a sus padres que la daría a ellos.",
+            "8": "Nunca se apartará de tu boca este libro de la ley, sino que de día y de noche meditarás en él, para que guardes y hagas conforme a todo lo que en él está escrito; porque entonces harás prosperar tu camino, y todo te saldrá bien.",
+            "9": "Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas."
+        },
+        "24": {
+            "15": "Y si mal os parece servir a Jehová, escogeos hoy a quién sirváis; si a los dioses a quienes sirvieron vuestros padres, cuando estuvieron al otro lado del río, o a los dioses de los amorreos en cuya tierra habitáis; pero yo y mi casa serviremos a Jehová."
+        }
+    },
+    "salmos": {
+        "1": {
+            "1": "Bienaventurado el varón que no anduvo en consejo de malos, ni estuvo en camino de pecadores, ni en silla de escarnecedores se ha sentado;",
+            "2": "sino que en la ley de Jehová está su delicia, y en su ley medita de día y de noche.",
+            "3": "Será como árbol plantado junto a corrientes de aguas, que da su fruto en su tiempo, y su hoja no cae; y todo lo que hace, prosperará."
+        },
+        "2": {
+            "12": "Honrad al Hijo, para que no se enoje, y perezcáis en el camino; pues se inflama de pronto su ira. Bienaventurados todos los que en él confían."
+        },
+        "4": {
+            "8": "En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado."
+        },
+        "5": {
+            "3": "Oh Jehová, de mañana oirás mi voz; de mañana me presentaré delante de ti, y esperaré."
+        },
+        "8": {
+            "4": "¿Qué es el hombre, para que tengas de él memoria, y el hijo del hombre, para que lo visites?"
+        },
+        "9": {
+            "9": "Jehová será refugio del pobre, refugio para el tiempo de angustia.",
+            "10": "En ti confiarán los que conocen tu nombre, por cuanto tú, oh Jehová, no desamparaste a los que te buscaron."
+        },
+        "16": {
+            "8": "A Jehová he puesto siempre delante de mí; porque está a mi diestra, no seré conmovido.",
+            "11": "Me mostrarás la senda de la vida; en tu presencia hay plenitud de gozo; delicias a tu diestra para siempre."
+        },
+        "18": {
+            "2": "Jehová es mi roca y mi fortaleza, y mi libertador; Dios mío, fortaleza mía, en él confiaré; mi escudo, y el fuerte de mi salvación, mi alto refugio.",
+            "28": "Tú encenderás mi lámpara; Jehová mi Dios alumbrará mis tinieblas.",
+            "32": "Dios es el que me ciñe de fuerza, y quien despeja mi camino;"
+        },
+        "19": {
+            "1": "Los cielos cuentan la gloria de Dios, y el firmamento anuncia la obra de sus manos.",
+            "7": "La ley de Jehová es perfecta, que convierte el alma; el testimonio de Jehová es fiel, que hace sabio al sencillo.",
+            "14": "Sean gratos los dichos de mi boca y la meditación de mi corazón delante de ti, oh Jehová, roca mía, y redentor mío."
+        },
+        "20": {
+            "7": "Algunos confían en carros, y otros en caballos; mas nosotros del nombre de Jehová nuestro Dios tendremos memoria."
+        },
+        "23": {
+            "1": "Jehová es mi pastor; nada me faltará.",
+            "2": "En lugares de delicados pastos me hará descansar; junto a aguas de reposo me pastoreará.",
+            "3": "Confortará mi alma; me guiará por sendas de justicia por amor de su nombre.",
+            "4": "Aunque ande en valle de sombra de muerte, no temeré mal alguno, porque tú estarás conmigo; tu vara y tu cayado me infundirán aliento.",
+            "5": "Aderezas mesa delante de mí en presencia de mis angustiadores; unges mi cabeza con aceite; mi copa está rebosando.",
+            "6": "Ciertamente el bien y la misericordia me seguirán todos los días de mi vida, y en la casa de Jehová moraré por largos días."
+        },
+        "24": {
+            "1": "De Jehová es la tierra y su plenitud; el mundo, y los que en él habitan."
+        },
+        "27": {
+            "1": "Jehová es mi luz y mi salvación; ¿de quién temeré? Jehová es la fortaleza de mi vida; ¿de quién he de atemorizarme?",
+            "4": "Una cosa he demandado a Jehová, ésta buscaré; que esté yo en la casa de Jehová todos los días de mi vida, para contemplar la hermosura de Jehová, y para inquirir en su templo.",
+            "14": "Aguarda a Jehová; esfuérzate, y aliéntese tu corazón; sí, espera a Jehová."
+        },
+        "28": {
+            "7": "Jehová es mi fortaleza y mi escudo; en él confió mi corazón, y fui ayudado, por lo que se gozó mi corazón, y con mi cántico le alabaré."
+        },
+        "30": {
+            "5": "Porque un momento será su ira, pero su favor dura toda la vida. Por la noche durará el lloro, y a la mañana vendrá la alegría."
+        },
+        "31": {
+            "24": "Esforzaos todos vosotros los que esperáis en Jehová, y tome aliento vuestro corazón."
+        },
+        "32": {
+            "8": "Te haré entender, y te enseñaré el camino en que debes andar; sobre ti fijaré mis ojos."
+        },
+        "33": {
+            "4": "Porque recta es la palabra de Jehová, y toda su obra es hecha con fidelidad."
+        },
+        "34": {
+            "1": "Bendeciré a Jehová en todo tiempo; su alabanza estará de continuo en mi boca.",
+            "7": "El ángel de Jehová acampa alrededor de los que le temen, y los defiende.",
+            "8": "Gustad, y ved que es bueno Jehová; dichoso el hombre que confía en él.",
+            "18": "Cercano está Jehová a los quebrantados de corazón; y salva a los contritos de espíritu."
+        },
+        "37": {
+            "4": "Deléitate asimismo en Jehová, y él te concederá las peticiones de tu corazón.",
+            "5": "Encomienda a Jehová tu camino, y confía en él; y él hará.",
+            "7": "Guarda silencio ante Jehová, y espera en él. No te alteres con motivo del que prospera en su camino, por el hombre que hace maldades.",
+            "23": "Por Jehová son ordenados los pasos del hombre, y él aprueba su camino.",
+            "25": "Joven fui, y he envejecido, y no he visto justo desamparado, ni su descendencia que mendigue pan."
+        },
+        "40": {
+            "1": "Pacientemente esperé a Jehová, y se inclinó a mí, y oyó mi clamor.",
+            "2": "Y me hizo sacar del pozo de la desesperación, del lodo cenagoso; puso mis pies sobre peña, y enderezó mis pasos.",
+            "3": "Puso luego en mi boca cántico nuevo, alabanza a nuestro Dios. Verán esto muchos, y temerán, y confiarán en Jehová."
+        },
+        "42": {
+            "11": "¿Por qué te abates, oh alma mía, y por qué te turbas dentro de mí? Espera en Dios; porque aún he de alabarle, salvación mía y Dios mío."
+        },
+        "46": {
+            "1": "Dios es nuestro amparo y fortaleza, nuestro pronto auxilio en las tribulaciones.",
+            "10": "Estad quietos, y conoced que yo soy Dios; seré exaltado entre las naciones; enaltecido seré en la tierra.",
+            "11": "Jehová de los ejércitos está con nosotros; nuestro refugio es el Dios de Jacob."
+        },
+        "50": {
+            "15": "Y clama a mí en el día de la angustia; te libraré, y tú me glorificarás."
+        },
+        "51": {
+            "10": "Crea en mí, oh Dios, un corazón limpio, y renueva un espíritu recto dentro de mí.",
+            "12": "Vuélveme el gozo de tu salvación, y espíritu noble me sustente."
+        },
+        "55": {
+            "22": "Echa sobre Jehová tu carga, y él te sustentará; no dejará para siempre caído al justo."
+        },
+        "56": {
+            "3": "En el día que temo, yo en ti confío."
+        },
+        "62": {
+            "1": "En Dios solamente está acallada mi alma; de él viene mi salvación.",
+            "2": "Él solamente es mi roca y mi salvación; es mi refugio, no resbalaré mucho.",
+            "8": "Confiad en él en todo tiempo, oh pueblos; derramad delante de él vuestro corazón; Dios es nuestro refugio."
+        },
+        "63": {
+            "1": "Dios, Dios mío eres tú; de madrugada te buscaré; mi alma tiene sed de ti, mi carne te anhela, en tierra seca y árida donde no hay aguas."
+        },
+        "66": {
+            "18": "Si en mi corazón hubiese yo mirado a la iniquidad, el Señor no me habría escuchado."
+        },
+        "73": {
+            "26": "Mi carne y mi corazón desfallecen; mas la roca de mi corazón y mi porción es Dios para siempre."
+        },
+        "84": {
+            "11": "Porque sol y escudo es Jehová Dios; gracia y gloria dará Jehová. No quitará el bien a los que andan en integridad."
+        },
+        "86": {
+            "15": "Mas tú, Señor, Dios misericordioso y clemente, lento para la ira, y grande en misericordia y verdad."
+        },
+        "90": {
+            "12": "Enséñanos de tal modo a contar nuestros días, que traigamos al corazón sabiduría."
+        },
+        "91": {
+            "1": "El que habita al abrigo del Altísimo morará bajo la sombra del Omnipotente.",
+            "2": "Diré yo a Jehová: Esperanza mía, y castillo mío; mi Dios, en quien confiaré.",
+            "3": "Él te librará del lazo del cazador, de la peste destructora.",
+            "4": "Con sus plumas te cubrirá, y debajo de sus alas estarás seguro; escudo y adarga es su verdad.",
+            "5": "No temerás el terror nocturno, ni saeta que vuele de día,",
+            "6": "ni pestilencia que ande en oscuridad, ni mortandad que en medio del día destruya.",
+            "7": "Caerán a tu lado mil, y diez mil a tu diestra; mas a ti no llegará.",
+            "8": "Ciertamente con tus ojos mirarás y verás la recompensa de los impíos.",
+            "9": "Porque has puesto a Jehová, que es mi esperanza, al Altísimo por tu habitación,",
+            "10": "no te sobrevendrá mal, ni plaga tocará tu morada.",
+            "11": "Pues a sus ángeles mandará acerca de ti, que te guarden en todos tus caminos.",
+            "12": "En las manos te llevarán, para que tu pie no tropiece en piedra.",
+            "13": "Sobre el león y el áspid pisarás; hollarás al cachorro del león y al dragón.",
+            "14": "Por cuanto en mí ha puesto su amor, yo también lo libraré; le pondré en alto, por cuanto ha conocido mi nombre.",
+            "15": "Me invocará, y yo le responderé; con él estaré yo en la angustia; lo libraré y le glorificaré.",
+            "16": "Lo saciaré de larga vida, y le mostraré mi salvación."
+        },
+        "100": {
+            "1": "Cantad alegres a Dios, habitantes de toda la tierra.",
+            "2": "Servid a Jehová con alegría; venid ante su presencia con regocijo.",
+            "3": "Reconoced que Jehová es Dios; él nos hizo, y no nosotros a nosotros mismos; pueblo suyo somos, y ovejas de su prado.",
+            "4": "Entrad por sus puertas con acción de gracias, por sus atrios con alabanza; alabadle, bendecid su nombre.",
+            "5": "Porque Jehová es bueno; para siempre es su misericordia, y su verdad por todas las generaciones."
+        },
+        "103": {
+            "1": "Bendice, alma mía, a Jehová, y bendiga todo mi ser su santo nombre.",
+            "2": "Bendice, alma mía, a Jehová, y no olvides ninguno de sus beneficios.",
+            "3": "Él es quien perdona todas tus iniquidades, el que sana todas tus dolencias;",
+            "4": "el que rescata del hoyo tu vida, el que te corona de favores y misericordias;",
+            "5": "el que sacia de bien tu boca de modo que te rejuvenezcas como el águila.",
+            "12": "Cuanto está lejos el oriente del occidente, hizo alejar de nosotros nuestras rebeliones."
+        },
+        "107": {
+            "1": "Alabad a Jehová, porque él es bueno; porque para siempre es su misericordia."
+        },
+        "118": {
+            "24": "Este es el día que hizo Jehová; nos gozaremos y alegraremos en él.",
+            "29": "Alabad a Jehová, porque él es bueno; porque para siempre es su misericordia."
+        },
+        "119": {
+            "9": "¿Con qué limpiará el joven su camino? Con guardar tu palabra.",
+            "11": "En mi corazón he guardado tus dichos, para no pecar contra ti.",
+            "105": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino.",
+            "114": "Mi escondedero y mi escudo eres tú; en tu palabra he esperado.",
+            "130": "La exposición de tus palabras alumbra; hace entender a los simples."
+        },
+        "121": {
+            "1": "Alzaré mis ojos a los montes; ¿de dónde vendrá mi socorro?",
+            "2": "Mi socorro viene de Jehová, que hizo los cielos y la tierra.",
+            "3": "No dará tu pie al resbaladero, ni se dormirá el que te guarda.",
+            "4": "He aquí, no se dormirá ni dormitará el que guarda a Israel.",
+            "5": "Jehová es tu guardador; Jehová es tu sombra a tu mano derecha.",
+            "6": "El sol no te fatigará de día, ni la luna de noche.",
+            "7": "Jehová te guardará de todo mal; él guardará tu alma.",
+            "8": "Jehová guardará tu salida y tu entrada desde ahora y para siempre."
+        },
+        "126": {
+            "3": "Grandes cosas ha hecho Jehová con nosotros; estaremos alegres."
+        },
+        "127": {
+            "1": "Si Jehová no edificare la casa, en vano trabajan los que la edifican; si Jehová no guardare la ciudad, en vano vela la guardia."
+        },
+        "133": {
+            "1": "¡Mirad cuán bueno y cuán delicioso es habitar los hermanos juntos en armonía!"
+        },
+        "139": {
+            "1": "Oh Jehová, tú me has examinado y conocido.",
+            "2": "Tú has conocido mi sentarme y mi levantarme; has entendido desde lejos mis pensamientos.",
+            "3": "Has escudriñado mi andar y mi reposo, y todos mis caminos te son conocidos.",
+            "4": "Pues aún no está la palabra en mi lengua, y he aquí, oh Jehová, tú la sabes toda.",
+            "5": "Detrás y delante me rodeaste, y sobre mí pusiste tu mano.",
+            "6": "Tal conocimiento es demasiado maravilloso para mí; alto es, no lo puedo comprender.",
+            "13": "Porque tú formaste mis entrañas; me hiciste en el vientre de mi madre.",
+            "14": "Te alabaré; porque formidables, maravillosas son tus obras; estoy maravillado, y mi alma lo sabe muy bien.",
+            "23": "Examíname, oh Dios, y conoce mi corazón; pruébame y conoce mis pensamientos;",
+            "24": "y ve si hay en mí camino de perversidad, y guíame en el camino eterno."
+        },
+        "143": {
+            "10": "Enséñame a hacer tu voluntad, porque tú eres mi Dios; tu buen espíritu me guíe a tierra de rectitud."
+        }
+    },
+    "proverbios": {
+        "1": {
+            "7": "El principio de la sabiduría es el temor de Jehová; los insensatos desprecian la sabiduría y la enseñanza."
+        },
+        "2": {
+            "6": "Porque Jehová da la sabiduría, y de su boca viene el conocimiento y la inteligencia."
+        },
+        "3": {
+            "1": "Hijo mío, no te olvides de mi ley, y tu corazón guarde mis mandamientos;",
+            "2": "porque largura de días y años de vida y paz te aumentarán.",
+            "3": "Nunca se aparten de ti la misericordia y la verdad; átalas a tu cuello, escríbelas en la tabla de tu corazón;",
+            "4": "y hallarás gracia y buena opinión ante los ojos de Dios y de los hombres.",
+            "5": "Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia.",
+            "6": "Reconócelo en todos tus caminos, y él enderezará tus veredas.",
+            "7": "No seas sabio en tu propia opinión; teme a Jehová, y apártate del mal;",
+            "8": "porque será medicina a tu cuerpo, y refrigerio para tus huesos.",
+            "9": "Honra a Jehová con tus bienes, y con las primicias de todos tus frutos;",
+            "10": "y serán llenos tus graneros con abundancia, y tus lagares rebosarán de mosto."
+        },
+        "4": {
+            "18": "Mas la senda de los justos es como la luz de la aurora, que va en aumento hasta que el día es perfecto.",
+            "23": "Sobre toda cosa guardada, guarda tu corazón; porque de él mana la vida."
+        },
+        "8": {
+            "17": "Yo amo a los que me aman, y me hallan los que temprano me buscan."
+        },
+        "10": {
+            "12": "El odio despierta rencillas; pero el amor cubrirá todas las faltas.",
+            "22": "La bendición de Jehová es la que enriquece, y no añade tristeza con ella."
+        },
+        "11": {
+            "25": "El alma generosa será prosperada; y el que saciare, él también será saciado."
+        },
+        "12": {
+            "25": "La congoja en el corazón del hombre lo abate; mas la buena palabra lo alegra."
+        },
+        "15": {
+            "1": "La respuesta suave quita la ira; mas la palabra áspera hace subir el furor.",
+            "13": "El corazón alegre hermosea el rostro; mas por el dolor del corazón el espíritu se abate."
+        },
+        "16": {
+            "3": "Encomienda a Jehová tus obras, y tus pensamientos serán afirmados.",
+            "9": "El corazón del hombre piensa su camino; mas Jehová endereza sus pasos.",
+            "24": "Panal de miel son los dichos suaves; suavidad al alma y medicina para los huesos."
+        },
+        "17": {
+            "22": "El corazón alegre constituye buen remedio; mas el espíritu triste seca los huesos."
+        },
+        "18": {
+            "10": "El nombre de Jehová es torre fuerte; a él correrá el justo, y será levantado.",
+            "24": "El hombre que tiene amigos ha de mostrarse amigo; y amigo hay más unido que un hermano."
+        },
+        "22": {
+            "6": "Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él."
+        },
+        "23": {
+            "7": "Porque cual es su pensamiento en su corazón, tal es él. Come y bebe, te dirá; mas su corazón no está contigo."
+        },
+        "27": {
+            "17": "Hierro con hierro se aguza; y así el hombre aguza el rostro de su amigo."
+        },
+        "28": {
+            "13": "El que encubre sus pecados no prosperará; mas el que los confiesa y se aparta alcanzará misericordia."
+        },
+        "31": {
+            "10": "Mujer virtuosa, ¿quién la hallará? Porque su estima sobrepasa largamente a la de las piedras preciosas.",
+            "25": "Fuerza y honor son su vestidura; y se ríe de lo por venir.",
+            "28": "Se levantan sus hijos y la llaman bienaventurada; y su marido también la alaba.",
+            "29": "Muchas mujeres hicieron el bien; mas tú sobrepasas a todas.",
+            "30": "Engañosa es la gracia, y vana la hermosura; la mujer que teme a Jehová, ésa será alabada."
+        }
+    },
+    "isaias": {
+        "6": {
+            "8": "Después oí la voz del Señor, que decía: ¿A quién enviaré, y quién irá por nosotros? Entonces respondí yo: Heme aquí, envíame a mí."
+        },
+        "9": {
+            "6": "Porque un niño nos es nacido, hijo nos es dado, y el principado sobre su hombro; y se llamará su nombre Admirable, Consejero, Dios Fuerte, Padre Eterno, Príncipe de Paz."
+        },
+        "26": {
+            "3": "Tú guardarás en completa paz a aquel cuyo pensamiento en ti persevera; porque en ti ha confiado."
+        },
+        "40": {
+            "8": "Sécase la hierba, marchítase la flor; mas la palabra del Dios nuestro permanece para siempre.",
+            "28": "¿No has sabido, no has oído que el Dios eterno es Jehová, el cual creó los confines de la tierra? No desfallece, ni se fatiga con cansancio, y su entendimiento no hay quien lo alcance.",
+            "29": "Él da esfuerzo al cansado, y multiplica las fuerzas al que no tiene ningunas.",
+            "30": "Los muchachos se fatigan y se cansan, los jóvenes flaquean y caen;",
+            "31": "pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán."
+        },
+        "41": {
+            "10": "No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo; siempre te ayudaré, siempre te sustentaré con la diestra de mi justicia.",
+            "13": "Porque yo Jehová soy tu Dios, quien te sostiene de tu mano derecha, y te dice: No temas, yo te ayudo."
+        },
+        "43": {
+            "1": "Ahora, así dice Jehová, Creador tuyo, oh Jacob, y Formador tuyo, oh Israel: No temas, porque yo te redimí; te puse nombre, mío eres tú.",
+            "2": "Cuando pases por las aguas, yo estaré contigo; y si por los ríos, no te anegarán. Cuando pases por el fuego, no te quemarás, ni la llama arderá en ti.",
+            "3": "Porque yo Jehová, Dios tuyo, el Santo de Israel, soy tu Salvador; a Egipto he dado por tu rescate, a Etiopía y a Seba por ti.",
+            "18": "No os acordéis de las cosas pasadas, ni traigáis a memoria las cosas antiguas.",
+            "19": "He aquí que yo hago cosa nueva; pronto saldrá a luz; ¿no la conoceréis? Otra vez abriré camino en el desierto, y ríos en la soledad.",
+            "25": "Yo, yo soy el que borro tus rebeliones por amor de mí mismo, y no me acordaré de tus pecados."
+        },
+        "53": {
+            "1": "¿Quién ha creído a nuestro anuncio? ¿Y sobre quién se ha manifestado el brazo de Jehová?",
+            "2": "Subirá cual renuevo delante de él, y como raíz de tierra seca; no hay parecer en él, ni hermosura; le veremos, mas sin atractivo para que le deseemos.",
+            "3": "Despreciado y desechado entre los hombres, varón de dolores, experimentado en quebranto; y como que escondimos de él el rostro, fue menospreciado, y no lo estimamos.",
+            "4": "Ciertamente llevó él nuestras enfermedades, y sufrió nuestros dolores; y nosotros le tuvimos por azotado, por herido de Dios y abatido.",
+            "5": "Mas él herido fue por nuestras rebeliones, molido por nuestros pecados; el castigo de nuestra paz fue sobre él, y por su llaga fuimos nosotros curados.",
+            "6": "Todos nosotros nos descarriamos como ovejas, cada cual se apartó por su camino; mas Jehová cargó en él el pecado de todos nosotros.",
+            "7": "Angustiado él, y afligido, no abrió su boca; como cordero fue llevado al matadero; y como oveja delante de sus trasquiladores, enmudeció, y no abrió su boca."
+        },
+        "55": {
+            "1": "A todos los sedientos: Venid a las aguas; y los que no tienen dinero, venid, comprad y comed. Venid, comprad sin dinero y sin precio, vino y leche.",
+            "6": "Buscad a Jehová mientras puede ser hallado, llamadle en tanto que está cercano.",
+            "7": "Deje el impío su camino, y el hombre inicuo sus pensamientos, y vuélvase a Jehová, el cual tendrá de él misericordia, y al Dios nuestro, el cual será amplio en perdonar.",
+            "8": "Porque mis pensamientos no son vuestros pensamientos, ni vuestros caminos mis caminos, dijo Jehová.",
+            "9": "Como son más altos los cielos que la tierra, así son mis caminos más altos que vuestros caminos, y mis pensamientos más que vuestros pensamientos.",
+            "11": "así será mi palabra que sale de mi boca; no volverá a mí vacía, sino que hará lo que yo quiero, y será prosperada en aquello para que la envié."
+        }
+    },
+    "jeremias": {
+        "1": {
+            "5": "Antes que te formase en el vientre te conocí, y antes que nacieses te santifiqué, te di por profeta a las naciones."
+        },
+        "9": {
+            "23": "Así dijo Jehová: No se alabe el sabio en su sabiduría, ni en su valentía se alabe el valiente, ni el rico se alabe en sus riquezas.",
+            "24": "Mas alábese en esto el que se hubiere de alabar: en entenderme y conocerme, que yo soy Jehová, que hago misericordia, juicio y justicia en la tierra; porque estas cosas quiero, dice Jehová."
+        },
+        "10": {
+            "10": "Mas Jehová es el Dios verdadero; él es Dios vivo y Rey eterno; a su ira tiembla la tierra, y las naciones no pueden sufrir su indignación."
+        },
+        "17": {
+            "7": "Bendito el varón que confía en Jehová, y cuya confianza es Jehová.",
+            "8": "Porque será como el árbol plantado junto a las aguas, que junto a la corriente echará sus raíces, y no verá cuando viene el calor, sino que su hoja estará verde; y en el año de sequía no se fatigará, ni dejará de dar fruto.",
+            "14": "Sáname, oh Jehová, y seré sano; sálvame, y seré salvo; porque tú eres mi alabanza."
+        },
+        "29": {
+            "11": "Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal, para daros el fin que esperáis.",
+            "12": "Entonces me invocaréis, y vendréis y oraréis a mí, y yo os oiré;",
+            "13": "y me buscaréis y me hallaréis, porque me buscaréis de todo vuestro corazón."
+        },
+        "31": {
+            "3": "Jehová se manifestó a mí hace ya mucho tiempo, diciendo: Con amor eterno te he amado; por tanto, te prolongué mi misericordia."
+        },
+        "33": {
+            "3": "Clama a mí, y yo te responderé, y te enseñaré cosas grandes y ocultas que tú no conoces."
+        }
+    },
+    "ezequiel": {
+        "36": {
+            "26": "Os daré corazón nuevo, y pondré espíritu nuevo dentro de vosotros; y quitaré de vuestra carne el corazón de piedra, y os daré un corazón de carne.",
+            "27": "Y pondré dentro de vosotros mi Espíritu, y haré que andéis en mis estatutos, y guardéis mis preceptos, y los pongáis por obra."
+        },
+        "38": {
+            "23": "Y seré engrandecido y santificado, y seré conocido ante los ojos de muchas naciones; y sabrán que yo soy Jehová."
+        }
+    },
+    "daniel": {
+        "3": {
+            "17": "He aquí nuestro Dios a quien servimos puede librarnos del horno de fuego ardiendo; y de tu mano, oh rey, nos librará.",
+            "18": "Y si no, sepas, oh rey, que no serviremos a tus dioses, ni tampoco adoraremos la estatua que has levantado."
+        },
+        "6": {
+            "10": "Cuando Daniel supo que el edicto había sido firmado, entró en su casa, y abiertas las ventanas de su cámara que daban hacia Jerusalén, se arrodillaba tres veces al día, y oraba y daba gracias delante de su Dios, como lo solía hacer antes.",
+            "23": "Entonces el rey se alegró en gran manera, y mandó que sacasen a Daniel del foso. Y sacaron a Daniel del foso, y ninguna lesión se halló en él, porque creyó en su Dios."
+        },
+        "12": {
+            "3": "Los entendidos resplandecerán como el resplandor del firmamento; y los que enseñan la justicia a la multitud, como las estrellas a perpetua eternidad."
+        }
+    },
+    "oseas": {
+        "6": {
+            "3": "Conozcamos, y sigamos en el conocimiento de Jehová; su salida está dispuesta como el alba, y vendrá a nosotros como la lluvia, como la lluvia tardía y temprana a la tierra."
+        },
+        "10": {
+            "12": "Sembrad para vosotros en justicia, segad para vosotros en misericordia; haced para vosotros barbecho; porque es el tiempo de buscar a Jehová, hasta que venga y os enseñe justicia."
+        }
+    },
+    "jonas": {
+        "1": {
+            "17": "Pero Jehová tenía preparado un gran pez que tragase a Jonás; y estuvo Jonás en el vientre del pez tres días y tres noches."
+        },
+        "2": {
+            "1": "Entonces oró Jonás a Jehová su Dios desde el vientre del pez,",
+            "2": "y dijo: Invoqué en mi angustia a Jehová, y él me oyó; desde el seno del Seol clamé, y mi voz oíste.",
+            "9": "Mas yo con voz de alabanza te ofreceré sacrificios; pagaré lo que prometí. La salvación es de Jehová."
+        },
+        "4": {
+            "2": "Y oró a Jehová, y dijo: Ahora, oh Jehová, ¿no es esto lo que yo decía estando aún en mi tierra? Por eso me apresuré a huir a Tarsis; porque sabía yo que tú eres Dios clemente y piadoso, tardo en enojarte, y de grande misericordia, y que te arrepientes del mal."
+        }
+    },
+    "habacuc": {
+        "3": {
+            "17": "Aunque la higuera no florezca, ni en las vides haya frutos, aunque falte el producto del olivo, y los labrados no den mantenimiento, y las ovejas sean quitadas de la majada, y no haya vacas en los corrales;",
+            "18": "con todo, yo me alegraré en Jehová, y me gozaré en el Dios de mi salvación.",
+            "19": "Jehová el Señor es mi fortaleza, el cual hace mis pies como de ciervas, y en mis alturas me hace andar."
+        }
+    },
+    "sofonias": {
+        "3": {
+            "17": "Jehová está en medio de ti, poderoso, él salvará; se gozará sobre ti con alegría, callará de amor, se regocijará sobre ti con cánticos."
+        }
+    },
+    // ==================== NUEVO TESTAMENTO ====================
+    "mateo": {
+        "5": {
+            "1": "Viendo la multitud, subió al monte; y sentándose, vinieron a él sus discípulos.",
+            "2": "Y abriendo su boca les enseñaba, diciendo:",
+            "3": "Bienaventurados los pobres en espíritu, porque de ellos es el reino de los cielos.",
+            "4": "Bienaventurados los que lloran, porque ellos recibirán consolación.",
+            "5": "Bienaventurados los mansos, porque ellos recibirán la tierra por heredad.",
+            "6": "Bienaventurados los que tienen hambre y sed de justicia, porque ellos serán saciados.",
+            "7": "Bienaventurados los misericordiosos, porque ellos alcanzarán misericordia.",
+            "8": "Bienaventurados los de limpio corazón, porque ellos verán a Dios.",
+            "9": "Bienaventurados los pacificadores, porque ellos serán llamados hijos de Dios.",
+            "10": "Bienaventurados los que padecen persecución por causa de la justicia, porque de ellos es el reino de los cielos.",
+            "13": "Vosotros sois la sal de la tierra; pero si la sal se desvaneciere, ¿con qué será salada? No sirve más para nada, sino para ser echada fuera y hollada por los hombres.",
+            "14": "Vosotros sois la luz del mundo; una ciudad asentada sobre un monte no se puede esconder.",
+            "15": "Ni se enciende una luz y se pone debajo de un almud, sino sobre el candelero, y alumbra a todos los que están en casa.",
+            "16": "Así alumbre vuestra luz delante de los hombres, para que vean vuestras buenas obras, y glorifiquen a vuestro Padre que está en los cielos."
+        },
+        "6": {
+            "9": "Vosotros, pues, oraréis así: Padre nuestro que estás en los cielos, santificado sea tu nombre.",
+            "10": "Venga tu reino. Hágase tu voluntad, como en el cielo, así también en la tierra.",
+            "11": "El pan nuestro de cada día, dánoslo hoy.",
+            "12": "Y perdónanos nuestras deudas, como también nosotros perdonamos a nuestros deudores.",
+            "13": "Y no nos metas en tentación, mas líbranos del mal; porque tuyo es el reino, y el poder, y la gloria, por todos los siglos. Amén.",
+            "14": "Porque si perdonáis a los hombres sus ofensas, os perdonará también a vosotros vuestro Padre celestial;",
+            "15": "mas si no perdonáis a los hombres sus ofensas, tampoco vuestro Padre os perdonará vuestras ofensas.",
+            "19": "No os hagáis tesoros en la tierra, donde la polilla y el orín corrompen, y donde ladrones minan y hurtan;",
+            "20": "sino haceos tesoros en el cielo, donde ni la polilla ni el orín corrompen, y donde ladrones no minan ni hurtan.",
+            "21": "Porque donde esté vuestro tesoro, allí estará también vuestro corazón.",
+            "24": "Ninguno puede servir a dos señores; porque o aborrecerá al uno y amará al otro, o estimará al uno y menospreciará al otro. No podéis servir a Dios y a las riquezas.",
+            "25": "Por tanto os digo: No os afanéis por vuestra vida, qué habéis de comer o qué habéis de beber; ni por vuestro cuerpo, qué habéis de vestir. ¿No es la vida más que el alimento, y el cuerpo más que el vestido?",
+            "33": "Mas buscad primeramente el reino de Dios y su justicia, y todas estas cosas os serán añadidas.",
+            "34": "Así que, no os afanéis por el día de mañana, porque el día de mañana traerá su afán. Basta a cada día su propio mal."
+        },
+        "7": {
+            "7": "Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",
+            "8": "Porque todo aquel que pide, recibe; y el que busca, halla; y al que llama, se le abrirá.",
+            "12": "Así que, todas las cosas que queráis que los hombres hagan con vosotros, así también haced vosotros con ellos; porque esto es la ley y los profetas.",
+            "24": "Cualquiera, pues, que me oye estas palabras, y las hace, le compararé a un hombre prudente, que edificó su casa sobre la roca."
+        },
+        "11": {
+            "28": "Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.",
+            "29": "Llevad mi yugo sobre vosotros, y aprended de mí, que soy manso y humilde de corazón; y hallaréis descanso para vuestras almas.",
+            "30": "Porque mi yugo es fácil, y ligera mi carga."
+        },
+        "16": {
+            "24": "Entonces Jesús dijo a sus discípulos: Si alguno quiere venir en pos de mí, niéguese a sí mismo, y tome su cruz, y sígame.",
+            "25": "Porque todo el que quiera salvar su vida, la perderá; y todo el que pierda su vida por causa de mí, la hallará.",
+            "26": "Porque ¿qué aprovechará al hombre, si ganare todo el mundo, y perdiere su alma? ¿O qué recompensa dará el hombre por su alma?"
+        },
+        "18": {
+            "20": "Porque donde están dos o tres congregados en mi nombre, allí estoy yo en medio de ellos."
+        },
+        "19": {
+            "26": "Y mirándolos Jesús, les dijo: Para los hombres esto es imposible; mas para Dios todo es posible."
+        },
+        "21": {
+            "22": "Y todo lo que pidiereis en oración, creyendo, lo recibiréis."
+        },
+        "22": {
+            "37": "Jesús le dijo: Amarás al Señor tu Dios con todo tu corazón, y con toda tu alma, y con toda tu mente.",
+            "38": "Este es el primero y grande mandamiento.",
+            "39": "Y el segundo es semejante: Amarás a tu prójimo como a ti mismo.",
+            "40": "De estos dos mandamientos depende toda la ley y los profetas."
+        },
+        "28": {
+            "18": "Y Jesús se acercó y les habló diciendo: Toda potestad me es dada en el cielo y en la tierra.",
+            "19": "Por tanto, id, y haced discípulos a todas las naciones, bautizándolos en el nombre del Padre, y del Hijo, y del Espíritu Santo;",
+            "20": "enseñándoles que guarden todas las cosas que os he mandado; y he aquí yo estoy con vosotros todos los días, hasta el fin del mundo. Amén."
+        }
+    },
+    "marcos": {
+        "9": {
+            "23": "Jesús le dijo: Si puedes creer, al que cree todo le es posible."
+        },
+        "10": {
+            "27": "Entonces Jesús, mirándolos, dijo: Para los hombres es imposible, mas para Dios, no; porque todas las cosas son posibles para Dios."
+        },
+        "11": {
+            "24": "Por tanto, os digo que todo lo que pidiereis orando, creed que lo recibiréis, y os vendrá."
+        },
+        "16": {
+            "15": "Y les dijo: Id por todo el mundo y predicad el evangelio a toda criatura.",
+            "16": "El que creyere y fuere bautizado, será salvo; mas el que no creyere, será condenado."
+        }
+    },
+    "lucas": {
+        "1": {
+            "37": "Porque nada hay imposible para Dios."
+        },
+        "6": {
+            "31": "Y como queréis que hagan los hombres con vosotros, así también haced vosotros con ellos.",
+            "38": "Dad, y se os dará; medida buena, apretada, remecida y rebosando darán en vuestro regazo; porque con la misma medida con que medís, os volverán a medir."
+        },
+        "10": {
+            "27": "Aquél, respondiendo, dijo: Amarás al Señor tu Dios con todo tu corazón, y con toda tu alma, y con todas tus fuerzas, y con toda tu mente; y a tu prójimo como a ti mismo."
+        },
+        "11": {
+            "9": "Y yo os digo: Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",
+            "10": "Porque todo aquel que pide, recibe; y el que busca, halla; y al que llama, se le abrirá."
+        },
+        "12": {
+            "32": "No temáis, manada pequeña, porque a vuestro Padre le ha placido daros el reino."
+        },
+        "18": {
+            "27": "Él dijo: Lo que es imposible para los hombres, es posible para Dios."
+        }
+    },
+    "juan": {
+        "1": {
+            "1": "En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios.",
+            "2": "Este era en el principio con Dios.",
+            "3": "Todas las cosas por él fueron hechas, y sin él nada de lo que ha sido hecho, fue hecho.",
+            "4": "En él estaba la vida, y la vida era la luz de los hombres.",
+            "5": "La luz en las tinieblas resplandece, y las tinieblas no prevalecieron contra ella.",
+            "12": "Mas a todos los que le recibieron, a los que creen en su nombre, les dio potestad de ser hechos hijos de Dios;",
+            "14": "Y aquel Verbo fue hecho carne, y habitó entre nosotros (y vimos su gloria, gloria como del unigénito del Padre), lleno de gracia y de verdad.",
+            "29": "El siguiente día vio Juan a Jesús que venía a él, y dijo: He aquí el Cordero de Dios, que quita el pecado del mundo."
+        },
+        "3": {
+            "3": "Respondió Jesús y le dijo: De cierto, de cierto te digo, que el que no naciere de nuevo, no puede ver el reino de Dios.",
+            "5": "Respondió Jesús: De cierto, de cierto te digo, que el que no naciere de agua y del Espíritu, no puede entrar en el reino de Dios.",
+            "16": "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",
+            "17": "Porque no envió Dios a su Hijo al mundo para condenar al mundo, sino para que el mundo sea salvo por él.",
+            "18": "El que en él cree, no es condenado; pero el que no cree, ya ha sido condenado, porque no ha creído en el nombre del unigénito Hijo de Dios.",
+            "30": "Es necesario que él crezca, pero que yo mengüe.",
+            "36": "El que cree en el Hijo tiene vida eterna; pero el que rehúsa creer en el Hijo no verá la vida, sino que la ira de Dios está sobre él."
+        },
+        "4": {
+            "14": "mas el que bebiere del agua que yo le daré, no tendrá sed jamás; sino que el agua que yo le daré será en él una fuente de agua que salte para vida eterna.",
+            "24": "Dios es Espíritu; y los que le adoran, en espíritu y en verdad es necesario que adoren.",
+            "34": "Jesús les dijo: Mi comida es que haga la voluntad del que me envió, y que acabe su obra."
+        },
+        "5": {
+            "24": "De cierto, de cierto os digo: El que oye mi palabra, y cree al que me envió, tiene vida eterna; y no vendrá a condenación, mas ha pasado de muerte a vida."
+        },
+        "6": {
+            "35": "Jesús les dijo: Yo soy el pan de vida; el que a mí viene, nunca tendrá hambre; y el que en mí cree, no tendrá sed jamás.",
+            "37": "Todo lo que el Padre me da, vendrá a mí; y al que a mí viene, no le echo fuera.",
+            "47": "De cierto, de cierto os digo: El que cree en mí, tiene vida eterna.",
+            "51": "Yo soy el pan vivo que descendió del cielo; si alguno comiere de este pan, vivirá para siempre; y el pan que yo daré es mi carne, la cual yo daré por la vida del mundo."
+        },
+        "8": {
+            "12": "Otra vez Jesús les habló, diciendo: Yo soy la luz del mundo; el que me sigue, no andará en tinieblas, sino que tendrá la luz de la vida.",
+            "32": "y conoceréis la verdad, y la verdad os hará libres.",
+            "36": "Así que, si el Hijo os libertare, seréis verdaderamente libres."
+        },
+        "10": {
+            "10": "El ladrón no viene sino para hurtar y matar y destruir; yo he venido para que tengan vida, y para que la tengan en abundancia.",
+            "11": "Yo soy el buen pastor; el buen pastor su vida da por las ovejas.",
+            "14": "Yo soy el buen pastor; y conozco mis ovejas, y las mías me conocen,",
+            "27": "Mis ovejas oyen mi voz, y yo las conozco, y me siguen;",
+            "28": "y yo les doy vida eterna; y no perecerán jamás, ni nadie las arrebatará de mi mano.",
+            "29": "Mi Padre que me las dio, es mayor que todos, y nadie las puede arrebatar de la mano de mi Padre.",
+            "30": "Yo y el Padre uno somos."
+        },
+        "11": {
+            "25": "Le dijo Jesús: Yo soy la resurrección y la vida; el que cree en mí, aunque esté muerto, vivirá.",
+            "26": "Y todo aquel que vive y cree en mí, no morirá eternamente. ¿Crees esto?",
+            "35": "Jesús lloró."
+        },
+        "12": {
+            "46": "Yo, la luz, he venido al mundo, para que todo aquel que cree en mí no permanezca en tinieblas."
+        },
+        "13": {
+            "34": "Un mandamiento nuevo os doy: Que os améis unos a otros; como yo os he amado, que también os améis unos a otros.",
+            "35": "En esto conocerán todos que sois mis discípulos, si tuviereis amor los unos con los otros."
+        },
+        "14": {
+            "1": "No se turbe vuestro corazón; creéis en Dios, creed también en mí.",
+            "2": "En la casa de mi Padre muchas moradas hay; si así no fuera, yo os lo hubiera dicho; voy, pues, a preparar lugar para vosotros.",
+            "3": "Y si me fuere y os preparare lugar, vendré otra vez, y os tomaré a mí mismo, para que donde yo estoy, vosotros también estéis.",
+            "6": "Jesús le dijo: Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí.",
+            "15": "Si me amáis, guardad mis mandamientos.",
+            "16": "Y yo rogaré al Padre, y os dará otro Consolador, para que esté con vosotros para siempre:",
+            "17": "el Espíritu de verdad, al cual el mundo no puede recibir, porque no le ve, ni le conoce; pero vosotros le conocéis, porque mora con vosotros, y estará en vosotros.",
+            "21": "El que tiene mis mandamientos, y los guarda, ése es el que me ama; y el que me ama, será amado por mi Padre, y yo le amaré, y me manifestaré a él.",
+            "27": "La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da. No se turbe vuestro corazón, ni tenga miedo."
+        },
+        "15": {
+            "5": "Yo soy la vid, vosotros los pámpanos; el que permanece en mí, y yo en él, éste lleva mucho fruto; porque separados de mí nada podéis hacer.",
+            "7": "Si permanecéis en mí, y mis palabras permanecen en vosotros, pedid todo lo que queréis, y os será hecho.",
+            "9": "Como el Padre me ha amado, así también yo os he amado; permaneced en mi amor.",
+            "12": "Este es mi mandamiento: Que os améis unos a otros, como yo os he amado.",
+            "13": "Nadie tiene mayor amor que este, que uno ponga su vida por sus amigos.",
+            "15": "Ya no os llamaré siervos, porque el siervo no sabe lo que hace su señor; pero os he llamado amigos, porque todas las cosas que oí de mi Padre, os las he dado a conocer."
+        },
+        "16": {
+            "24": "Hasta ahora nada habéis pedido en mi nombre; pedid, y recibiréis, para que vuestro gozo sea cumplido.",
+            "33": "Estas cosas os he hablado para que en mí tengáis paz. En el mundo tendréis aflicción; pero confiad, yo he vencido al mundo."
+        },
+        "17": {
+            "3": "Y esta es la vida eterna: que te conozcan a ti, el único Dios verdadero, y a Jesucristo, a quien has enviado."
+        }
+    },
+    "hechos": {
+        "1": {
+            "8": "pero recibiréis poder, cuando haya venido sobre vosotros el Espíritu Santo, y me seréis testigos en Jerusalén, en toda Judea, en Samaria, y hasta lo último de la tierra."
+        },
+        "2": {
+            "38": "Pedro les dijo: Arrepentíos, y bautícese cada uno de vosotros en el nombre de Jesucristo para perdón de los pecados; y recibiréis el don del Espíritu Santo.",
+            "42": "Y perseveraban en la doctrina de los apóstoles, en la comunión unos con otros, en el partimiento del pan y en las oraciones."
+        },
+        "4": {
+            "12": "Y en ningún otro hay salvación; porque no hay otro nombre bajo el cielo, dado a los hombres, en que podamos ser salvos."
+        },
+        "16": {
+            "31": "Y ellos dijeron: Cree en el Señor Jesucristo, y serás salvo, tú y tu casa."
+        },
+        "18": {
+            "10": "Porque yo estoy contigo, y ninguno pondrá sobre ti la mano para hacerte mal, porque yo tengo mucho pueblo en esta ciudad."
+        }
+    },
+    "romanos": {
+        "1": {
+            "16": "Porque no me avergüenzo del evangelio, porque es poder de Dios para salvación a todo aquel que cree; al judío primeramente, y también al griego.",
+            "17": "Porque en el evangelio la justicia de Dios se revela por fe y para fe, como está escrito: Mas el justo por la fe vivirá."
+        },
+        "3": {
+            "23": "por cuanto todos pecaron, y están destituidos de la gloria de Dios,"
+        },
+        "5": {
+            "1": "Justificados, pues, por la fe, tenemos paz para con Dios por medio de nuestro Señor Jesucristo;",
+            "5": "y la esperanza no avergüenza; porque el amor de Dios ha sido derramado en nuestros corazones por el Espíritu Santo que nos fue dado.",
+            "8": "Mas Dios muestra su amor para con nosotros, en que siendo aún pecadores, Cristo murió por nosotros."
+        },
+        "6": {
+            "23": "Porque la paga del pecado es muerte, mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro."
+        },
+        "8": {
+            "1": "Ahora, pues, ninguna condenación hay para los que están en Cristo Jesús, los que no andan conforme a la carne, sino conforme al Espíritu.",
+            "14": "Porque todos los que son guiados por el Espíritu de Dios, éstos son hijos de Dios.",
+            "15": "Pues no habéis recibido el espíritu de esclavitud para estar otra vez en temor, sino que habéis recibido el espíritu de adopción, por el cual clamamos: ¡Abba, Padre!",
+            "16": "El Espíritu mismo da testimonio a nuestro espíritu, de que somos hijos de Dios.",
+            "18": "Pues tengo por cierto que las aflicciones del tiempo presente no son comparables con la gloria venidera que en nosotros ha de manifestarse.",
+            "28": "Y sabemos que a los que aman a Dios, todas las cosas les ayudan a bien, esto es, a los que conforme a su propósito son llamados.",
+            "31": "¿Qué, pues, diremos a esto? Si Dios es por nosotros, ¿quién contra nosotros?",
+            "32": "El que no escatimó ni a su propio Hijo, sino que lo entregó por todos nosotros, ¿cómo no nos dará también con él todas las cosas?",
+            "35": "¿Quién nos separará del amor de Cristo? ¿Tribulación, o angustia, o persecución, o hambre, o desnudez, o peligro, o espada?",
+            "37": "Antes, en todas estas cosas somos más que vencedores por medio de aquel que nos amó.",
+            "38": "Por lo cual estoy seguro de que ni la muerte, ni la vida, ni ángeles, ni principados, ni potestades, ni lo presente, ni lo por venir,",
+            "39": "ni lo alto, ni lo profundo, ni ninguna otra cosa creada nos podrá separar del amor de Dios, que es en Cristo Jesús Señor nuestro."
+        },
+        "10": {
+            "9": "que si confesares con tu boca que Jesús es el Señor, y creyeres en tu corazón que Dios le levantó de los muertos, serás salvo.",
+            "10": "Porque con el corazón se cree para justicia, pero con la boca se confiesa para salvación.",
+            "13": "porque todo aquel que invocare el nombre del Señor, será salvo.",
+            "17": "Así que la fe es por el oír, y el oír, por la palabra de Dios."
+        },
+        "12": {
+            "1": "Así que, hermanos, os ruego por las misericordias de Dios, que presentéis vuestros cuerpos en sacrificio vivo, santo, agradable a Dios, que es vuestro culto racional.",
+            "2": "No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento, para que comprobéis cuál sea la buena voluntad de Dios, agradable y perfecta.",
+            "12": "Gozosos en la esperanza; sufridos en la tribulación; constantes en la oración;",
+            "21": "No seas vencido de lo malo, sino vence con el bien el mal."
+        },
+        "15": {
+            "13": "Y el Dios de esperanza os llene de todo gozo y paz en el creer, para que abundéis en esperanza por el poder del Espíritu Santo."
+        }
+    },
+    "1corintios": {
+        "1": {
+            "9": "Fiel es Dios, por el cual fuisteis llamados a la comunión con su Hijo Jesucristo nuestro Señor."
+        },
+        "2": {
+            "9": "Antes bien, como está escrito: Cosas que ojo no vio, ni oído oyó, ni han subido en corazón de hombre, son las que Dios ha preparado para los que le aman."
+        },
+        "10": {
+            "13": "No os ha sobrevenido ninguna tentación que no sea humana; pero fiel es Dios, que no os dejará ser tentados más de lo que podéis resistir, sino que dará también juntamente con la tentación la salida, para que podáis soportar."
+        },
+        "13": {
+            "1": "Si yo hablase lenguas humanas y angélicas, y no tengo amor, vengo a ser como metal que resuena, o címbalo que retiñe.",
+            "2": "Y si tuviese profecía, y entendiese todos los misterios y toda ciencia, y si tuviese toda la fe, de tal manera que trasladase los montes, y no tengo amor, nada soy.",
+            "3": "Y si repartiese todos mis bienes para dar de comer a los pobres, y si entregase mi cuerpo para ser quemado, y no tengo amor, de nada me sirve.",
+            "4": "El amor es sufrido, es benigno; el amor no tiene envidia, el amor no es jactancioso, no se envanece;",
+            "5": "no hace nada indebido, no busca lo suyo, no se irrita, no guarda rencor;",
+            "6": "no se goza de la injusticia, mas se goza de la verdad.",
+            "7": "Todo lo sufre, todo lo cree, todo lo espera, todo lo soporta.",
+            "8": "El amor nunca deja de ser; pero las profecías se acabarán, y cesarán las lenguas, y la ciencia acabará.",
+            "13": "Y ahora permanecen la fe, la esperanza y el amor, estos tres; pero el mayor de ellos es el amor."
+        },
+        "15": {
+            "57": "Mas gracias sean dadas a Dios, que nos da la victoria por medio de nuestro Señor Jesucristo."
+        },
+        "16": {
+            "14": "Todas vuestras cosas sean hechas con amor."
+        }
+    },
+    "2corintios": {
+        "4": {
+            "16": "Por tanto, no desmayamos; antes aunque este nuestro hombre exterior se va desgastando, el interior no obstante se renueva de día en día.",
+            "17": "Porque esta leve tribulación momentánea produce en nosotros un cada vez más excelente y eterno peso de gloria;",
+            "18": "no mirando nosotros las cosas que se ven, sino las que no se ven; pues las cosas que se ven son temporales, pero las que no se ven son eternas."
+        },
+        "5": {
+            "7": "(porque por fe andamos, no por vista);",
+            "17": "De modo que si alguno está en Cristo, nueva criatura es; las cosas viejas pasaron; he aquí todas son hechas nuevas.",
+            "21": "Al que no conoció pecado, por nosotros lo hizo pecado, para que nosotros fuésemos hechos justicia de Dios en él."
+        },
+        "9": {
+            "7": "Cada uno dé como propuso en su corazón: no con tristeza, ni por necesidad, porque Dios ama al dador alegre."
+        },
+        "12": {
+            "9": "Y me ha dicho: Bástate mi gracia; porque mi poder se perfecciona en la debilidad. Por tanto, de buena gana me gloriaré más bien en mis debilidades, para que repose sobre mí el poder de Cristo."
+        }
+    },
+    "galatas": {
+        "2": {
+            "20": "Con Cristo estoy juntamente crucificado, y ya no vivo yo, mas vive Cristo en mí; y lo que ahora vivo en la carne, lo vivo en la fe del Hijo de Dios, el cual me amó y se entregó a sí mismo por mí."
+        },
+        "5": {
+            "1": "Estad, pues, firmes en la libertad con que Cristo nos hizo libres, y no estéis otra vez sujetos al yugo de esclavitud.",
+            "22": "Mas el fruto del Espíritu es amor, gozo, paz, paciencia, benignidad, bondad, fe,",
+            "23": "mansedumbre, templanza; contra tales cosas no hay ley."
+        },
+        "6": {
+            "9": "No nos cansemos, pues, de hacer bien; porque a su tiempo segaremos, si no desmayamos."
+        }
+    },
+    "efesios": {
+        "1": {
+            "3": "Bendito sea el Dios y Padre de nuestro Señor Jesucristo, que nos bendijo con toda bendición espiritual en los lugares celestiales en Cristo.",
+            "7": "en quien tenemos redención por su sangre, el perdón de pecados según las riquezas de su gracia.",
+            "13": "En él también vosotros, habiendo oído la palabra de verdad, el evangelio de vuestra salvación, y habiendo creído en él, fuisteis sellados con el Espíritu Santo de la promesa."
+        },
+        "2": {
+            "4": "Pero Dios, que es rico en misericordia, por su gran amor con que nos amó,",
+            "5": "aun estando nosotros muertos en pecados, nos dio vida juntamente con Cristo (por gracia sois salvos),",
+            "6": "y juntamente con él nos resucitó, y asimismo nos hizo sentar en los lugares celestiales con Cristo Jesús,",
+            "7": "para mostrar en los siglos venideros las abundantes riquezas de su gracia en su bondad para con nosotros en Cristo Jesús.",
+            "8": "Porque por gracia sois salvos por medio de la fe; y esto no de vosotros, pues es don de Dios;",
+            "9": "no por obras, para que nadie se gloríe.",
+            "10": "Porque somos hechura suya, creados en Cristo Jesús para buenas obras, las cuales Dios preparó de antemano para que anduviésemos en ellas."
+        },
+        "3": {
+            "20": "Y a Aquel que es poderoso para hacer todas las cosas mucho más abundantemente de lo que pedimos o entendemos, según el poder que actúa en nosotros,"
+        },
+        "4": {
+            "32": "Antes sed benignos unos con otros, misericordiosos, perdonándoos unos a otros, como Dios también os perdonó a vosotros en Cristo."
+        },
+        "6": {
+            "10": "Por lo demás, hermanos míos, fortaleceos en el Señor, y en el poder de su fuerza.",
+            "11": "Vestíos de toda la armadura de Dios, para que podáis estar firmes contra las asechanzas del diablo."
+        }
+    },
+    "filipenses": {
+        "1": {
+            "6": "estando persuadido de esto, que el que comenzó en vosotros la buena obra, la perfeccionará hasta el día de Jesucristo;"
+        },
+        "2": {
+            "3": "Nada hagáis por contienda o por vanagloria; antes bien con humildad, estimando cada uno a los demás como superiores a él mismo;",
+            "4": "no mirando cada uno por lo suyo propio, sino cada cual también por lo de los otros.",
+            "13": "porque Dios es el que en vosotros produce así el querer como el hacer, por su buena voluntad."
+        },
+        "3": {
+            "13": "Hermanos, yo no pretendo haberlo ya alcanzado; pero una cosa hago: olvidando ciertamente lo que queda atrás, y extendiéndome a lo que está delante,",
+            "14": "prosigo a la meta, al premio del supremo llamamiento de Dios en Cristo Jesús."
+        },
+        "4": {
+            "4": "Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!",
+            "6": "Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias.",
+            "7": "Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos en Cristo Jesús.",
+            "8": "Por lo demás, hermanos, todo lo que es verdadero, todo lo honesto, todo lo justo, todo lo puro, todo lo amable, todo lo que es de buen nombre; si hay virtud alguna, si algo digno de alabanza, en esto pensad.",
+            "13": "Todo lo puedo en Cristo que me fortalece.",
+            "19": "Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús."
+        }
+    },
+    "colosenses": {
+        "1": {
+            "16": "Porque en él fueron creadas todas las cosas, las que hay en los cielos y las que hay en la tierra, visibles e invisibles; sean tronos, sean dominios, sean principados, sean potestades; todo fue creado por medio de él y para él.",
+            "17": "Y él es antes de todas las cosas, y todas las cosas en él subsisten."
+        },
+        "3": {
+            "12": "Vestíos, pues, como escogidos de Dios, santos y amados, de entrañable misericordia, de benignidad, de humildad, de mansedumbre, de paciencia;",
+            "13": "soportándoos unos a otros, y perdonándoos unos a otros si alguno tuviere queja contra otro. De la manera que Cristo os perdonó, así también hacedlo vosotros.",
+            "14": "Y sobre todas estas cosas vestíos de amor, que es el vínculo perfecto.",
+            "15": "Y la paz de Dios gobierne en vuestros corazones, a la que asimismo fuisteis llamados en un solo cuerpo; y sed agradecidos.",
+            "16": "La palabra de Cristo more en abundancia en vosotros, enseñándoos y exhortándoos unos a otros en toda sabiduría, cantando con gracia en vuestros corazones al Señor con salmos e himnos y cánticos espirituales.",
+            "17": "Y todo lo que hacéis, sea de palabra o de hecho, hacedlo todo en el nombre del Señor Jesús, dando gracias a Dios Padre por medio de él.",
+            "23": "Y todo lo que hagáis, hacedlo de corazón, como para el Señor y no para los hombres."
+        }
+    },
+    "1tesalonicenses": {
+        "5": {
+            "16": "Estad siempre gozosos.",
+            "17": "Orad sin cesar.",
+            "18": "Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros en Cristo Jesús.",
+            "24": "Fiel es el que os llama, el cual también lo hará."
+        }
+    },
+    "2timoteo": {
+        "1": {
+            "7": "Porque no nos ha dado Dios espíritu de cobardía, sino de poder, de amor y de dominio propio."
+        },
+        "3": {
+            "16": "Toda la Escritura es inspirada por Dios, y útil para enseñar, para redargüir, para corregir, para instruir en justicia."
+        },
+        "4": {
+            "7": "He peleado la buena batalla, he acabado la carrera, he guardado la fe."
+        }
+    },
+    "hebreos": {
+        "4": {
+            "12": "Porque la palabra de Dios es viva y eficaz, y más cortante que toda espada de dos filos; y penetra hasta partir el alma y el espíritu, las coyunturas y los tuétanos, y discierne los pensamientos y las intenciones del corazón.",
+            "16": "Acerquémonos, pues, confiadamente al trono de la gracia, para alcanzar misericordia y hallar gracia para el oportuno socorro."
+        },
+        "10": {
+            "23": "Mantengamos firme, sin fluctuar, la profesión de nuestra esperanza, porque fiel es el que prometió."
+        },
+        "11": {
+            "1": "Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve.",
+            "6": "Pero sin fe es imposible agradar a Dios; porque es necesario que el que se acerca a Dios crea que le hay, y que es galardonador de los que le buscan."
+        },
+        "12": {
+            "1": "Por tanto, nosotros también, teniendo en derredor nuestro tan grande nube de testigos, despojémonos de todo peso y del pecado que nos asedia, y corramos con paciencia la carrera que tenemos por delante,",
+            "2": "puestos los ojos en Jesús, el autor y consumador de la fe, el cual por el gozo puesto delante de él sufrió la cruz, menospreciando el oprobio, y se sentó a la diestra del trono de Dios."
+        },
+        "13": {
+            "5": "Sean vuestras costumbres sin avaricia, contentos con lo que tenéis ahora; porque él dijo: No te desampararé, ni te dejaré.",
+            "8": "Jesucristo es el mismo ayer, y hoy, y por los siglos."
+        }
+    },
+    "santiago": {
+        "1": {
+            "2": "Hermanos míos, tened por sumo gozo cuando os halléis en diversas pruebas,",
+            "3": "sabiendo que la prueba de vuestra fe produce paciencia.",
+            "4": "Mas tenga la paciencia su obra completa, para que seáis perfectos y cabales, sin que os falte cosa alguna.",
+            "5": "Y si alguno de vosotros tiene falta de sabiduría, pídala a Dios, el cual da a todos abundantemente y sin reproche, y le será dada.",
+            "6": "Pero pida con fe, no dudando nada; porque el que duda es semejante a la onda del mar, que es arrastrada por el viento y echada de una parte a otra.",
+            "12": "Bienaventurado el varón que soporta la tentación; porque cuando haya resistido la prueba, recibirá la corona de vida, que Dios ha prometido a los que le aman.",
+            "17": "Toda buena dádiva y todo don perfecto descienden de lo alto, del Padre de las luces, en el cual no hay mudanza, ni sombra de variación.",
+            "22": "Pero sed hacedores de la palabra, y no tan solamente oidores, engañándoos a vosotros mismos."
+        },
+        "4": {
+            "7": "Someteos, pues, a Dios; resistid al diablo, y huirá de vosotros.",
+            "8": "Acercaos a Dios, y él se acercará a vosotros. Pecadores, limpiad las manos; y vosotros los de doble ánimo, purificad vuestros corazones.",
+            "10": "Humillaos delante del Señor, y él os exaltará."
+        },
+        "5": {
+            "16": "Confesaos vuestras ofensas unos a otros, y orad unos por otros, para que seáis sanados. La oración eficaz del justo puede mucho."
+        }
+    },
+    "1pedro": {
+        "1": {
+            "3": "Bendito el Dios y Padre de nuestro Señor Jesucristo, que según su grande misericordia nos hizo renacer para una esperanza viva, por la resurrección de Jesucristo de los muertos,",
+            "7": "para que sometida a prueba vuestra fe, mucho más preciosa que el oro, el cual aunque perecedero se prueba con fuego, sea hallada en alabanza, gloria y honra cuando sea manifestado Jesucristo."
+        },
+        "2": {
+            "9": "Mas vosotros sois linaje escogido, real sacerdocio, nación santa, pueblo adquirido por Dios, para que anunciéis las virtudes de aquel que os llamó de las tinieblas a su luz admirable;",
+            "24": "quien llevó él mismo nuestros pecados en su cuerpo sobre el madero, para que nosotros, estando muertos a los pecados, vivamos a la justicia; y por cuya herida fuisteis sanados."
+        },
+        "5": {
+            "7": "echando toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros.",
+            "10": "Mas el Dios de toda gracia, que nos llamó a su gloria eterna en Jesucristo, después que hayáis padecido un poco de tiempo, él mismo os perfeccione, afirme, fortalezca y establezca."
+        }
+    },
+    "1juan": {
+        "1": {
+            "5": "Este es el mensaje que hemos oído de él, y os anunciamos: Dios es luz, y no hay ningunas tinieblas en él.",
+            "7": "pero si andamos en luz, como él está en luz, tenemos comunión unos con otros, y la sangre de Jesucristo su Hijo nos limpia de todo pecado.",
+            "9": "Si confesamos nuestros pecados, él es fiel y justo para perdonar nuestros pecados, y limpiarnos de toda maldad."
+        },
+        "4": {
+            "4": "Hijitos, vosotros sois de Dios, y los habéis vencido; porque mayor es el que está en vosotros, que el que está en el mundo.",
+            "7": "Amados, amémonos unos a otros; porque el amor es de Dios. Todo aquel que ama, es nacido de Dios, y conoce a Dios.",
+            "8": "El que no ama, no ha conocido a Dios; porque Dios es amor.",
+            "18": "En el amor no hay temor, sino que el perfecto amor echa fuera el temor; porque el temor lleva en sí castigo. De donde el que teme, no ha sido perfeccionado en el amor.",
+            "19": "Nosotros le amamos a él, porque él nos amó primero."
+        },
+        "5": {
+            "4": "Porque todo lo que es nacido de Dios vence al mundo; y esta es la victoria que ha vencido al mundo, nuestra fe.",
+            "14": "Y esta es la confianza que tenemos en él, que si pedimos alguna cosa conforme a su voluntad, él nos oye.",
+            "15": "Y si sabemos que él nos oye en cualquiera cosa que pidamos, sabemos que tenemos las peticiones que le hayamos hecho."
+        }
+    },
+    "judas": {
+        "1": {
+            "24": "Y a aquel que es poderoso para guardaros sin caída, y presentaros sin mancha delante de su gloria con gran alegría,"
+        }
+    },
+    "apocalipsis": {
+        "1": {
+            "8": "Yo soy el Alfa y la Omega, principio y fin, dice el Señor, el que es y que era y que ha de venir, el Todopoderoso.",
+            "17": "Cuando le vi, caí como muerto a sus pies. Y él puso su diestra sobre mí, diciéndome: No temas; yo soy el primero y el último;"
+        },
+        "3": {
+            "20": "He aquí, yo estoy a la puerta y llamo; si alguno oye mi voz y abre la puerta, entraré a él, y cenaré con él, y él conmigo."
+        },
+        "21": {
+            "1": "Vi un cielo nuevo y una tierra nueva; porque el primer cielo y la primera tierra pasaron, y el mar ya no existía más.",
+            "2": "Y yo Juan vi la santa ciudad, la nueva Jerusalén, descender del cielo, de Dios, dispuesta como una esposa ataviada para su marido.",
+            "3": "Y oí una gran voz del cielo que decía: He aquí el tabernáculo de Dios con los hombres, y él morará con ellos; y ellos serán su pueblo, y Dios mismo estará con ellos como su Dios.",
+            "4": "Enjugará Dios toda lágrima de los ojos de ellos; y ya no habrá muerte, ni habrá más llanto, ni clamor, ni dolor; porque las primeras cosas pasaron.",
+            "5": "Y el que estaba sentado en el trono dijo: He aquí, yo hago nuevas todas las cosas. Y me dijo: Escribe; porque estas palabras son fieles y verdaderas."
+        },
+        "22": {
+            "13": "Yo soy el Alfa y la Omega, el primero y el último, el principio y el fin."
+        }
+    }
+};
+
+// ============================================================
 //  CONFIGURACIÓN
 // ============================================================
 const API_BASE = 'https://api.midvash.com/v1';
@@ -431,10 +1588,16 @@ const VERSION  = 'rvr1960';
 
 const selectorLibro     = document.getElementById('selectorLibro');
 const selectorMusica    = document.getElementById('selectorMusica');
+const selectorVoz       = document.getElementById('selectorVoz');
+const velocidadVoz      = document.getElementById('velocidadVoz');
+const volumenVoz        = document.getElementById('volumenVoz');
+const valorVelocidad    = document.getElementById('valorVelocidad');
 const inputCapitulo     = document.getElementById('capitulo');
 const inputVersiculo    = document.getElementById('versiculo');
 const btnConsultar      = document.getElementById('btnConsultar');
 const btnSonido         = document.getElementById('btnSonido');
+const btnLeer           = document.getElementById('btnLeer');
+const btnDetenerVoz     = document.getElementById('btnDetenerVoz');
 const btnCopiar         = document.getElementById('btnCopiar');
 const resultadoDiv      = document.getElementById('resultado');
 const referenciaDiv     = document.getElementById('referencia');
@@ -447,6 +1610,148 @@ let sonidoActivo = true;
 let versiculoActual = null;
 let historial = [];
 let modoMusica = 'celestial';
+
+// ============================================================
+//  VOZ (Web Speech API)
+// ============================================================
+let vocesDisponibles = [];
+let vozSeleccionada = null;
+let utteranceActual = null;
+
+function cargarVoces() {
+    vocesDisponibles = window.speechSynthesis.getVoices();
+    if (vocesDisponibles.length === 0) return;
+
+    // Priorizar voces en español
+    const vocesEspanol = vocesDisponibles.filter(v => v.lang.startsWith('es'));
+
+    selectorVoz.innerHTML = '';
+
+    if (vocesEspanol.length > 0) {
+        const grupoEs = document.createElement('optgroup');
+        grupoEs.label = 'Español';
+        vocesEspanol.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            grupoEs.appendChild(opt);
+        });
+        selectorVoz.appendChild(grupoEs);
+    }
+
+    // Otras voces
+    const otrasVoces = vocesDisponibles.filter(v => !v.lang.startsWith('es'));
+    if (otrasVoces.length > 0) {
+        const grupoOtras = document.createElement('optgroup');
+        grupoOtras.label = 'Otros idiomas';
+        otrasVoces.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            grupoOtras.appendChild(opt);
+        });
+        selectorVoz.appendChild(grupoOtras);
+    }
+
+    // Seleccionar la primera voz en español
+    if (vocesEspanol.length > 0) {
+        vozSeleccionada = vocesEspanol[0];
+        selectorVoz.value = vozSeleccionada.name;
+    } else if (vocesDisponibles.length > 0) {
+        vozSeleccionada = vocesDisponibles[0];
+        selectorVoz.value = vozSeleccionada.name;
+    }
+}
+
+function leerVersiculo() {
+    if (!versiculoActual) return;
+
+    window.speechSynthesis.cancel();
+
+    const texto = versiculoActual.texto;
+    utteranceActual = new SpeechSynthesisUtterance(texto);
+
+    // Configurar voz
+    if (vozSeleccionada) {
+        utteranceActual.voice = vozSeleccionada;
+    } else {
+        utteranceActual.lang = 'es-ES';
+    }
+
+    utteranceActual.rate = parseFloat(velocidadVoz.value);
+    utteranceActual.volume = parseFloat(volumenVoz.value);
+    utteranceActual.pitch = 1;
+
+    utteranceActual.onstart = () => {
+        resultadoDiv.classList.add('leyendo');
+        btnLeer.textContent = '🔊 Leyendo...';
+        btnLeer.disabled = true;
+        btnDetenerVoz.disabled = false;
+    };
+
+    utteranceActual.onend = () => {
+        resultadoDiv.classList.remove('leyendo');
+        btnLeer.textContent = '🔊 Leer';
+        btnLeer.disabled = false;
+        btnDetenerVoz.disabled = true;
+    };
+
+    utteranceActual.onerror = (e) => {
+        console.warn('Error de síntesis de voz:', e);
+        resultadoDiv.classList.remove('leyendo');
+        btnLeer.textContent = '🔊 Leer';
+        btnLeer.disabled = false;
+        btnDetenerVoz.disabled = true;
+    };
+
+    window.speechSynthesis.speak(utteranceActual);
+}
+
+function detenerLectura() {
+    window.speechSynthesis.cancel();
+    resultadoDiv.classList.remove('leyendo');
+    btnLeer.textContent = '🔊 Leer';
+    btnLeer.disabled = false;
+    btnDetenerVoz.disabled = true;
+}
+
+// Cambio de voz
+selectorVoz.addEventListener('change', () => {
+    vozSeleccionada = vocesDisponibles.find(v => v.name === selectorVoz.value);
+    // Si está leyendo, reiniciar con la nueva voz
+    if (resultadoDiv.classList.contains('leyendo')) {
+        leerVersiculo();
+    }
+});
+
+// Cambio de velocidad
+velocidadVoz.addEventListener('input', () => {
+    valorVelocidad.textContent = parseFloat(velocidadVoz.value).toFixed(1);
+    if (utteranceActual) {
+        utteranceActual.rate = parseFloat(velocidadVoz.value);
+    }
+});
+
+// Cambio de volumen
+volumenVoz.addEventListener('input', () => {
+    if (utteranceActual) {
+        utteranceActual.volume = parseFloat(volumenVoz.value);
+    }
+});
+
+btnLeer.addEventListener('click', leerVersiculo);
+btnDetenerVoz.addEventListener('click', detenerLectura);
+
+// Cargar voces (algunos navegadores las cargan de forma asíncrona)
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = cargarVoces;
+    cargarVoces();
+    // Reintentar tras un breve lapso (Chrome a veces tarda)
+    setTimeout(cargarVoces, 500);
+} else {
+    selectorVoz.innerHTML = '<option>Voz no disponible</option>';
+    btnLeer.disabled = true;
+}
 
 // ============================================================
 //  MOTOR DE MÚSICA PROCEDURAL (Web Audio API)
@@ -710,6 +2015,48 @@ selectorMusica.addEventListener('change', async () => {
 });
 
 // ============================================================
+//  BUSCAR VERSÍCULO (local primero, API como respaldo)
+// ============================================================
+async function buscarVersiculo(libro, capitulo, versiculo) {
+    // 1. Intentar base local
+    const libroLocal = BIBLIA_LOCAL[libro];
+    if (libroLocal && libroLocal[capitulo] && libroLocal[capitulo][versiculo]) {
+        return {
+            book: capitalizar(libro),
+            chapter: Number(capitulo),
+            verse: Number(versiculo),
+            text: libroLocal[capitulo][versiculo],
+            fuente: 'local'
+        };
+    }
+
+    // 2. Si no está local, consultar API
+    const url = `${API_BASE}/${VERSION}/${libro}/${capitulo}/${versiculo}`;
+    const respuesta = await fetch(url);
+
+    if (!respuesta.ok) {
+        if (respuesta.status === 404) {
+            throw new Error(`No se encontró ${libro} ${capitulo}:${versiculo}. Verifica los datos.`);
+        } else {
+            throw new Error(`Error en la consulta (código ${respuesta.status}).`);
+        }
+    }
+
+    const datos = await respuesta.json();
+    if (!datos.data || !datos.data.text) {
+        throw new Error('La respuesta de la API no contiene el texto del versículo.');
+    }
+
+    return {
+        book: datos.data.book,
+        chapter: datos.data.chapter,
+        verse: datos.data.verse,
+        text: datos.data.text,
+        fuente: 'api'
+    };
+}
+
+// ============================================================
 //  CONSULTAR VERSÍCULO
 // ============================================================
 async function consultarVersiculo() {
@@ -731,29 +2078,16 @@ async function consultarVersiculo() {
 
     mostrarCargando();
     btnCopiar.disabled = true;
+    detenerLectura();
 
     try {
-        const url = `${API_BASE}/${VERSION}/${libro}/${capNum}/${verNum}`;
-        const respuesta = await fetch(url);
+        const datos = await buscarVersiculo(libro, capNum, verNum);
 
-        if (!respuesta.ok) {
-            if (respuesta.status === 404) {
-                throw new Error(`No se encontró ${libro} ${capNum}:${verNum}. Verifica los datos.`);
-            } else {
-                throw new Error(`Error en la consulta (código ${respuesta.status}).`);
-            }
-        }
+        const ref = `${datos.book} ${datos.chapter}:${datos.verse}`;
+        const textoLimpio = datos.text.replace(/\n+/g, ' ').trim();
 
-        const datos = await respuesta.json();
-        if (!datos.data || !datos.data.text) {
-            throw new Error('La respuesta de la API no contiene el texto del versículo.');
-        }
-
-        const ref = `${datos.data.book} ${datos.data.chapter}:${datos.data.verse}`;
-        const textoLimpio = datos.data.text.replace(/\n+/g, ' ').trim();
-
-        versiculoActual = { referencia: ref, texto: textoLimpio };
-        mostrarVersiculo(ref, textoLimpio);
+        versiculoActual = { referencia: ref, texto: textoLimpio, fuente: datos.fuente };
+        mostrarVersiculo(ref, textoLimpio, datos.fuente);
         agregarAlHistorial(ref, capNum, verNum, libro);
         activarMusica();
 
@@ -773,11 +2107,12 @@ function mostrarCargando() {
     textoVersiculoDiv.innerHTML = '<span class="spinner"></span> Consultando la Palabra...';
 }
 
-function mostrarVersiculo(referencia, texto) {
+function mostrarVersiculo(referencia, texto, fuente) {
     resultadoDiv.className = 'resultado';
-    referenciaDiv.textContent = referencia;
+    referenciaDiv.textContent = referencia + (fuente === 'local' ? ' · local' : '');
     textoVersiculoDiv.innerHTML = `"${texto}" <span class="cita">— RVR1960</span>`;
     btnCopiar.disabled = false;
+    btnLeer.disabled = false;
 }
 
 function mostrarError(mensaje) {
@@ -785,6 +2120,12 @@ function mostrarError(mensaje) {
     referenciaDiv.textContent = '';
     textoVersiculoDiv.innerHTML = `<span style="color:#b85c4a;">⚠️ ${mensaje}</span>`;
     btnCopiar.disabled = true;
+    btnLeer.disabled = true;
+}
+
+function capitalizar(texto) {
+    if (!texto) return '';
+    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
 }
 
 // ============================================================
@@ -853,6 +2194,11 @@ btnSonido.addEventListener('click', toggleSonido);
 });
 
 audioFondo.load();
+
+// Detener la voz si se cierra o recarga la página
+window.addEventListener('beforeunload', () => {
+    window.speechSynthesis.cancel();
+});
 </script>
 
 </body>
