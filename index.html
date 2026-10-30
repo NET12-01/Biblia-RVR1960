@@ -1,1585 +1,1013 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblia RVR1960 · Consulta con Voz y Música</title>
-    <link rel="icon" type="image/png" href="img/logo.png">
-    <link rel="apple-touch-icon" href="img/logo.png">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(145deg, #f7f3ed 0%, #ede7df 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .contenedor {
-            background: #ffffff;
-            max-width: 880px;
-            width: 100%;
-            border-radius: 32px;
-            box-shadow: 0 24px 48px rgba(0,0,0,0.07), 0 8px 20px rgba(0,0,0,0.05);
-            padding: 42px 38px 36px;
-        }
-
-        h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #2e2216;
-            text-align: center;
-            letter-spacing: -0.5px;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-        }
-
-        .logo {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-            border-radius: 50%;
-            filter: drop-shadow(0 4px 10px rgba(62, 46, 31, 0.18));
-            transition: transform 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .logo:hover { transform: scale(1.05) rotate(-3deg); }
-
-        .subtitulo {
-            text-align: center;
-            color: #9b8b78;
-            font-size: 0.95rem;
-            margin-bottom: 32px;
-            letter-spacing: 0.3px;
-        }
-
-        .fila-selectores {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 22px;
-        }
-
-        .selector-grupo {
-            flex: 1 1 200px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .selector-grupo label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            color: #a89886;
-            padding-left: 4px;
-        }
-
-        .selector-grupo select {
-            padding: 14px 18px;
-            border: 2px solid #e8e0d5;
-            border-radius: 14px;
-            font-size: 0.95rem;
-            background: #faf8f5;
-            color: #3e2e1f;
-            font-family: inherit;
-            cursor: pointer;
-            outline: none;
-            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b8a48c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 40px;
-        }
-
-        .selector-grupo select:focus {
-            border-color: #c4b09a;
-            box-shadow: 0 0 0 4px rgba(196,176,154,0.15);
-            background-color: #ffffff;
-        }
-
-        .fila-campos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 26px;
-        }
-
-        .campo {
-            flex: 1 1 120px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .campo label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            color: #a89886;
-            padding-left: 4px;
-        }
-
-        .campo input {
-            padding: 14px 18px;
-            border: 2px solid #e8e0d5;
-            border-radius: 14px;
-            font-size: 1rem;
-            background: #faf8f5;
-            color: #3e2e1f;
-            outline: none;
-            font-family: inherit;
-            transition: border-color 0.25s, box-shadow 0.25s;
-        }
-
-        .campo input:focus {
-            border-color: #c4b09a;
-            box-shadow: 0 0 0 4px rgba(196,176,154,0.15);
-            background: #ffffff;
-        }
-
-        .campo input::placeholder { color: #c5b8a8; font-weight: 300; }
-
-        .botones-principales {
-            display: flex;
-            gap: 14px;
-            margin-bottom: 26px;
-        }
-
-        .btn {
-            border: none;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            letter-spacing: 0.3px;
-            transition: background 0.25s, transform 0.15s, box-shadow 0.25s, opacity 0.25s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-        .btn-principal {
-            flex: 1;
-            padding: 16px 28px;
-            background: #3e2e1f;
-            color: #f5f0e8;
-            box-shadow: 0 6px 18px rgba(62,46,31,0.22);
-        }
-
-        .btn-principal:hover:not(:disabled) {
-            background: #5a4632;
-            box-shadow: 0 8px 24px rgba(62,46,31,0.28);
-            transform: translateY(-1px);
-        }
-
-        .btn-secundario {
-            padding: 16px 22px;
-            background: #ede7df;
-            color: #5a4a38;
-            flex: 0 0 auto;
-        }
-
-        .btn-secundario:hover:not(:disabled) { background: #ddd3c7; transform: translateY(-1px); }
-        .btn-secundario.silenciado { background: #f0e2d0; color: #a0846a; }
-
-        /* --- Controles de lectura por voz --- */
-        .controles-voz {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 22px;
-            padding: 16px 20px;
-            background: #faf8f5;
-            border: 1px solid #ede7df;
-            border-radius: 18px;
-        }
-
-        .controles-voz .grupo {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1 1 160px;
-        }
-
-        .controles-voz label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            color: #a89886;
-            padding-left: 2px;
-        }
-
-        .controles-voz select,
-        .controles-voz input[type="range"] {
-            padding: 10px 14px;
-            border: 2px solid #e8e0d5;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            background: #ffffff;
-            color: #3e2e1f;
-            font-family: inherit;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .controles-voz input[type="range"] {
-            padding: 0;
-            accent-color: #5a4632;
-            cursor: pointer;
-        }
-
-        .btn-voz {
-            padding: 12px 20px;
-            font-size: 0.9rem;
-            background: #5a4632;
-            color: #f5f0e8;
-            border-radius: 12px;
-            flex: 0 0 auto;
-            white-space: nowrap;
-        }
-
-        .btn-voz:hover:not(:disabled) { background: #6d5540; transform: translateY(-1px); }
-        .btn-voz.detener { background: #b85c4a; }
-        .btn-voz.detener:hover { background: #c96b58; }
-
-        .resultado {
-            background: #faf8f5;
-            border-radius: 22px;
-            padding: 30px 28px;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border: 1px solid #ede7df;
-            transition: background 0.3s, border-color 0.3s;
-        }
-
-        .resultado.error { background: #fdf2ef; border-color: #f0d0c8; }
-        .resultado.leyendo { background: #f5f0e8; border-color: #d4c8b8; }
-
-        .referencia {
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.4px;
-            color: #b8a48c;
-            margin-bottom: 12px;
-        }
-
-        .texto-versiculo {
-            font-size: 1.28rem;
-            line-height: 1.75;
-            color: #3e2e1f;
-            word-wrap: break-word;
-        }
-
-        .texto-versiculo .cita {
-            font-style: italic;
-            color: #8b7a66;
-            font-size: 0.95rem;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            border: 3px solid #e4dbd0;
-            border-top-color: #b8a48c;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .acciones-resultado {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .btn-accion {
-            padding: 10px 18px;
-            font-size: 0.85rem;
-            background: #e8e0d5;
-            color: #5a4a38;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            transition: background 0.2s, transform 0.15s;
-        }
-
-        .btn-accion:hover:not(:disabled) { background: #ddd3c7; transform: translateY(-1px); }
-        .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        .historial-seccion {
-            margin-top: 28px;
-            padding-top: 22px;
-            border-top: 1px solid #ede7df;
-        }
-
-        .historial-titulo {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            font-weight: 700;
-            color: #a89886;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .historial-lista { display: flex; flex-wrap: wrap; gap: 10px; }
-
-        .historial-item {
-            background: #f5f0e8;
-            border: 1px solid #e8e0d5;
-            border-radius: 12px;
-            padding: 9px 16px;
-            font-size: 0.85rem;
-            color: #5a4a38;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s, transform 0.15s;
-            font-family: inherit;
-            white-space: nowrap;
-        }
-
-        .historial-item:hover {
-            background: #ede7df;
-            border-color: #d4c8b8;
-            transform: translateY(-1px);
-        }
-
-        .historial-vacio { font-size: 0.85rem; color: #c5b8a8; font-style: italic; }
-
-        .pie {
-            margin-top: 26px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #c5b8a8;
-            letter-spacing: 0.3px;
-        }
-
-        /* --- Estilos para el modo de entrada manual --- */
-        .panel-manual {
-            display: none;
-            margin-top: 16px;
-            padding: 20px;
-            background: #fdfaf5;
-            border: 2px dashed #d4c8b8;
-            border-radius: 18px;
-        }
-        .panel-manual.visible { display: block; }
-        .panel-manual textarea {
-            width: 100%;
-            min-height: 120px;
-            padding: 14px;
-            border: 2px solid #e8e0d5;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #3e2e1f;
-            background: #fff;
-            resize: vertical;
-            outline: none;
-        }
-        .panel-manual textarea:focus { border-color: #c4b09a; }
-        .panel-manual .acciones-manual {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-            justify-content: flex-end;
-        }
-
-        @media (max-width: 640px) {
-            .contenedor { padding: 28px 20px 24px; border-radius: 24px; }
-            h1 { font-size: 1.5rem; gap: 10px; }
-            .logo { width: 38px; height: 38px; }
-            .fila-selectores { flex-direction: column; gap: 14px; }
-            .fila-campos { flex-direction: column; gap: 14px; }
-            .botones-principales { flex-direction: column; }
-            .btn-secundario { flex: 1; }
-            .texto-versiculo { font-size: 1.1rem; }
-            .resultado { padding: 24px 20px; }
-            .historial-item { font-size: 0.8rem; padding: 8px 12px; }
-            .controles-voz { padding: 14px 16px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblia RVR1960 · Completa e Inteligente</title>
+<link rel="icon" type="image/png" href="img/logo.png">
+<link rel="apple-touch-icon" href="img/logo.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Roboto,sans-serif;background:linear-gradient(145deg,#f7f3ed 0%,#ede7df 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.contenedor{background:#fff;max-width:920px;width:100%;border-radius:32px;box-shadow:0 24px 48px rgba(0,0,0,.07),0 8px 20px rgba(0,0,0,.05);padding:42px 38px 36px}
+h1{font-size:2rem;font-weight:600;color:#2e2216;text-align:center;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:14px}
+.logo{width:48px;height:48px;object-fit:contain;border-radius:50%;filter:drop-shadow(0 4px 10px rgba(62,46,31,.18));transition:transform .3s;flex-shrink:0}
+.logo:hover{transform:scale(1.05) rotate(-3deg)}
+.subtitulo{text-align:center;color:#9b8b78;font-size:.95rem;margin-bottom:20px;letter-spacing:.3px}
+.barra-busqueda{display:flex;gap:8px;margin-bottom:8px;background:#faf8f5;padding:10px;border-radius:18px;border:2px solid #e8e0d5}
+.barra-busqueda input{flex:1;padding:12px 16px;border:2px solid #e8e0d5;border-radius:12px;font-size:1rem;background:#fff;outline:none;font-family:inherit;color:#3e2e1f}
+.barra-busqueda input:focus{border-color:#c4b09a;box-shadow:0 0 0 4px rgba(196,176,154,.15)}
+.btn-buscar{padding:12px 22px;background:#3e2e1f;color:#f5f0e8;border:none;border-radius:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-buscar:hover{background:#5a4632}
+.btn-microfono{background:#b85c4a;color:#fff;border:none;border-radius:12px;padding:0 18px;font-size:1.2rem;cursor:pointer;transition:background .2s}
+.btn-microfono:hover{background:#c96b58}
+.btn-microfono.escuchando{background:#e74c3c;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.tips-busqueda{font-size:.72rem;color:#a89886;text-align:center;margin-bottom:22px;padding:0 10px;line-height:1.5}
+.tips-busqueda b{color:#8b7a66}
+.fila-selectores,.fila-campos{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:22px}
+.selector-grupo,.campo{flex:1 1 200px;display:flex;flex-direction:column;gap:6px}
+label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:#a89886;padding-left:4px}
+select,input[type="number"],input[type="text"]{padding:14px 18px;border:2px solid #e8e0d5;border-radius:14px;font-size:.95rem;background:#faf8f5;color:#3e2e1f;font-family:inherit;outline:none;width:100%;transition:border-color .25s,box-shadow .25s}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b8a48c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+select:focus,input:focus{border-color:#c4b09a;box-shadow:0 0 0 4px rgba(196,176,154,.15);background-color:#fff}
+.botones-principales{display:flex;gap:14px;margin-bottom:26px;flex-wrap:wrap}
+.btn{border:none;border-radius:14px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:background .25s,transform .15s,box-shadow .25s,opacity .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-principal{flex:1;padding:16px 28px;background:#3e2e1f;color:#f5f0e8;box-shadow:0 6px 18px rgba(62,46,31,.22)}
+.btn-principal:hover:not(:disabled){background:#5a4632;transform:translateY(-1px)}
+.btn-secundario{padding:16px 22px;background:#ede7df;color:#5a4a38;flex:0 0 auto}
+.btn-secundario:hover:not(:disabled){background:#ddd3c7;transform:translateY(-1px)}
+.btn-secundario.silenciado{background:#f0e2d0;color:#a0846a}
+.btn-agregar{padding:16px 22px;background:#d4c8b8;color:#3e2e1f;flex:0 0 auto}
+.btn-agregar:hover{background:#c4b09a}
+.controles-voz{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:22px;padding:16px 20px;background:#faf8f5;border:1px solid #ede7df;border-radius:18px}
+.controles-voz .grupo{display:flex;flex-direction:column;gap:4px;flex:1 1 140px}
+.controles-voz label{font-size:.7rem;padding-left:2px}
+.controles-voz select,.controles-voz input[type="range"]{padding:10px 14px;border:2px solid #e8e0d5;border-radius:12px;font-size:.9rem;background:#fff;color:#3e2e1f;font-family:inherit;outline:none;cursor:pointer}
+.controles-voz input[type="range"]{padding:0;accent-color:#5a4632}
+.btn-voz{padding:12px 20px;font-size:.9rem;background:#5a4632;color:#f5f0e8;border-radius:12px;flex:0 0 auto;white-space:nowrap}
+.btn-voz:hover:not(:disabled){background:#6d5540}
+.btn-voz.detener{background:#b85c4a}
+.btn-voz.detener:hover{background:#c96b58}
+.resultado{background:#faf8f5;border-radius:22px;padding:30px 28px;min-height:140px;display:flex;flex-direction:column;justify-content:center;border:1px solid #ede7df;transition:background .3s,border-color .3s}
+.resultado.error{background:#fdf2ef;border-color:#f0d0c8}
+.resultado.leyendo{background:#f5f0e8;border-color:#d4c8b8}
+.referencia{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:#b8a48c;margin-bottom:12px}
+.texto-versiculo{font-size:1.28rem;line-height:1.75;color:#3e2e1f;word-wrap:break-word}
+.texto-versiculo .cita{font-style:italic;color:#8b7a66;font-size:.95rem}
+.texto-versiculo mark{background:#f5e6c8;color:#3e2e1f;padding:0 3px;border-radius:3px}
+.spinner{display:inline-block;width:22px;height:22px;border:3px solid #e4dbd0;border-top-color:#b8a48c;border-radius:50%;animation:spin .8s linear infinite;margin-right:10px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.acciones-resultado{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.btn-accion{padding:10px 18px;font-size:.85rem;background:#e8e0d5;color:#5a4a38;border-radius:10px;border:none;cursor:pointer;font-family:inherit;font-weight:600;transition:background .2s,transform .15s}
+.btn-accion:hover:not(:disabled){background:#ddd3c7;transform:translateY(-1px)}
+.btn-accion:disabled{opacity:.4;cursor:not-allowed}
+.historial-seccion{margin-top:28px;padding-top:22px;border-top:1px solid #ede7df}
+.historial-titulo{font-size:.78rem;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:#a89886;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.historial-lista{display:flex;flex-wrap:wrap;gap:10px}
+.historial-item{background:#f5f0e8;border:1px solid #e8e0d5;border-radius:12px;padding:9px 16px;font-size:.85rem;color:#5a4a38;cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap}
+.historial-item:hover{background:#ede7df;border-color:#d4c8b8;transform:translateY(-1px)}
+.historial-vacio{font-size:.85rem;color:#c5b8a8;font-style:italic}
+.pie{margin-top:26px;text-align:center;font-size:.75rem;color:#c5b8a8;letter-spacing:.3px}
+.barra-estado{margin-top:8px;font-size:.72rem;color:#9b8b78;text-align:center}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:24px;padding:28px;max-width:500px;width:100%;box-shadow:0 24px 48px rgba(0,0,0,.2)}
+.modal h3{margin-bottom:18px;color:#2e2216;font-size:1.2rem}
+.modal .campo{margin-bottom:14px}
+.modal-acciones{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+@media(max-width:640px){.contenedor{padding:28px 20px 24px;border-radius:24px}h1{font-size:1.5rem}.fila-selectores,.fila-campos,.botones-principales{flex-direction:column}.barra-busqueda{flex-wrap:wrap}.texto-versiculo{font-size:1.1rem}.resultado{padding:24px 20px}.historial-item{font-size:.8rem;padding:8px 12px}}
+</style>
 </head>
 <body>
-
 <div class="contenedor">
-    <h1>
-        <img src="img/logo.png" alt="Logo Biblia RVR1960" class="logo">
-        Biblia RVR1960
-    </h1>
-    <p class="subtitulo">Consulta · Lectura en voz alta · Música celestial</p>
+  <h1><img src="img/logo.png" alt="Logo" class="logo">Biblia RVR1960</h1>
+  <p class="subtitulo">Consulta · Búsqueda inteligente · Lectura en voz alta · Música celestial</p>
 
-    <!-- Selectores -->
-    <div class="fila-selectores">
-        <div class="selector-grupo">
-            <label for="selectorLibro">Libro</label>
-            <select id="selectorLibro">
-                <optgroup label="Antiguo Testamento">
-                    <option value="genesis">Génesis</option>
-                    <option value="exodo">Éxodo</option>
-                    <option value="levitico">Levítico</option>
-                    <option value="numeros">Números</option>
-                    <option value="deuteronomio">Deuteronomio</option>
-                    <option value="josue">Josué</option>
-                    <option value="salmos" selected>Salmos</option>
-                    <option value="proverbios">Proverbios</option>
-                    <option value="isaias">Isaías</option>
-                    <option value="jeremias">Jeremías</option>
-                    <option value="ezequiel">Ezequiel</option>
-                    <option value="daniel">Daniel</option>
-                    <option value="oseas">Oseas</option>
-                    <option value="jonas">Jonás</option>
-                    <option value="habacuc">Habacuc</option>
-                    <option value="sofonias">Sofonías</option>
-                </optgroup>
-                <optgroup label="Nuevo Testamento">
-                    <option value="mateo">Mateo</option>
-                    <option value="marcos">Marcos</option>
-                    <option value="lucas">Lucas</option>
-                    <option value="juan">Juan</option>
-                    <option value="hechos">Hechos</option>
-                    <option value="romanos">Romanos</option>
-                    <option value="1corintios">1 Corintios</option>
-                    <option value="2corintios">2 Corintios</option>
-                    <option value="galatas">Gálatas</option>
-                    <option value="efesios">Efesios</option>
-                    <option value="filipenses">Filipenses</option>
-                    <option value="colosenses">Colosenses</option>
-                    <option value="1tesalonicenses">1 Tesalonicenses</option>
-                    <option value="2timoteo">2 Timoteo</option>
-                    <option value="tito">Tito</option> <!-- NUEVO LIBRO AÑADIDO -->
-                    <option value="hebreos">Hebreos</option>
-                    <option value="santiago">Santiago</option>
-                    <option value="1pedro">1 Pedro</option>
-                    <option value="1juan">1 Juan</option>
-                    <option value="judas">Judas</option>
-                    <option value="apocalipsis">Apocalipsis</option>
-                </optgroup>
-            </select>
-        </div>
+  <div class="barra-busqueda">
+    <input type="text" id="inputBusqueda" placeholder="Ej: 'amor Dios', 'pastor ovejas', 'fe'...">
+    <button class="btn-buscar" id="btnBuscarTexto">🔍 Buscar</button>
+    <button class="btn-microfono" id="btnMicrofono" title="Buscar por voz">🎤</button>
+  </div>
+  <p class="tips-busqueda">
+    💡 <b>Búsqueda inteligente:</b> puedes escribir varias palabras separadas (no importa el orden). Funciona sin tildes y reconoce sinónimos como <b>pájaros→aves</b>, <b>problemas→tribulación</b>, <b>miedo→temor</b>.
+  </p>
 
-        <div class="selector-grupo">
-            <label for="selectorMusica">🎵 Música de fondo</label>
-            <select id="selectorMusica">
-                <option value="celestial" selected>✨ Melodía celestial (generada)</option>
-                <option value="alegre">🌅 Amanecer gozoso (generada)</option>
-                <option value="adoracion">🕊️ Adoración serena (generada)</option>
-                <option value="https://cdn.pixabay.com/audio/2022/03/10/audio_5e4b7b8c6e.mp3">🎻 Orquestal suave (Pixabay)</option>
-                <option value="https://cdn.pixabay.com/audio/2022/10/30/audio_349d0c0f2c.mp3">🎹 Piano inspirador (Pixabay)</option>
-            </select>
-        </div>
+  <div class="fila-selectores">
+    <div class="selector-grupo">
+      <label for="selectorLibro">Libro (66 libros)</label>
+      <select id="selectorLibro"></select>
     </div>
-
-    <!-- Campos -->
-    <div class="fila-campos">
-        <div class="campo">
-            <label for="capitulo">Capítulo</label>
-            <input type="number" id="capitulo" placeholder="Ej: 23" value="23" min="1">
-        </div>
-        <div class="campo">
-            <label for="versiculo">Versículo</label>
-            <input type="number" id="versiculo" placeholder="Ej: 1" value="1" min="1">
-        </div>
+    <div class="selector-grupo">
+      <label for="selectorMusica">🎵 Música de fondo</label>
+      <select id="selectorMusica">
+        <option value="celestial" selected>✨ Melodía celestial</option>
+        <option value="alegre">🌅 Amanecer gozoso</option>
+        <option value="adoracion">🕊️ Adoración serena</option>
+        <option value="https://cdn.pixabay.com/audio/2022/03/10/audio_5e4b7b8c6e.mp3">🎻 Orquestal suave</option>
+        <option value="https://cdn.pixabay.com/audio/2022/10/30/audio_349d0c0f2c.mp3">🎹 Piano inspirador</option>
+      </select>
     </div>
+  </div>
 
-    <div class="botones-principales">
-        <button class="btn btn-principal" id="btnConsultar">🔍 Consultar versículo</button>
-        <button class="btn btn-secundario" id="btnSonido" title="Activar/desactivar música">🔊</button>
-        <button class="btn btn-secundario" id="btnManual" title="Añadir versículo manualmente">✍️ Manual</button>
-    </div>
+  <div class="fila-campos">
+    <div class="campo"><label for="capitulo">Capítulo</label><input type="number" id="capitulo" value="23" min="1"></div>
+    <div class="campo"><label for="versiculo">Versículo</label><input type="number" id="versiculo" value="1" min="1"></div>
+    <div class="campo" style="justify-content:flex-end"><button class="btn btn-agregar" id="btnAgregarManual" title="Añadir versículo personalizado">➕ Añadir manual</button></div>
+  </div>
 
-    <!-- Panel de entrada manual -->
-    <div class="panel-manual" id="panelManual">
-        <p style="margin-bottom: 10px; font-weight: 600; color: #5a4a38;">Escribe o pega el texto del versículo:</p>
-        <textarea id="textoManual" placeholder="Ej: Jehová es mi pastor; nada me faltará."></textarea>
-        <div class="acciones-manual">
-            <button class="btn-accion" id="btnGuardarManual">💾 Guardar y Leer</button>
-            <button class="btn-accion" id="btnCancelarManual" style="background: #f0e2d0; color: #a0846a;">Cancelar</button>
-        </div>
-    </div>
+  <div class="botones-principales">
+    <button class="btn btn-principal" id="btnConsultar">🔍 Consultar versículo</button>
+    <button class="btn btn-secundario" id="btnSonido" title="Activar/desactivar música">🔊</button>
+  </div>
 
-    <!-- Controles de voz -->
-    <div class="controles-voz">
-        <div class="grupo">
-            <label for="selectorVoz">🗣️ Voz</label>
-            <select id="selectorVoz">
-                <option value="">Cargando voces...</option>
-            </select>
-        </div>
-        <div class="grupo">
-            <label for="velocidadVoz">⚡ Velocidad: <span id="valorVelocidad">1.0</span>x</label>
-            <input type="range" id="velocidadVoz" min="0.6" max="1.5" step="0.1" value="1.0">
-        </div>
-        <div class="grupo">
-            <label for="volumenVoz">🔉 Volumen voz</label>
-            <input type="range" id="volumenVoz" min="0" max="1" step="0.05" value="1">
-        </div>
-        <button class="btn btn-voz" id="btnLeer" disabled>🔊 Leer</button>
-        <button class="btn btn-voz detener" id="btnDetenerVoz" disabled>⏹ Detener</button>
-    </div>
+  <div class="controles-voz">
+    <div class="grupo"><label for="selectorVoz">🗣️ Voz</label><select id="selectorVoz"><option value="">Cargando...</option></select></div>
+    <div class="grupo"><label for="velocidadVoz">⚡ Velocidad: <span id="valorVelocidad">1.0</span>x</label><input type="range" id="velocidadVoz" min="0.6" max="1.5" step="0.1" value="1.0"></div>
+    <div class="grupo"><label for="volumenVoz">🔉 Volumen voz</label><input type="range" id="volumenVoz" min="0" max="1" step="0.05" value="1"></div>
+    <button class="btn btn-voz" id="btnLeer" disabled>🔊 Leer</button>
+    <button class="btn btn-voz detener" id="btnDetenerVoz" disabled>⏹ Detener</button>
+  </div>
 
-    <!-- Resultado -->
-    <div class="resultado" id="resultado">
-        <div class="referencia" id="referencia"></div>
-        <div class="texto-versiculo" id="textoVersiculo">
-            Selecciona un libro, capítulo y versículo para comenzar.
-        </div>
-        <div class="acciones-resultado">
-            <button class="btn-accion" id="btnCopiar" disabled>📋 Copiar versículo</button>
-        </div>
-    </div>
+  <div class="resultado" id="resultado">
+    <div class="referencia" id="referencia"></div>
+    <div class="texto-versiculo" id="textoVersiculo">Cargando la Palabra...</div>
+    <div class="acciones-resultado"><button class="btn-accion" id="btnCopiar" disabled>📋 Copiar versículo</button></div>
+  </div>
 
-    <!-- Historial -->
-    <div class="historial-seccion">
-        <div class="historial-titulo"><span>🕐</span> Consultas recientes</div>
-        <div class="historial-lista" id="historialLista">
-            <span class="historial-vacio">Aún no hay consultas.</span>
-        </div>
-    </div>
+  <div class="historial-seccion">
+    <div class="historial-titulo"><span>🕐</span> Consultas recientes</div>
+    <div class="historial-lista" id="historialLista"><span class="historial-vacio">Aún no hay consultas.</span></div>
+  </div>
 
-    <p class="pie">Datos: Midvash API + base local RVR1960 · Voz: Web Speech API · Música: Web Audio API / Pixabay</p>
+  <p class="pie">Datos: RVR1960 JSON + base local + personalizados · Voz: Web Speech API · Música: Web Audio API</p>
+  <div class="barra-estado" id="barraEstado"></div>
 </div>
 
-<audio id="audioFondo" loop preload="auto">
-    <source id="fuenteAudio" src="" type="audio/mpeg">
-</audio>
+<div class="modal-overlay" id="modalManual">
+  <div class="modal">
+    <h3>➕ Añadir versículo manual</h3>
+    <div class="campo"><label>Libro (ej: tito, 1corintios)</label><input type="text" id="manualLibro" placeholder="tito"></div>
+    <div class="campo"><label>Capítulo</label><input type="number" id="manualCapitulo" min="1"></div>
+    <div class="campo"><label>Versículo</label><input type="number" id="manualVersiculo" min="1"></div>
+    <div class="campo"><label>Texto</label><input type="text" id="manualTexto" placeholder="Texto del versículo..."></div>
+    <div class="modal-acciones">
+      <button class="btn btn-secundario" id="manualCancelar">Cancelar</button>
+      <button class="btn btn-principal" id="manualGuardar">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<audio id="audioFondo" loop preload="auto"><source id="fuenteAudio" src="" type="audio/mpeg"></audio>
 
 <script>
 // ============================================================
-//  BASE DE DATOS LOCAL RVR1960 (AMPLIADA)
-//  Incluye Tito y otros libros clave.
+// 1. LIBROS (LOS 66)
 // ============================================================
-const BIBLIA_LOCAL = {
-    // ==================== ANTIGUO TESTAMENTO ====================
-    "genesis": {
-        "1": {
-            "1": "En el principio creó Dios los cielos y la tierra.",
-            "2": "Y la tierra estaba desordenada y vacía, y las tinieblas estaban sobre la faz del abismo, y el Espíritu de Dios se movía sobre la faz de las aguas.",
-            "3": "Y dijo Dios: Sea la luz; y fue la luz.",
-            "27": "Y creó Dios al hombre a su imagen, a imagen de Dios lo creó; varón y hembra los creó.",
-            "31": "Y vio Dios todo lo que había hecho, y he aquí que era bueno en gran manera. Y fue la tarde y la mañana el día sexto."
-        },
-        "2": {
-            "7": "Entonces Jehová Dios formó al hombre del polvo de la tierra, y sopló en su nariz aliento de vida, y fue el hombre un ser viviente.",
-            "24": "Por tanto, dejará el hombre a su padre y a su madre, y se unirá a su mujer, y serán una sola carne."
-        },
-        "12": {
-            "2": "Y haré de ti una nación grande, y te bendeciré, y engrandeceré tu nombre, y serás bendición."
-        },
-        "15": {
-            "6": "Y creyó a Jehová, y le fue contado por justicia."
-        }
-    },
-    "exodo": {
-        "3": {
-            "14": "Y respondió Dios a Moisés: YO SOY EL QUE SOY. Y dijo: Así dirás a los hijos de Israel: YO SOY me envió a vosotros."
-        },
-        "14": {
-            "14": "Jehová peleará por vosotros, y vosotros estaréis tranquilos."
-        },
-        "20": {
-            "3": "No tendrás dioses ajenos delante de mí.",
-            "7": "No tomarás el nombre de Jehová tu Dios en vano.",
-            "12": "Honra a tu padre y a tu madre.",
-            "13": "No matarás.",
-            "14": "No cometerás adulterio.",
-            "15": "No hurtarás.",
-            "16": "No hablarás contra tu prójimo falso testimonio."
-        }
-    },
-    "levitico": {
-        "19": {
-            "18": "No te vengarás, ni guardarás rencor a los hijos de tu pueblo, sino amarás a tu prójimo como a ti mismo. Yo Jehová."
-        }
-    },
-    "numeros": {
-        "6": {
-            "24": "Jehová te bendiga, y te guarde;",
-            "25": "Jehová haga resplandecer su rostro sobre ti, y tenga de ti misericordia;",
-            "26": "Jehová alce sobre ti su rostro, y ponga en ti paz."
-        }
-    },
-    "deuteronomio": {
-        "6": {
-            "5": "Y amarás a Jehová tu Dios de todo tu corazón, y de toda tu alma, y con todas tus fuerzas."
-        },
-        "31": {
-            "6": "Esforzaos y cobrad ánimo; no temáis, ni tengáis miedo de ellos, porque Jehová tu Dios es el que va contigo; no te dejará, ni te desamparará."
-        }
-    },
-    "josue": {
-        "1": {
-            "8": "Nunca se apartará de tu boca este libro de la ley, sino que de día y de noche meditarás en él, para que guardes y hagas conforme a todo lo que en él está escrito; porque entonces harás prosperar tu camino, y todo te saldrá bien.",
-            "9": "Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas."
-        }
-    },
-    "salmos": {
-        "1": {
-            "1": "Bienaventurado el varón que no anduvo en consejo de malos, ni estuvo en camino de pecadores, ni en silla de escarnecedores se ha sentado;",
-            "2": "sino que en la ley de Jehová está su delicia, y en su ley medita de día y de noche.",
-            "3": "Será como árbol plantado junto a corrientes de aguas, que da su fruto en su tiempo, y su hoja no cae; y todo lo que hace, prosperará."
-        },
-        "23": {
-            "1": "Jehová es mi pastor; nada me faltará.",
-            "2": "En lugares de delicados pastos me hará descansar; junto a aguas de reposo me pastoreará.",
-            "3": "Confortará mi alma; me guiará por sendas de justicia por amor de su nombre.",
-            "4": "Aunque ande en valle de sombra de muerte, no temeré mal alguno, porque tú estarás conmigo; tu vara y tu cayado me infundirán aliento.",
-            "5": "Aderezas mesa delante de mí en presencia de mis angustiadores; unges mi cabeza con aceite; mi copa está rebosando.",
-            "6": "Ciertamente el bien y la misericordia me seguirán todos los días de mi vida, y en la casa de Jehová moraré por largos días."
-        },
-        "91": {
-            "1": "El que habita al abrigo del Altísimo morará bajo la sombra del Omnipotente.",
-            "2": "Diré yo a Jehová: Esperanza mía, y castillo mío; mi Dios, en quien confiaré."
-        },
-        "119": {
-            "105": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino."
-        }
-    },
-    "proverbios": {
-        "3": {
-            "5": "Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia.",
-            "6": "Reconócelo en todos tus caminos, y él enderezará tus veredas."
-        }
-    },
-    "isaias": {
-        "40": {
-            "31": "pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán."
-        },
-        "41": {
-            "10": "No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo; siempre te ayudaré, siempre te sustentaré con la diestra de mi justicia."
-        },
-        "53": {
-            "5": "Mas él herido fue por nuestras rebeliones, molido por nuestros pecados; el castigo de nuestra paz fue sobre él, y por su llaga fuimos nosotros curados."
-        }
-    },
-    "jeremias": {
-        "29": {
-            "11": "Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal, para daros el fin que esperáis.",
-            "12": "Entonces me invocaréis, y vendréis y oraréis a mí, y yo os oiré;",
-            "13": "y me buscaréis y me hallaréis, porque me buscaréis de todo vuestro corazón."
-        },
-        "33": {
-            "3": "Clama a mí, y yo te responderé, y te enseñaré cosas grandes y ocultas que tú no conoces."
-        }
-    },
-    "ezequiel": {
-        "36": {
-            "26": "Os daré corazón nuevo, y pondré espíritu nuevo dentro de vosotros; y quitaré de vuestra carne el corazón de piedra, y os daré un corazón de carne."
-        }
-    },
-    "daniel": {
-        "3": {
-            "17": "He aquí nuestro Dios a quien servimos puede librarnos del horno de fuego ardiendo; y de tu mano, oh rey, nos librará."
-        },
-        "6": {
-            "10": "Cuando Daniel supo que el edicto había sido firmado, entró en su casa, y abiertas las ventanas de su cámara que daban hacia Jerusalén, se arrodillaba tres veces al día, y oraba y daba gracias delante de su Dios, como lo solía hacer antes."
-        }
-    },
-    "oseas": {
-        "6": {
-            "3": "Conozcamos, y sigamos en el conocimiento de Jehová; su salida está dispuesta como el alba, y vendrá a nosotros como la lluvia, como la lluvia tardía y temprana a la tierra."
-        }
-    },
-    "jonas": {
-        "2": {
-            "9": "Mas yo con voz de alabanza te ofreceré sacrificios; pagaré lo que prometí. La salvación es de Jehová."
-        }
-    },
-    "habacuc": {
-        "3": {
-            "17": "Aunque la higuera no florezca, ni en las vides haya frutos, aunque falte el producto del olivo, y los labrados no den mantenimiento, y las ovejas sean quitadas de la majada, y no haya vacas en los corrales;",
-            "18": "con todo, yo me alegraré en Jehová, y me gozaré en el Dios de mi salvación.",
-            "19": "Jehová el Señor es mi fortaleza, el cual hace mis pies como de ciervas, y en mis alturas me hace andar."
-        }
-    },
-    "sofonias": {
-        "3": {
-            "17": "Jehová está en medio de ti, poderoso, él salvará; se gozará sobre ti con alegría, callará de amor, se regocijará sobre ti con cánticos."
-        }
-    },
-    // ==================== NUEVO TESTAMENTO ====================
-    "mateo": {
-        "5": {
-            "3": "Bienaventurados los pobres en espíritu, porque de ellos es el reino de los cielos.",
-            "4": "Bienaventurados los que lloran, porque ellos recibirán consolación.",
-            "5": "Bienaventurados los mansos, porque ellos recibirán la tierra por heredad.",
-            "6": "Bienaventurados los que tienen hambre y sed de justicia, porque ellos serán saciados.",
-            "7": "Bienaventurados los misericordiosos, porque ellos alcanzarán misericordia.",
-            "8": "Bienaventurados los de limpio corazón, porque ellos verán a Dios.",
-            "9": "Bienaventurados los pacificadores, porque ellos serán llamados hijos de Dios.",
-            "14": "Vosotros sois la luz del mundo; una ciudad asentada sobre un monte no se puede esconder.",
-            "16": "Así alumbre vuestra luz delante de los hombres, para que vean vuestras buenas obras, y glorifiquen a vuestro Padre que está en los cielos."
-        },
-        "6": {
-            "9": "Vosotros, pues, oraréis así: Padre nuestro que estás en los cielos, santificado sea tu nombre.",
-            "10": "Venga tu reino. Hágase tu voluntad, como en el cielo, así también en la tierra.",
-            "11": "El pan nuestro de cada día, dánoslo hoy.",
-            "12": "Y perdónanos nuestras deudas, como también nosotros perdonamos a nuestros deudores.",
-            "13": "Y no nos metas en tentación, mas líbranos del mal; porque tuyo es el reino, y el poder, y la gloria, por todos los siglos. Amén.",
-            "33": "Mas buscad primeramente el reino de Dios y su justicia, y todas estas cosas os serán añadidas."
-        },
-        "7": {
-            "7": "Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá."
-        },
-        "11": {
-            "28": "Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.",
-            "29": "Llevad mi yugo sobre vosotros, y aprended de mí, que soy manso y humilde de corazón; y hallaréis descanso para vuestras almas.",
-            "30": "Porque mi yugo es fácil, y ligera mi carga."
-        },
-        "28": {
-            "19": "Por tanto, id, y haced discípulos a todas las naciones, bautizándolos en el nombre del Padre, y del Hijo, y del Espíritu Santo;",
-            "20": "enseñándoles que guarden todas las cosas que os he mandado; y he aquí yo estoy con vosotros todos los días, hasta el fin del mundo. Amén."
-        }
-    },
-    "marcos": {
-        "9": {
-            "23": "Jesús le dijo: Si puedes creer, al que cree todo le es posible."
-        },
-        "11": {
-            "24": "Por tanto, os digo que todo lo que pidiereis orando, creed que lo recibiréis, y os vendrá."
-        },
-        "16": {
-            "15": "Y les dijo: Id por todo el mundo y predicad el evangelio a toda criatura."
-        }
-    },
-    "lucas": {
-        "1": {
-            "37": "Porque nada hay imposible para Dios."
-        },
-        "6": {
-            "31": "Y como queréis que hagan los hombres con vosotros, así también haced vosotros con ellos."
-        },
-        "11": {
-            "9": "Y yo os digo: Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá."
-        }
-    },
-    "juan": {
-        "1": {
-            "1": "En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios.",
-            "14": "Y aquel Verbo fue hecho carne, y habitó entre nosotros (y vimos su gloria, gloria como del unigénito del Padre), lleno de gracia y de verdad."
-        },
-        "3": {
-            "16": "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",
-            "17": "Porque no envió Dios a su Hijo al mundo para condenar al mundo, sino para que el mundo sea salvo por él."
-        },
-        "8": {
-            "32": "y conoceréis la verdad, y la verdad os hará libres."
-        },
-        "10": {
-            "10": "El ladrón no viene sino para hurtar y matar y destruir; yo he venido para que tengan vida, y para que la tengan en abundancia."
-        },
-        "14": {
-            "6": "Jesús le dijo: Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí.",
-            "27": "La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da. No se turbe vuestro corazón, ni tenga miedo."
-        }
-    },
-    "hechos": {
-        "1": {
-            "8": "pero recibiréis poder, cuando haya venido sobre vosotros el Espíritu Santo, y me seréis testigos en Jerusalén, en toda Judea, en Samaria, y hasta lo último de la tierra."
-        },
-        "4": {
-            "12": "Y en ningún otro hay salvación; porque no hay otro nombre bajo el cielo, dado a los hombres, en que podamos ser salvos."
-        },
-        "16": {
-            "31": "Y ellos dijeron: Cree en el Señor Jesucristo, y serás salvo, tú y tu casa."
-        }
-    },
-    "romanos": {
-        "3": {
-            "23": "por cuanto todos pecaron, y están destituidos de la gloria de Dios;"
-        },
-        "6": {
-            "23": "Porque la paga del pecado es muerte, mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro."
-        },
-        "8": {
-            "1": "Ahora, pues, ninguna condenación hay para los que están en Cristo Jesús.",
-            "28": "Y sabemos que a los que aman a Dios, todas las cosas les ayudan a bien, esto es, a los que conforme a su propósito son llamados.",
-            "31": "¿Qué, pues, diremos a esto? Si Dios es por nosotros, ¿quién contra nosotros?",
-            "37": "Antes, en todas estas cosas somos más que vencedores por medio de aquel que nos amó.",
-            "38": "Por lo cual estoy seguro de que ni la muerte, ni la vida, ni ángeles, ni principados, ni potestades, ni lo presente, ni lo por venir,",
-            "39": "ni lo alto, ni lo profundo, ni ninguna otra cosa creada nos podrá separar del amor de Dios, que es en Cristo Jesús Señor nuestro."
-        },
-        "10": {
-            "9": "que si confesares con tu boca que Jesús es el Señor, y creyeres en tu corazón que Dios le levantó de los muertos, serás salvo.",
-            "13": "porque todo aquel que invocare el nombre del Señor, será salvo."
-        },
-        "12": {
-            "2": "No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento, para que comprobéis cuál sea la buena voluntad de Dios, agradable y perfecta."
-        }
-    },
-    "1corintios": {
-        "13": {
-            "4": "El amor es sufrido, es benigno; el amor no tiene envidia, el amor no es jactancioso, no se envanece;",
-            "5": "no hace nada indebido, no busca lo suyo, no se irrita, no guarda rencor;",
-            "6": "no se goza de la injusticia, mas se goza de la verdad.",
-            "7": "Todo lo sufre, todo lo cree, todo lo espera, todo lo soporta.",
-            "13": "Y ahora permanecen la fe, la esperanza y el amor, estos tres; pero el mayor de ellos es el amor."
-        },
-        "15": {
-            "57": "Mas gracias sean dadas a Dios, que nos da la victoria por medio de nuestro Señor Jesucristo."
-        }
-    },
-    "2corintios": {
-        "5": {
-            "17": "De modo que si alguno está en Cristo, nueva criatura es; las cosas viejas pasaron; he aquí todas son hechas nuevas."
-        },
-        "12": {
-            "9": "Y me ha dicho: Bástate mi gracia; porque mi poder se perfecciona en la debilidad."
-        }
-    },
-    "galatas": {
-        "2": {
-            "20": "Con Cristo estoy juntamente crucificado, y ya no vivo yo, mas vive Cristo en mí; y lo que ahora vivo en la carne, lo vivo en la fe del Hijo de Dios, el cual me amó y se entregó a sí mismo por mí."
-        },
-        "5": {
-            "22": "Mas el fruto del Espíritu es amor, gozo, paz, paciencia, benignidad, bondad, fe,",
-            "23": "mansedumbre, templanza; contra tales cosas no hay ley."
-        }
-    },
-    "efesios": {
-        "2": {
-            "8": "Porque por gracia sois salvos por medio de la fe; y esto no de vosotros, pues es don de Dios;",
-            "9": "no por obras, para que nadie se gloríe."
-        },
-        "6": {
-            "10": "Por lo demás, hermanos míos, fortaleceos en el Señor, y en el poder de su fuerza.",
-            "11": "Vestíos de toda la armadura de Dios, para que podáis estar firmes contra las asechanzas del diablo."
-        }
-    },
-    "filipenses": {
-        "4": {
-            "4": "Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!",
-            "6": "Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias.",
-            "7": "Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos en Cristo Jesús.",
-            "13": "Todo lo puedo en Cristo que me fortalece.",
-            "19": "Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús."
-        }
-    },
-    "colosenses": {
-        "3": {
-            "12": "Vestíos, pues, como escogidos de Dios, santos y amados, de entrañable misericordia, de benignidad, de humildad, de mansedumbre, de paciencia;",
-            "13": "soportándoos unos a otros, y perdonándoos unos a otros si alguno tuviere queja contra otro. De la manera que Cristo os perdonó, así también hacedlo vosotros.",
-            "14": "Y sobre todas estas cosas vestíos de amor, que es el vínculo perfecto.",
-            "23": "Y todo lo que hagáis, hacedlo de corazón, como para el Señor y no para los hombres."
-        }
-    },
-    "1tesalonicenses": {
-        "5": {
-            "16": "Estad siempre gozosos.",
-            "17": "Orad sin cesar.",
-            "18": "Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros en Cristo Jesús."
-        }
-    },
-    "2timoteo": {
-        "1": {
-            "7": "Porque no nos ha dado Dios espíritu de cobardía, sino de poder, de amor y de dominio propio."
-        },
-        "3": {
-            "16": "Toda la Escritura es inspirada por Dios, y útil para enseñar, para redargüir, para corregir, para instruir en justicia."
-        },
-        "4": {
-            "7": "He peleado la buena batalla, he acabado la carrera, he guardado la fe."
-        }
-    },
-    // ==================== TITO (NUEVO) ====================
-    "tito": {
-        "1": {
-            "1": "Pablo, siervo de Dios y apóstol de Jesucristo, conforme a la fe de los escogidos de Dios y el conocimiento de la verdad que es según la piedad,",
-            "2": "en la esperanza de la vida eterna, la cual Dios, que no miente, prometió desde antes del principio de los siglos,",
-            "3": "y a su debido tiempo manifestó su palabra por medio de la predicación que me fue encomendada por mandato de Dios nuestro Salvador,",
-            "4": "a Tito, verdadero hijo en la común fe: Gracia, misericordia y paz, de Dios Padre y del Señor Jesucristo nuestro Salvador.",
-            "5": "Por esta causa te dejé en Creta, para que corrigieses lo deficiente, y establecieses ancianos en cada ciudad, así como yo te mandé;",
-            "6": "el que fuere irreprensible, marido de una sola mujer, y tenga hijos creyentes que no estén acusados de disolución ni de rebeldía.",
-            "7": "Porque es necesario que el obispo sea irreprensible, como administrador de Dios; no soberbio, no iracundo, no dado al vino, no pendenciero, no codicioso de ganancias deshonestas,",
-            "8": "sino hospedador, amante de lo bueno, sobrio, justo, santo, dueño de sí mismo,",
-            "9": "retenedor de la palabra fiel tal como ha sido enseñada, para que también pueda exhortar con sana enseñanza y convencer a los que contradicen."
-        },
-        "2": {
-            "1": "Pero tú habla lo que está de acuerdo con la sana doctrina.",
-            "2": "Que los ancianos sean sobrios, serios, prudentes, sanos en la fe, en el amor, en la paciencia.",
-            "3": "Las ancianas asimismo sean reverentes en su porte; no calumniadoras, no esclavas del vino, maestras del bien;",
-            "4": "que enseñen a las mujeres jóvenes a amar a sus maridos y a sus hijos,",
-            "5": "a ser prudentes, castas, cuidadosas de su casa, buenas, sujetas a sus maridos, para que la palabra de Dios no sea blasfemada.",
-            "6": "Exhorta asimismo a los jóvenes a que sean prudentes;",
-            "7": "presentándote tú en todo como ejemplo de buenas obras; en la enseñanza mostrando integridad, seriedad,",
-            "8": "palabra sana e irreprochable, de modo que el adversario se avergüence, y no tenga nada malo que decir de vosotros.",
-            "9": "Exhorta a los siervos a que se sujeten a sus amos, que agraden en todo, que no sean respondones;",
-            "10": "no defraudando, sino mostrándose fieles en todo, para que en todo adornen la doctrina de Dios nuestro Salvador.",
-            "11": "Porque la gracia de Dios se ha manifestado para salvación a todos los hombres,",
-            "12": "enseñándonos que, renunciando a la impiedad y a los deseos mundanos, vivamos en este siglo sobria, justa y piadosamente,",
-            "13": "aguardando la esperanza bienaventurada y la manifestación gloriosa de nuestro gran Dios y Salvador Jesucristo,",
-            "14": "quien se dio a sí mismo por nosotros para redimirnos de toda iniquidad y purificar para sí un pueblo propio, celoso de buenas obras.",
-            "15": "Esto habla, y exhorta y reprende con toda autoridad. Nadie te menosprecie."
-        },
-        "3": {
-            "1": "Recuérdales que se sujeten a los gobernantes y autoridades, que obedezcan, que estén dispuestos a toda buena obra.",
-            "2": "Que a nadie difamen, que no sean pendencieros, sino amables, mostrando toda mansedumbre para con todos los hombres.",
-            "3": "Porque nosotros también éramos en otro tiempo insensatos, rebeldes, extraviados, esclavos de concupiscencias y deleites diversos, viviendo en malicia y envidia, aborrecibles, y aborreciéndonos unos a otros.",
-            "4": "Pero cuando se manifestó la bondad de Dios nuestro Salvador, y su amor para con los hombres,",
-            "5": "nos salvó, no por obras de justicia que nosotros hubiéramos hecho, sino por su misericordia, por el lavamiento de la regeneración y por la renovación en el Espíritu Santo,",
-            "6": "el cual derramó en nosotros abundantemente por Jesucristo nuestro Salvador,",
-            "7": "para que justificados por su gracia, viniésemos a ser herederos conforme a la esperanza de la vida eterna.",
-            "8": "Palabra fiel es esta, y en estas cosas quiero que insistas con firmeza, para que los que creen en Dios procuren ocuparse en buenas obras. Estas cosas son buenas y útiles a los hombres.",
-            "9": "Pero evita las cuestiones necias, y genealogías, y contenciones, y discusiones acerca de la ley; porque son vanas y sin provecho.",
-            "10": "Al hombre que cause divisiones, después de una y otra amonestación deséchalo,",
-            "11": "sabiendo que el tal se ha pervertido, y peca y está condenado por su propio juicio.",
-            "12": "Cuando envíe a ti a Artemas o a Tíquico, apresúrate a venir a mí en Nicópolis, porque allí he determinado pasar el invierno.",
-            "13": "A Zenas intérprete de la ley, y a Apolos, encamínales con solicitud, de modo que nada les falte.",
-            "14": "Y aprendan también los nuestros a ocuparse en buenas obras para los casos de necesidad, para que no sean sin fruto.",
-            "15": "Todos los que están conmigo te saludan. Saluda a los que nos aman en la fe. La gracia sea con todos vosotros. Amén."
-        }
-    },
-    // ==================== FIN TITO ====================
-    "hebreos": {
-        "4": {
-            "12": "Porque la palabra de Dios es viva y eficaz, y más cortante que toda espada de dos filos; y penetra hasta partir el alma y el espíritu, las coyunturas y los tuétanos, y discierne los pensamientos y las intenciones del corazón."
-        },
-        "11": {
-            "1": "Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve."
-        },
-        "13": {
-            "8": "Jesucristo es el mismo ayer, y hoy, y por los siglos."
-        }
-    },
-    "santiago": {
-        "1": {
-            "2": "Hermanos míos, tened por sumo gozo cuando os halléis en diversas pruebas,",
-            "3": "sabiendo que la prueba de vuestra fe produce paciencia.",
-            "5": "Y si alguno de vosotros tiene falta de sabiduría, pídala a Dios, el cual da a todos abundantemente y sin reproche, y le será dada.",
-            "12": "Bienaventurado el varón que soporta la tentación; porque cuando haya resistido la prueba, recibirá la corona de vida, que Dios ha prometido a los que le aman.",
-            "22": "Pero sed hacedores de la palabra, y no tan solamente oidores, engañándoos a vosotros mismos."
-        },
-        "4": {
-            "7": "Someteos, pues, a Dios; resistid al diablo, y huirá de vosotros.",
-            "8": "Acercaos a Dios, y él se acercará a vosotros."
-        }
-    },
-    "1pedro": {
-        "2": {
-            "9": "Mas vosotros sois linaje escogido, real sacerdocio, nación santa, pueblo adquirido por Dios, para que anunciéis las virtudes de aquel que os llamó de las tinieblas a su luz admirable."
-        },
-        "5": {
-            "7": "echando toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros."
-        }
-    },
-    "1juan": {
-        "1": {
-            "9": "Si confesamos nuestros pecados, él es fiel y justo para perdonar nuestros pecados, y limpiarnos de toda maldad."
-        },
-        "4": {
-            "8": "El que no ama, no ha conocido a Dios; porque Dios es amor.",
-            "18": "En el amor no hay temor, sino que el perfecto amor echa fuera el temor.",
-            "19": "Nosotros le amamos a él, porque él nos amó primero."
-        }
-    },
-    "judas": {
-        "1": {
-            "24": "Y a aquel que es poderoso para guardaros sin caída, y presentaros sin mancha delante de su gloria con gran alegría,"
-        }
-    },
-    "apocalipsis": {
-        "3": {
-            "20": "He aquí, yo estoy a la puerta y llamo; si alguno oye mi voz y abre la puerta, entraré a él, y cenaré con él, y él conmigo."
-        },
-        "21": {
-            "4": "Enjugará Dios toda lágrima de los ojos de ellos; y ya no habrá muerte, ni habrá más llanto, ni clamor, ni dolor; porque las primeras cosas pasaron."
-        }
-    }
+const LIBROS = [
+  ['genesis','Génesis'],['exodo','Éxodo'],['levitico','Levítico'],['numeros','Números'],
+  ['deuteronomio','Deuteronomio'],['josue','Josué'],['jueces','Jueces'],['rut','Rut'],
+  ['1samuel','1 Samuel'],['2samuel','2 Samuel'],['1reyes','1 Reyes'],['2reyes','2 Reyes'],
+  ['1cronicas','1 Crónicas'],['2cronicas','2 Crónicas'],['esdras','Esdras'],['nehemias','Nehemías'],
+  ['ester','Ester'],['job','Job'],['salmos','Salmos'],['proverbios','Proverbios'],
+  ['eclesiastes','Eclesiastés'],['cantares','Cantares'],['isaias','Isaías'],['jeremias','Jeremías'],
+  ['lamentaciones','Lamentaciones'],['ezequiel','Ezequiel'],['daniel','Daniel'],['oseas','Oseas'],
+  ['joel','Joel'],['amos','Amós'],['abdias','Abdías'],['jonas','Jonás'],['miqueas','Miqueas'],
+  ['nahum','Nahum'],['habacuc','Habacuc'],['sofonias','Sofonías'],['hageo','Hageo'],
+  ['zacarias','Zacarías'],['malaquias','Malaquías'],
+  ['mateo','Mateo'],['marcos','Marcos'],['lucas','Lucas'],['juan','Juan'],['hechos','Hechos'],
+  ['romanos','Romanos'],['1corintios','1 Corintios'],['2corintios','2 Corintios'],['galatas','Gálatas'],
+  ['efesios','Efesios'],['filipenses','Filipenses'],['colosenses','Colosenses'],
+  ['1tesalonicenses','1 Tesalonicenses'],['2tesalonicenses','2 Tesalonicenses'],
+  ['1timoteo','1 Timoteo'],['2timoteo','2 Timoteo'],['tito','Tito'],['filemon','Filemón'],
+  ['hebreos','Hebreos'],['santiago','Santiago'],['1pedro','1 Pedro'],['2pedro','2 Pedro'],
+  ['1juan','1 Juan'],['2juan','2 Juan'],['3juan','3 Juan'],['judas','Judas'],['apocalipsis','Apocalipsis']
+];
+
+// ============================================================
+// 2. DICCIONARIO DE SINÓNIMOS BÍBLICOS
+//    Permite buscar "pájaros" y encontrar "aves",
+//    "problemas" y encontrar "tribulación", etc.
+// ============================================================
+const SINONIMOS = {
+  // Animales
+  'pajaro': ['ave','aves','pajaros','paloma','gorrion'],
+  'pajaros': ['ave','aves','pajaro','paloma','gorrion'],
+  'ave': ['pajaro','pajaros','aves','paloma'],
+  'aves': ['pajaro','pajaros','ave','palomas'],
+  'pez': ['peces','pescador','pescadores'],
+  'peces': ['pez','pescador','pescadores'],
+  'leon': ['leones','cachorro'],
+  'cordero': ['oveja','corderos'],
+  'oveja': ['ovejas','cordero','rebaño','pastor'],
+  'ovejas': ['oveja','cordero','rebaño','pastor','prado'],
+  'pastor': ['oveja','ovejas','rebaño','pasto','prados'],
+  // Emociones
+  'miedo': ['temor','teme','teman','temas','atemorizar','espanto'],
+  'temor': ['miedo','teme','teman','temas','atemorizar'],
+  'triste': ['tristeza','lloro','llanto','afliccion','abatido'],
+  'tristeza': ['triste','lloro','llanto','afliccion','abatido'],
+  'alegria': ['gozo','gozoso','alegre','regocijo','gozarse','contentamiento'],
+  'gozo': ['alegria','gozoso','alegre','regocijo','gozarse'],
+  'paz': ['quietud','tranquilidad','reposo','sosiego','descanso'],
+  'amor': ['amar','amado','amados','amados','amandonos','amarnos','caridad'],
+  'odio': ['aborrecer','aborrecido','rencor','enemistad'],
+  'envidia': ['envidioso','celos','celoso'],
+  'ira': ['enojo','enojado','furor','furioso','indignacion'],
+  // Problemas
+  'problemas': ['tribulacion','tribulaciones','angustia','angustias','afliccion','aflicciones','prueba','pruebas','dolor','dolores','padecimiento','sufrimiento'],
+  'problema': ['tribulacion','angustia','afliccion','prueba','dolor','padecimiento'],
+  'tribulacion': ['problema','problemas','angustia','afliccion','prueba','dolor'],
+  'sufrimiento': ['sufrir','padecer','padecimiento','dolor','afliccion','tribulacion'],
+  'dolor': ['dolores','sufrimiento','afliccion','angustia','padecimiento'],
+  'enfermedad': ['enfermo','enfermos','dolencia','dolencias','mal','sanar','sanidad','sano'],
+  'enfermo': ['enfermedad','enfermos','dolencias','sanar','sano'],
+  'sanar': ['sanidad','sano','sana','sanos','curar','salud','enfermedad','enfermo'],
+  // Dinero/riqueza
+  'dinero': ['riqueza','riquezas','oro','plata','bienes','tesoro','tesoros','hacienda','codicia','mammon'],
+  'riqueza': ['dinero','riquezas','tesoro','tesoros','bienes','prosperidad'],
+  'rico': ['ricos','riquezas','acaudalado','prospero'],
+  'pobre': ['pobres','pobreza','necesitado','menesteroso','mendigo','humilde'],
+  // Perdón
+  'perdon': ['perdonar','perdona','perdonados','perdonado','perdonaré','perdonarles','remision','absolucion'],
+  'perdonar': ['perdon','perdona','perdonados','perdonarles','remitir'],
+  'pecado': ['pecados','pecador','pecadores','iniquidad','iniquidades','maldad','transgresion','transgresiones','rebelion','rebeliones','ofensa','ofensas','falta','faltas'],
+  'pecador': ['pecadores','pecado','pecados','iniquo','malvado','impio'],
+  'pecados': ['pecado','pecador','iniquidad','maldad','ofensas','faltas','transgresiones'],
+  // Fé/esperanza
+  'fe': ['creer','cree','creyendo','confianza','confiar','fiel','fidelidad','esperanza'],
+  'esperanza': ['esperar','esperando','esperanza','confianza','aguardar'],
+  'confianza': ['confiar','confio','fiate','esperanza','fe'],
+  'creer': ['fe','cree','creyendo','creyente','creyentes','confiar'],
+  // Oración
+  'oracion': ['orar','orando','orare','orare','orareis','oraba','clamor','clamar','clamare','ruego','rogar','súplica','suplicas','peticion','peticiones'],
+  'orar': ['oracion','orando','orare','clamar','rogar','pedir','suplicar'],
+  'clamar': ['clamor','clamare','clamaba','clamando','invocar','invocare','llamar'],
+  // Salvación
+  'salvacion': ['salvar','salvo','salvos','salvador','redencion','redimir','redentor','rescate','librar','libertar'],
+  'salvar': ['salvacion','salvo','salvos','salvador','librar','rescatar','redimir'],
+  'redimir': ['redencion','redentor','rescatar','salvar','librar'],
+  'vida': ['vivir','vivo','vivos','viviente','vivire','vida eterna','resurreccion'],
+  'muerte': ['morir','muerto','muertos','morire','fallecer','sepulcro','tumba','seol'],
+  'eterno': ['eterna','eternos','eternas','siempre','perpetuo','perpetua','siglos'],
+  // Dios
+  'dios': ['senor','jehova','altisimo','todopoderoso','padre','creador','salvador'],
+  'senor': ['dios','jehova','amo','dueño','cristo','jesus'],
+  'jesus': ['cristo','salvador','senor','mesias','hijo'],
+  'cristo': ['jesus','mesias','salvador','senor','ungido'],
+  'espiritu': ['espiritu santo','consolador','paracleto','aliento','soplo'],
+  'cielo': ['cielos','celestial','celestiales','paraíso','paraiso','gloria'],
+  'tierra': ['mundo','suelo','pais','nacion','naciones','tierras'],
+  'mundo': ['tierra','cosmos','creacion'],
+  // Virtudes/valores
+  'sabiduria': ['sabio','sabios','inteligencia','entendimiento','prudencia','conocimiento'],
+  'sabio': ['sabiduria','sabios','entendido','prudente','inteligente'],
+  'bondad': ['bueno','buena','buenos','benignidad','benigno','benevolencia'],
+  'misericordia': ['misericordioso','misericordias','compasion','compasivo','piedad','clemencia','gracia'],
+  'gracia': ['misericordia','favor','don','regalo','bondad'],
+  'justicia': ['justo','justos','rectitud','recto','integridad','integridad'],
+  'santo': ['santos','santa','santas','santidad','santificado','consagrado'],
+  'humildad': ['humilde','humildes','humillado','humillarse','mansedumbre','manso'],
+  'paciencia': ['paciente','sufrido','sufrimiento','tolerancia','longanimidad'],
+  'manso': ['mansedumbre','mansos','humilde','apocado'],
+  'templanza': ['dominio propio','moderacion','sobriedad','sobrio'],
+  'fortaleza': ['fuerte','fuerza','fortalecer','esforzar','poder','vigor'],
+  'poder': ['potencia','fortaleza','fuerza','poderoso','omnipotente','autoridad'],
+  // Otros conceptos
+  'familia': ['padre','madre','hijo','hija','hijos','hermano','hermana','hermanos','parientes','casa'],
+  'hijo': ['hijos','hija','hijas','niño','niños','criatura','descendencia'],
+  'padre': ['padres','papa','abba','familia'],
+  'madre': ['madres','mama','familia'],
+  'hermano': ['hermanos','hermana','hermanas','familia'],
+  'matrimonio': ['casados','casarse','esposo','esposa','marido','mujer','union','una sola carne'],
+  'trabajo': ['obrero','obreros','trabajar','obra','obras','labor','fatiga','afan'],
+  'descanso': ['descansar','reposo','reposar','sosiego','quietud','paz'],
+  'camino': ['caminos','senda','sendas','vereda','veredas','via','ruta'],
+  'verdad': ['verdadero','verdaderos','verdadera','veraces','certeza','fiel'],
+  'luz': ['lumbrera','lumbreras','alumbrar','resplandor','brillar','iluminar','antorcha','lampara'],
+  'tinieblas': ['oscuridad','oscuras','negro','tenebroso','sombra','sombras'],
+  'agua': ['aguas','rio','rios','mar','mares','fuente','fuentes','pozo','manantial'],
+  'fuego': ['fuegos','llama','llamas','arder','ardiente','horno'],
+  'viento': ['vientos','soplo','tempestad','tormenta','huracan'],
+  'monte': ['montes','montaña','montañas','colina','colinas','sierra'],
+  'temor de dios': ['temer a dios','teme a dios','teman a dios','reverencia','respeto'],
+  'naciones': ['nacion','pueblos','pueblo','gentiles','extranjeros'],
+  'pueblo': ['pueblos','nacion','naciones','gente','gentes','multitud'],
+  'rey': ['reyes','reinado','reino','reinar','trono','corona'],
+  'reino': ['rey','reyes','reinado','reinar','trono','corona','dominio'],
+  'profeta': ['profetas','profecia','profetizar','profetico','vidente'],
+  'angel': ['angeles','mensajero','mensajeros','arcangel','querubin','serafin'],
+  'iglesia': ['iglesias','congregacion','asamblea','reunion','comunion','cuerpo'],
+  'bautismo': ['bautizar','bautizados','bautizarse','bautizo'],
+  'espiritu santo': ['espiritu','consolador','paracleto','santo espiritu'],
+  'mandamiento': ['mandamientos','mandato','mandatos','ley','leyes','precepto','preceptos','estatuto','estatutos','ordenanza','ordenanzas'],
+  'ley': ['leyes','mandamiento','mandamientos','precepto','preceptos','estatuto','estatutos'],
+  'promesa': ['promesas','prometio','prometido','prometer','pacto','pactos','alianza','convenio'],
+  'pacto': ['pactos','alianza','convenio','promesa','promesas'],
+  'adorar': ['adoracion','adorarle','adorarles','alabar','alabanza','glorificar','gloria','exaltar','ensalzar'],
+  'alabanza': ['alabar','alabado','alabad','adoracion','gloria','honra','ensalzar'],
+  'gloria': ['glorificar','glorioso','honra','honor','alabanza','alabar','exaltar'],
+  'siervo': ['siervos','sierva','servidor','servidores','esclavo','esclavos','servir','servicio'],
+  'nuevo': ['nueva','nuevos','nuevas','renovar','renovacion','renuevo','novedad'],
+  'antiguo': ['antigua','antiguos','antiguas','viejo','vieja','viejos','viejas','pasado'],
+  'tiempo': ['tiempos','hora','horas','dia','dias','momento','momentos','epoca','siglo','siglos'],
+  'sangre': ['sangres','derramar','derramada','derramado','cruento'],
+  'cruz': ['crucificado','crucificar','crucifixion','madero','clavos','calvario'],
+  'resurreccion': ['resucitar','resucitado','resucitare','resucitaremos','levantar','levantado'],
+  'juicio': ['juzgar','juicios','juez','juzgara','condenacion','condenar'],
+  'infierno': ['seol','hades','gehena','lago de fuego','muerte eterna','condenacion'],
+  'diablo': ['satanas','demonio','demonios','adversario','enemigo','tentador','serpiente','dragon'],
+  'satanas': ['diablo','demonio','demonios','adversario','enemigo','tentador','serpiente'],
+  'tentacion': ['tentar','tentado','tentados','tentare','prueba','pruebas'],
+  'idolo': ['idolos','idolatria','imagen','imagenes','falso dios','dioses ajenos'],
+  'diezmo': ['diezmos','ofrenda','ofrendas','primicias'],
+  'ofrenda': ['ofrendas','diezmo','diezmos','sacrificio','sacrificios','primicias'],
+  'sacrificio': ['sacrificios','ofrenda','ofrendas','holocausto','inmolar'],
+  'ayuno': ['ayunar','ayunando','ayunaban','ayuno'],
+  'milagro': ['milagros','prodigio','prodigios','señal','señales','maravilla','maravillas','portento'],
+  'señal': ['señales','milagro','milagros','prodigio','prodigios','maravilla','maravillas'],
+  'joven': ['jovenes','juventud','muchacho','muchachos','adolescente','niño','niños'],
+  'viejo': ['viejos','vieja','viejas','anciano','ancianos','vejez','antiguo'],
+  'mujer': ['mujeres','esposa','esposas','senora','senoras','femenino','hembra'],
+  'hombre': ['hombres','varon','varones','masculino','macho','senor'],
+  'nino': ['ninos','nina','ninas','criatura','criaturas','pequenuelo','infante','joven'],
+  'casa': ['casas','hogar','morada','moradas','habitacion','vivienda','tienda'],
+  'templo': ['templos','santuario','casa de dios','tabernaculo'],
+  'ciudad': ['ciudades','pueblo','villa','aldea','urbe'],
+  'tierra prometida': ['canaán','canaan','israel','jerusalen','sion','herederad'],
+  'canaán': ['canaan','tierra prometida','israel','jerusalen','palestina'],
+  'israel': ['canaán','canaan','jacob','hebreos','judios','pueblo de dios'],
+  'jerusalen': ['sion','ciudad santa','israel','juda','templo'],
+  'sion': ['jerusalen','ciudad santa','monte sion'],
+  'apostol': ['apostoles','discipulo','discipulos','enviado','mensajero','doce'],
+  'discipulo': ['discipulos','apostol','apostoles','seguidor','seguidores'],
+  'evangelio': ['evangelios','buena nueva','buenas nuevas','buena noticia','mensaje'],
+  'testimonio': ['testimonios','testificar','testigo','testigos','dar testimonio'],
+  'gracia de dios': ['gracia','favor de dios','misericordia'],
+  'hijo de dios': ['hijos de dios','jesus','cristo'],
+  'reino de dios': ['reino de los cielos','reino','reinado'],
+  'palabra de dios': ['palabra','escritura','escrituras','biblia','verbo','ley'],
+  'escritura': ['escrituras','palabra','biblia','ley','mandamiento'],
+  'biblia': ['escritura','escrituras','palabra de dios','verbo'],
+  'corazon': ['corazones','interior','alma','espiritu','mente'],
+  'alma': ['almas','corazon','vida','espiritu','ser'],
+  'mente': ['mentes','pensamiento','pensamientos','entendimiento','corazon'],
+  'cuerpo': ['cuerpos','carne','carne','mortal','mortalidad'],
+  'carne': ['cuerpo','carnal','carnales','mundo','pecado']
 };
 
 // ============================================================
-//  CONFIGURACIÓN Y REFERENCIAS AL DOM
+// 3. BASE LOCAL DE RESPALDO (famosos + Tito + todos los libros)
 // ============================================================
-const API_BASE = 'https://api.midvash.com/v1';
-const VERSION  = 'rvr1960'; // Slug para la API de Midvash
+const BIBLIA_LOCAL = {
+  genesis:{'1':{'1':'En el principio creó Dios los cielos y la tierra.','3':'Y dijo Dios: Sea la luz; y fue la luz.','27':'Y creó Dios al hombre a su imagen, a imagen de Dios lo creó; varón y hembra los creó.'},'12':{'2':'Y haré de ti una nación grande, y te bendeciré, y engrandeceré tu nombre, y serás bendición.','3':'Bendeciré a los que te bendijeren, y a los que te maldijeren maldeciré; y serán benditas en ti todas las familias de la tierra.'},'50':{'20':'Vosotros pensasteis mal contra mí, mas Dios lo encaminó a bien, para hacer lo que vemos hoy, para mantener en vida a mucho pueblo.'}},
+  exodo:{'3':{'14':'Y respondió Dios a Moisés: YO SOY EL QUE SOY. Y dijo: Así dirás a los hijos de Israel: YO SOY me envió a vosotros.'},'14':{'14':'Jehová peleará por vosotros, y vosotros estaréis tranquilos.'},'20':{'3':'No tendrás dioses ajenos delante de mí.','7':'No tomarás el nombre de Jehová tu Dios en vano.','12':'Honra a tu padre y a tu madre, para que tus días se alarguen en la tierra que Jehová tu Dios te da.','13':'No matarás.','14':'No cometerás adulterio.','15':'No hurtarás.','16':'No hablarás contra tu prójimo falso testimonio.'}},
+  levitico:{'19':{'18':'No te vengarás, ni guardarás rencor a los hijos de tu pueblo, sino amarás a tu prójimo como a ti mismo. Yo Jehová.'}},
+  numeros:{'6':{'24':'Jehová te bendiga, y te guarde;','25':'Jehová haga resplandecer su rostro sobre ti, y tenga de ti misericordia;','26':'Jehová alce sobre ti su rostro, y ponga en ti paz.'},'23':{'19':'Dios no es hombre, para que mienta, ni hijo de hombre para que se arrepienta. Él dijo, ¿y no hará? Habló, ¿y no lo ejecutará?'}},
+  deuteronomio:{'6':{'5':'Y amarás a Jehová tu Dios de todo tu corazón, y de toda tu alma, y con todas tus fuerzas.'},'8':{'3':'...no sólo de pan vivirá el hombre, mas de todo lo que sale de la boca de Jehová vivirá el hombre.'},'31':{'6':'Esforzaos y cobrad ánimo; no temáis, ni tengáis miedo de ellos, porque Jehová tu Dios es el que va contigo; no te dejará, ni te desamparará.'}},
+  josue:{'1':{'8':'Nunca se apartará de tu boca este libro de la ley, sino que de día y de noche meditarás en él, para que guardes y hagas conforme a todo lo que en él está escrito; porque entonces harás prosperar tu camino, y todo te saldrá bien.','9':'Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas.'},'24':{'15':'...pero yo y mi casa serviremos a Jehová.'}},
+  jueces:{'6':{'12':'Y el ángel de Jehová se le apareció, y le dijo: Jehová está contigo, varón esforzado y valiente.'}},
+  rut:{'1':{'16':'Respondió Rut: No me ruegues que te deje, y me aparte de ti; porque a dondequiera que tú fueres, iré yo, y dondequiera que vivieres, viviré. Tu pueblo será mi pueblo, y tu Dios mi Dios.'}},
+  '1samuel':{'16':{'7':'...porque Jehová no mira lo que mira el hombre; pues el hombre mira lo que está delante de sus ojos, pero Jehová mira el corazón.'},'17':{'47':'...porque de Jehová es la batalla, y él os entregará en nuestras manos.'}},
+  '2samuel':{'22':{'2':'Jehová es mi roca y mi fortaleza, y mi libertador;','3':'Dios mío, fortaleza mía, en él confiaré; mi escudo, y el fuerte de mi salvación, mi alto refugio.'}},
+  '1reyes':{'8':{'57':'Jehová nuestro Dios esté con nosotros, como estuvo con nuestros padres; no nos deje, ni nos desampare.'},'18':{'21':'¿Hasta cuándo claudicaréis vosotros entre dos pensamientos? Si Jehová es Dios, seguidle; y si Baal, id en pos de él.'}},
+  '2reyes':{'6':{'16':'Él le dijo: No tengas miedo, porque más son los que están con nosotros que los que están con ellos.'}},
+  '1cronicas':{'16':{'11':'Buscad a Jehová y su poder; buscad su rostro continuamente.'},'29':{'11':'Tuya es, oh Jehová, la magnificencia y el poder, la gloria, la victoria y el honor; porque todas las cosas que están en los cielos y en la tierra son tuyas.'}},
+  '2cronicas':{'7':{'14':'...si se humillare mi pueblo, sobre el cual mi nombre es invocado, y oraren, y buscaren mi rostro, y se convirtieren de sus malos caminos; entonces yo oiré desde los cielos, y perdonaré sus pecados, y sanaré su tierra.'}},
+  esdras:{'7':{'10':'Porque Esdras había preparado su corazón para inquirir la ley de Jehová y para cumplirla, y para enseñar en Israel sus estatutos y decretos.'}},
+  nehemias:{'8':{'10':'...porque el gozo de Jehová es vuestra fuerza.'}},
+  ester:{'4':{'14':'...¿y quién sabe si para esta hora has llegado al reino?'}},
+  job:{'1':{'21':'y dijo: Desnudo salí del vientre de mi madre, y desnudo volveré allá. Jehová dio, y Jehová quitó; sea el nombre de Jehová bendito.'},'19':{'25':'Yo sé que mi Redentor vive, y al fin se levantará sobre el polvo;'},'42':{'2':'Yo conozco que todo lo puedes, y que no hay pensamiento que se esconda de ti.'}},
+  salmos:{'1':{'1':'Bienaventurado el varón que no anduvo en consejo de malos, ni estuvo en camino de pecadores, ni en silla de escarnecedores se ha sentado;','3':'Será como árbol plantado junto a corrientes de aguas, que da su fruto en su tiempo, y su hoja no cae; y todo lo que hace, prosperará.'},'4':{'8':'En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado.'},'16':{'11':'Me mostrarás la senda de la vida; en tu presencia hay plenitud de gozo; delicias a tu diestra para siempre.'},'23':{'1':'Jehová es mi pastor; nada me faltará.','2':'En lugares de delicados pastos me hará descansar; junto a aguas de reposo me pastoreará.','3':'Confortará mi alma; me guiará por sendas de justicia por amor de su nombre.','4':'Aunque ande en valle de sombra de muerte, no temeré mal alguno, porque tú estarás conmigo; tu vara y tu cayado me infundirán aliento.','6':'Ciertamente el bien y la misericordia me seguirán todos los días de mi vida, y en la casa de Jehová moraré por largos días.'},'27':{'1':'Jehová es mi luz y mi salvación; ¿de quién temeré? Jehová es la fortaleza de mi vida; ¿de quién he de atemorizarme?','14':'Aguarda a Jehová; esfuérzate, y aliéntese tu corazón; sí, espera a Jehová.'},'34':{'8':'Gustad, y ved que es bueno Jehová; dichoso el hombre que confía en él.','18':'Cercano está Jehová a los quebrantados de corazón; y salva a los contritos de espíritu.'},'37':{'4':'Deléitate asimismo en Jehová, y él te concederá las peticiones de tu corazón.','5':'Encomienda a Jehová tu camino, y confía en él; y él hará.'},'46':{'1':'Dios es nuestro amparo y fortaleza, nuestro pronto auxilio en las tribulaciones.','10':'Estad quietos, y conoced que yo soy Dios; seré exaltado entre las naciones; enaltecido seré en la tierra.'},'51':{'10':'Crea en mí, oh Dios, un corazón limpio, y renueva un espíritu recto dentro de mí.'},'55':{'22':'Echa sobre Jehová tu carga, y él te sustentará; no dejará para siempre caído al justo.'},'91':{'1':'El que habita al abrigo del Altísimo morará bajo la sombra del Omnipotente.','2':'Diré yo a Jehová: Esperanza mía, y castillo mío; mi Dios, en quien confiaré.','11':'Pues a sus ángeles mandará acerca de ti, que te guarden en todos tus caminos.'},'100':{'5':'Porque Jehová es bueno; para siempre es su misericordia, y su verdad por todas las generaciones.'},'103':{'1':'Bendice, alma mía, a Jehová, y bendiga todo mi ser su santo nombre.','2':'Bendice, alma mía, a Jehová, y no olvides ninguno de sus beneficios.'},'119':{'105':'Lámpara es a mis pies tu palabra, y lumbrera a mi camino.'},'121':{'1':'Alzaré mis ojos a los montes; ¿de dónde vendrá mi socorro?','2':'Mi socorro viene de Jehová, que hizo los cielos y la tierra.'},'139':{'14':'Te alabaré; porque formidables, maravillosas son tus obras; estoy maravillado, y mi alma lo sabe muy bien.'}},
+  proverbios:{'3':{'5':'Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia.','6':'Reconócelo en todos tus caminos, y él endereza tus veredas.'},'16':{'3':'Encomienda a Jehová tus obras, y tus pensamientos serán afirmados.'},'18':{'10':'El nombre de Jehová es torre fuerte; a él correrá el justo, y será levantado.'},'22':{'6':'Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él.'},'31':{'10':'Mujer virtuosa, ¿quién la hallará? Porque su estima sobrepasa largamente a la de las piedras preciosas.','30':'Engañosa es la gracia, y vana la hermosura; la mujer que teme a Jehová, ésa será alabada.'}},
+  eclesiastes:{'3':{'1':'Todo tiene su tiempo, y todo lo que se quiere debajo del cielo tiene su hora.'},'12':{'13':'El fin de todo el discurso oído es este: Teme a Dios, y guarda sus mandamientos; porque esto es el todo del hombre.'}},
+  cantares:{'8':{'7':'Las muchas aguas no podrán apagar el amor, ni lo ahogarán los ríos...'}},
+  isaias:{'6':{'8':'...Heme aquí, envíame a mí.'},'9':{'6':'Porque un niño nos es nacido, hijo nos es dado, y el principado sobre su hombro; y se llamará su nombre Admirable, Consejero, Dios Fuerte, Padre Eterno, Príncipe de Paz.'},'26':{'3':'Tú guardarás en completa paz a aquel cuyo pensamiento en ti persevera; porque en ti ha confiado.'},'40':{'31':'pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán.'},'41':{'10':'No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo; siempre te ayudaré, siempre te sustentaré con la diestra de mi justicia.'},'43':{'2':'Cuando pases por las aguas, yo estaré contigo; y si por los ríos, no te anegarán. Cuando pases por el fuego, no te quemarás, ni la llama arderá en ti.'},'53':{'5':'Mas él herido fue por nuestras rebeliones, molido por nuestros pecados; el castigo de nuestra paz fue sobre él, y por su llaga fuimos nosotros curados.'},'55':{'8':'Porque mis pensamientos no son vuestros pensamientos, ni vuestros caminos mis caminos, dijo Jehová.'}},
+  jeremias:{'1':{'5':'Antes que te formase en el vientre te conocí, y antes que nacieses te santifiqué, te di por profeta a las naciones.'},'17':{'7':'Bendito el varón que confía en Jehová, y cuya confianza es Jehová.'},'29':{'11':'Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal, para daros el fin que esperáis.'},'33':{'3':'Clama a mí, y yo te responderé, y te enseñaré cosas grandes y ocultas que tú no conoces.'}},
+  lamentaciones:{'3':{'22':'Por la misericordia de Jehová no hemos sido consumidos, porque nunca decayeron sus misericordias.','23':'Nuevas son cada mañana; grande es tu fidelidad.'}},
+  ezequiel:{'36':{'26':'Os daré corazón nuevo, y pondré espíritu nuevo dentro de vosotros; y quitaré de vuestra carne el corazón de piedra, y os daré un corazón de carne.'}},
+  daniel:{'3':{'17':'He aquí nuestro Dios a quien servimos puede librarnos del horno de fuego ardiendo; y de tu mano, oh rey, nos librará.'},'6':{'10':'Cuando Daniel supo que el edicto había sido firmado, entró en su casa... se arrodillaba tres veces al día, y oraba y daba gracias delante de su Dios, como lo solía hacer antes.'}},
+  oseas:{'6':{'3':'Conozcamos, y sigamos en el conocimiento de Jehová; su salida está dispuesta como el alba, y vendrá a nosotros como la lluvia, como la lluvia tardía y temprana a la tierra.'}},
+  joel:{'2':{'25':'Y os restituiré los años que comió la oruga, el saltón, el revoltón y la langosta, mi gran ejército que envié contra vosotros.','28':'Y después derramaré mi Espíritu sobre toda carne, y profetizarán vuestros hijos y vuestras hijas...'}},
+  amos:{'5':{'24':'Pero corra el juicio como las aguas, y la justicia como impetuoso arroyo.'}},
+  abdias:{'1':{'15':'Porque cercano está el día de Jehová sobre todas las naciones; como tú hiciste se hará contigo; tu recompensa volverá sobre tu cabeza.'}},
+  jonas:{'2':{'9':'Mas yo con voz de alabanza te ofreceré sacrificios; pagaré lo que prometí. La salvación es de Jehová.'}},
+  miqueas:{'6':{'8':'Oh hombre, él te ha declarado lo que es bueno, y qué pide Jehová de ti: solamente hacer justicia, y amar misericordia, y humillarte ante tu Dios.'}},
+  nahum:{'1':{'7':'Jehová es bueno, fortaleza en el día de la angustia; y conoce a los que en él confían.'}},
+  habacuc:{'3':{'17':'Aunque la higuera no florezca, ni en las vides haya frutos...','18':'con todo, yo me alegraré en Jehová, y me gozaré en el Dios de mi salvación.'}},
+  sofonias:{'3':{'17':'Jehová está en medio de ti, poderoso, él salvará; se gozará sobre ti con alegría, callará de amor, se regocijará sobre ti con cánticos.'}},
+  hageo:{'2':{'9':'La gloria postrera de esta casa será mayor que la primera, ha dicho Jehová de los ejércitos; y daré paz en este lugar, dice Jehová de los ejércitos.'}},
+  zacarias:{'4':{'6':'...No con ejército, ni con fuerza, sino con mi Espíritu, ha dicho Jehová de los ejércitos.'}},
+  malaquias:{'3':{'10':'Traed todos los diezmos al alfolí y haya alimento en mi casa; y probadme ahora en esto, dice Jehová de los ejércitos, si no os abriré las ventanas de los cielos, y derramaré sobre vosotros bendición hasta que sobreabunde.'}},
+  mateo:{'5':{'3':'Bienaventurados los pobres en espíritu, porque de ellos es el reino de los cielos.','14':'Vosotros sois la luz del mundo; una ciudad asentada sobre un monte no se puede esconder.','16':'Así alumbre vuestra luz delante de los hombres, para que vean vuestras buenas obras, y glorifiquen a vuestro Padre que está en los cielos.'},'6':{'33':'Mas buscad primeramente el reino de Dios y su justicia, y todas estas cosas os serán añadidas.'},'7':{'7':'Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.'},'11':{'28':'Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.','29':'Llevad mi yugo sobre vosotros, y aprended de mí, que soy manso y humilde de corazón; y hallaréis descanso para vuestras almas.'},'22':{'37':'Amarás al Señor tu Dios con todo tu corazón, y con toda tu alma, y con toda tu mente.','39':'Y el segundo es semejante: Amarás a tu prójimo como a ti mismo.'},'28':{'19':'Por tanto, id, y haced discípulos a todas las naciones, bautizándolos en el nombre del Padre, y del Hijo, y del Espíritu Santo;','20':'...y he aquí yo estoy con vosotros todos los días, hasta el fin del mundo. Amén.'}},
+  marcos:{'11':{'24':'Por tanto, os digo que todo lo que pidiereis orando, creed que lo recibiréis, y os vendrá.'},'16':{'15':'Y les dijo: Id por todo el mundo y predicad el evangelio a toda criatura.'}},
+  lucas:{'1':{'37':'Porque nada hay imposible para Dios.'},'6':{'31':'Y como queréis que hagan los hombres con vosotros, así también haced vosotros con ellos.'}},
+  juan:{'1':{'1':'En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios.','14':'Y aquel Verbo fue hecho carne, y habitó entre nosotros... lleno de gracia y de verdad.'},'3':{'16':'Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.','17':'Porque no envió Dios a su Hijo al mundo para condenar al mundo, sino para que el mundo sea salvo por él.'},'8':{'32':'y conoceréis la verdad, y la verdad os hará libres.'},'10':{'10':'El ladrón no viene sino para hurtar y matar y destruir; yo he venido para que tengan vida, y para que la tengan en abundancia.'},'11':{'35':'Jesús lloró.'},'14':{'6':'Jesús le dijo: Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí.','27':'La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da. No se turbe vuestro corazón, ni tenga miedo.'},'15':{'5':'Yo soy la vid, vosotros los pámpanos; el que permanece en mí, y yo en él, éste lleva mucho fruto; porque separados de mí nada podéis hacer.'},'16':{'33':'Estas cosas os he hablado para que en mí tengáis paz. En el mundo tendréis aflicción; pero confiad, yo he vencido al mundo.'}},
+  hechos:{'1':{'8':'pero recibiréis poder, cuando haya venido sobre vosotros el Espíritu Santo, y me seréis testigos en Jerusalén, en toda Judea, en Samaria, y hasta lo último de la tierra.'},'4':{'12':'Y en ningún otro hay salvación; porque no hay otro nombre bajo el cielo, dado a los hombres, en que podamos ser salvos.'},'16':{'31':'Y ellos dijeron: Cree en el Señor Jesucristo, y serás salvo, tú y tu casa.'}},
+  romanos:{'1':{'16':'Porque no me avergüenzo del evangelio, porque es poder de Dios para salvación a todo aquel que cree...'},'3':{'23':'por cuanto todos pecaron, y están destituidos de la gloria de Dios;'},'5':{'8':'Mas Dios muestra su amor para con nosotros, en que siendo aún pecadores, Cristo murió por nosotros.'},'6':{'23':'Porque la paga del pecado es muerte, mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro.'},'8':{'1':'Ahora, pues, ninguna condenación hay para los que están en Cristo Jesús, los que no andan conforme a la carne, sino conforme al Espíritu.','28':'Y sabemos que a los que aman a Dios, todas las cosas les ayudan a bien, esto es, a los que conforme a su propósito son llamados.','31':'¿Qué, pues, diremos a esto? Si Dios es por nosotros, ¿quién contra nosotros?','38':'Por lo cual estoy seguro de que ni la muerte, ni la vida, ni ángeles, ni principados, ni potestades, ni lo presente, ni lo por venir,','39':'ni lo alto, ni lo profundo, ni ninguna otra cosa creada nos podrá separar del amor de Dios, que es en Cristo Jesús Señor nuestro.'},'10':{'9':'que si confesares con tu boca que Jesús es el Señor, y creyeres en tu corazón que Dios le levantó de los muertos, serás salvo.','17':'Así que la fe es por el oír, y el oír, por la palabra de Dios.'},'12':{'2':'No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento...'}},
+  '1corintios':{'10':{'13':'No os ha sobrevenido ninguna tentación que no sea humana; pero fiel es Dios, que no os dejará ser tentados más de lo que podéis resistir...'},'13':{'4':'El amor es sufrido, es benigno; el amor no tiene envidia, el amor no es jactancioso, no se envanece;','13':'Y ahora permanecen la fe, la esperanza y el amor, estos tres; pero el mayor de ellos es el amor.'},'15':{'57':'Mas gracias sean dadas a Dios, que nos da la victoria por medio de nuestro Señor Jesucristo.'}},
+  '2corintios':{'5':{'17':'De modo que si alguno está en Cristo, nueva criatura es; las cosas viejas pasaron; he aquí todas son hechas nuevas.'},'12':{'9':'Y me ha dicho: Bástate mi gracia; porque mi poder se perfecciona en la debilidad...'}},
+  galatas:{'2':{'20':'Con Cristo estoy juntamente crucificado, y ya no vivo yo, mas vive Cristo en mí...'},'5':{'22':'Mas el fruto del Espíritu es amor, gozo, paz, paciencia, benignidad, bondad, fe,','23':'mansedumbre, templanza; contra tales cosas no hay ley.'},'6':{'9':'No nos cansemos, pues, de hacer bien; porque a su tiempo segaremos, si no desmayamos.'}},
+  efesios:{'2':{'8':'Porque por gracia sois salvos por medio de la fe; y esto no de vosotros, pues es don de Dios;','9':'no por obras, para que nadie se gloríe.'},'6':{'10':'Por lo demás, hermanos míos, fortaleceos en el Señor, y en el poder de su fuerza.','11':'Vestíos de toda la armadura de Dios, para que podáis estar firmes contra las asechanzas del diablo.'}},
+  filipenses:{'1':{'6':'estando persuadido de esto, que el que comenzó en vosotros la buena obra, la perfeccionará hasta el día de Jesucristo;'},'4':{'4':'Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!','6':'Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias.','7':'Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos en Cristo Jesús.','13':'Todo lo puedo en Cristo que me fortalece.','19':'Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús.'}},
+  colosenses:{'3':{'12':'Vestíos, pues, como escogidos de Dios, santos y amados, de entrañable misericordia, de benignidad, de humildad, de mansedumbre, de paciencia;','23':'Y todo lo que hagáis, hacedlo de corazón, como para el Señor y no para los hombres.'}},
+  '1tesalonicenses':{'5':{'16':'Estad siempre gozosos.','17':'Orad sin cesar.','18':'Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros en Cristo Jesús.'}},
+  '2tesalonicenses':{'3':{'3':'Pero fiel es el Señor, que os afirmará y guardará del mal.','16':'Y el mismo Señor de paz os dé siempre paz en toda manera. El Señor sea con todos vosotros.'}},
+  '1timoteo':{'2':{'5':'Porque hay un solo Dios, y un solo mediador entre Dios y los hombres, Jesucristo hombre,'},'4':{'12':'Ninguno tenga en poco tu juventud, sino sé ejemplo de los creyentes en palabra, conducta, amor, espíritu, fe y pureza.'},'6':{'6':'Pero gran ganancia es la piedad acompañada de contentamiento;','10':'porque raíz de todos los males es el amor al dinero, el cual codiciando algunos, se extraviaron de la fe, y fueron traspasados de muchos dolores.'}},
+  '2timoteo':{'1':{'7':'Porque no nos ha dado Dios espíritu de cobardía, sino de poder, de amor y de dominio propio.'},'3':{'16':'Toda la Escritura es inspirada por Dios, y útil para enseñar, para redargüir, para corregir, para instruir en justicia.'},'4':{'7':'He peleado la buena batalla, he acabado la carrera, he guardado la fe.'}},
+  tito:{'1':{'1':'Pablo, siervo de Dios y apóstol de Jesucristo, conforme a la fe de los escogidos de Dios y el conocimiento de la verdad que es según la piedad,','2':'en la esperanza de la vida eterna, la cual Dios, que no miente, prometió desde antes del principio de los siglos,'},'2':{'11':'Porque la gracia de Dios se ha manifestado para salvación a todos los hombres,','12':'enseñándonos que, renunciando a la impiedad y a los deseos mundanos, vivamos en este siglo sobria, justa y piadosamente,','13':'aguardando la esperanza bienaventurada y la manifestación gloriosa de nuestro gran Dios y Salvador Jesucristo,'},'3':{'5':'nos salvó, no por obras de justicia que nosotros hubiéramos hecho, sino por su misericordia, por el lavamiento de la regeneración y por la renovación en el Espíritu Santo,'}},
+  filemon:{'1':{'6':'para que la participación de tu fe sea eficaz en el conocimiento de todo el bien que está en vosotros por Cristo Jesús.'}},
+  hebreos:{'4':{'12':'Porque la palabra de Dios es viva y eficaz, y más cortante que toda espada de dos filos...'},'11':{'1':'Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve.','6':'Pero sin fe es imposible agradar a Dios; porque es necesario que el que se acerca a Dios crea que le hay, y que es galardonador de los que le buscan.'},'12':{'2':'puestos los ojos en Jesús, el autor y consumador de la fe...'},'13':{'8':'Jesucristo es el mismo ayer, y hoy, y por los siglos.'}},
+  santiago:{'1':{'2':'Hermanos míos, tened por sumo gozo cuando os halléis en diversas pruebas,','5':'Y si alguno de vosotros tiene falta de sabiduría, pídala a Dios, el cual da a todos abundantemente y sin reproche, y le será dada.','22':'Pero sed hacedores de la palabra, y no tan solamente oidores, engañándoos a vosotros mismos.'},'4':{'7':'Someteos, pues, a Dios; resistid al diablo, y huirá de vosotros.','8':'Acercaos a Dios, y él se acercará a vosotros...'},'5':{'16':'Confesaos vuestras ofensas unos a otros, y orad unos por otros, para que seáis sanados. La oración eficaz del justo puede mucho.'}},
+  '1pedro':{'2':{'9':'Mas vosotros sois linaje escogido, real sacerdocio, nación santa, pueblo adquirido por Dios...'},'5':{'7':'echando toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros.'}},
+  '2pedro':{'1':{'3':'Como todas las cosas que pertenecen a la vida y a la piedad nos han sido dadas por su divino poder, mediante el conocimiento de aquel que nos llamó por su gloria y excelencia,'},'3':{'9':'El Señor no retarda su promesa, según algunos la tienen por tardanza, sino que es paciente para con nosotros, no queriendo que ninguno perezca, sino que todos procedan al arrepentimiento.'}},
+  '1juan':{'1':{'9':'Si confesamos nuestros pecados, él es fiel y justo para perdonar nuestros pecados, y limpiarnos de toda maldad.'},'4':{'8':'El que no ama, no ha conocido a Dios; porque Dios es amor.','18':'En el amor no hay temor, sino que el perfecto amor echa fuera el temor...','19':'Nosotros le amamos a él, porque él nos amó primero.'}},
+  '2juan':{'1':{'6':'Y este es el amor, que andemos según sus mandamientos. Este es el mandamiento: que andéis en amor, como vosotros habéis oído desde el principio.'}},
+  '3juan':{'1':{'2':'Amado, yo deseo que tú seas prosperado en todas las cosas, y que tengas salud, así como prospera tu alma.'}},
+  judas:{'1':{'24':'Y a aquel que es poderoso para guardaros sin caída, y presentaros sin mancha delante de su gloria con gran alegría,'}},
+  apocalipsis:{'3':{'20':'He aquí, yo estoy a la puerta y llamo; si alguno oye mi voz y abre la puerta, entraré a él, y cenaré con él, y él conmigo.'},'21':{'4':'Enjugará Dios toda lágrima de los ojos de ellos; y ya no habrá muerte, ni habrá más llanto, ni clamor, ni dolor; porque las primeras cosas pasaron.','5':'Y el que estaba sentado en el trono dijo: He aquí, yo hago nuevas todas las cosas...'}}
+};
 
-const selectorLibro     = document.getElementById('selectorLibro');
-const selectorMusica    = document.getElementById('selectorMusica');
-const selectorVoz       = document.getElementById('selectorVoz');
-const velocidadVoz      = document.getElementById('velocidadVoz');
-const volumenVoz        = document.getElementById('volumenVoz');
-const valorVelocidad    = document.getElementById('valorVelocidad');
-const inputCapitulo     = document.getElementById('capitulo');
-const inputVersiculo    = document.getElementById('versiculo');
-const btnConsultar      = document.getElementById('btnConsultar');
-const btnSonido         = document.getElementById('btnSonido');
-const btnManual         = document.getElementById('btnManual');
-const panelManual       = document.getElementById('panelManual');
-const textoManual       = document.getElementById('textoManual');
-const btnGuardarManual  = document.getElementById('btnGuardarManual');
-const btnCancelarManual = document.getElementById('btnCancelarManual');
-const btnLeer           = document.getElementById('btnLeer');
-const btnDetenerVoz     = document.getElementById('btnDetenerVoz');
-const btnCopiar         = document.getElementById('btnCopiar');
-const resultadoDiv      = document.getElementById('resultado');
-const referenciaDiv     = document.getElementById('referencia');
-const textoVersiculoDiv = document.getElementById('textoVersiculo');
-const historialLista    = document.getElementById('historialLista');
-const audioFondo        = document.getElementById('audioFondo');
-const fuenteAudio       = document.getElementById('fuenteAudio');
-
+// ============================================================
+// 4. ESTADO GLOBAL
+// ============================================================
+const API_JSON_URLS = [
+  'https://raw.githubusercontent.com/thiagobodruk/bible/master/json/es_rvr.json',
+  'https://cdn.jsdelivr.net/gh/thiagobodruk/bible@master/json/es_rvr.json'
+];
+const STORAGE_KEY = 'rvr1960_manual_verses';
+let bibliaCompleta = {};
+let searchIndex = [];
+let historial = [];
 let sonidoActivo = true;
 let versiculoActual = null;
-let historial = [];
 let modoMusica = 'celestial';
+let bibliaCargada = false;
+
+// DOM
+const $ = id => document.getElementById(id);
+const selectorLibro = $('selectorLibro'), selectorMusica = $('selectorMusica'), selectorVoz = $('selectorVoz');
+const velocidadVoz = $('velocidadVoz'), volumenVoz = $('volumenVoz'), valorVelocidad = $('valorVelocidad');
+const inputCapitulo = $('capitulo'), inputVersiculo = $('versiculo'), inputBusqueda = $('inputBusqueda');
+const btnConsultar = $('btnConsultar'), btnSonido = $('btnSonido'), btnLeer = $('btnLeer'), btnDetenerVoz = $('btnDetenerVoz');
+const btnCopiar = $('btnCopiar'), btnBuscarTexto = $('btnBuscarTexto'), btnMicrofono = $('btnMicrofono'), btnAgregarManual = $('btnAgregarManual');
+const resultadoDiv = $('resultado'), referenciaDiv = $('referencia'), textoVersiculoDiv = $('textoVersiculo');
+const historialLista = $('historialLista'), audioFondo = $('audioFondo'), fuenteAudio = $('fuenteAudio');
+const barraEstado = $('barraEstado');
 
 // ============================================================
-//  VOZ (Web Speech API)
+// 5. UTILIDADES DE BÚSQUEDA
 // ============================================================
-let vocesDisponibles = [];
-let vozSeleccionada = null;
-let utteranceActual = null;
 
+// Elimina tildes/diacríticos: "perdón" -> "perdon"
+function normalizar(texto) {
+  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+// Expande la consulta con sinónimos (lookup por palabra individual + frase completa)
+function expandirConsulta(consulta) {
+  const terminos = new Set();
+  const consultaNorm = normalizar(consulta).trim();
+  
+  // Añadir frase completa normalizada
+  if (consultaNorm) terminos.add(consultaNorm);
+  
+  // Añadir palabras individuales (mínimo 2 letras)
+  const palabras = consultaNorm.split(/\s+/).filter(p => p.length >= 2);
+  palabras.forEach(p => {
+    terminos.add(p);
+    // Buscar sinónimos de esta palabra
+    if (SINONIMOS[p]) {
+      SINONIMOS[p].forEach(s => terminos.add(normalizar(s)));
+    }
+  });
+  
+  // Buscar sinónimos por frases completas (ej: "amor de dios")
+  Object.keys(SINONIMOS).forEach(clave => {
+    if (clave.includes(' ') && consultaNorm.includes(normalizar(clave))) {
+      SINONIMOS[clave].forEach(s => terminos.add(normalizar(s)));
+    }
+  });
+  
+  return { palabras, terminosExpandidos: Array.from(terminos) };
+}
+
+// Resalta las palabras que el usuario buscó en el texto
+function resaltar(texto, palabras) {
+  if (!palabras.length) return texto;
+  let resultado = texto;
+  // Ordenar por longitud descendente para no romper coincidencias largas
+  const ordenadas = [...palabras].sort((a, b) => b.length - a.length);
+  ordenadas.forEach(p => {
+    if (p.length < 2) return;
+    // Regex que ignora tildes
+    const regex = new RegExp(`(${p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    resultado = resultado.replace(regex, '<mark>$1</mark>');
+  });
+  return resultado;
+}
+
+// ============================================================
+// 6. LLENAR SELECTOR DE LIBROS
+// ============================================================
+function llenarSelectores() {
+  selectorLibro.innerHTML = '';
+  const optAT = document.createElement('optgroup'); optAT.label = 'Antiguo Testamento';
+  const optNT = document.createElement('optgroup'); optNT.label = 'Nuevo Testamento';
+  LIBROS.forEach(([key, nombre], i) => {
+    const opt = document.createElement('option');
+    opt.value = key; opt.textContent = nombre;
+    (i < 39 ? optAT : optNT).appendChild(opt);
+  });
+  selectorLibro.appendChild(optAT);
+  selectorLibro.appendChild(optNT);
+  selectorLibro.value = 'salmos';
+}
+
+// ============================================================
+// 7. CARGA DE LA BIBLIA
+// ============================================================
+async function cargarBiblia() {
+  cargarManuales();
+  // Copiar local
+  Object.keys(BIBLIA_LOCAL).forEach(libro => {
+    if (!bibliaCompleta[libro]) bibliaCompleta[libro] = {};
+    Object.keys(BIBLIA_LOCAL[libro]).forEach(cap => {
+      if (!bibliaCompleta[libro][cap]) bibliaCompleta[libro][cap] = {};
+      Object.keys(BIBLIA_LOCAL[libro][cap]).forEach(ver => {
+        bibliaCompleta[libro][cap][ver] = BIBLIA_LOCAL[libro][cap][ver];
+      });
+    });
+  });
+  barraEstado.textContent = '⏳ Descargando Biblia completa...';
+  let exito = false;
+  for (const url of API_JSON_URLS) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const data = await r.json();
+      procesarJSON(data);
+      exito = true;
+      break;
+    } catch(e) { console.warn('Fallo fuente:', url, e); }
+  }
+  if (!exito) {
+    barraEstado.textContent = '⚠️ Sin conexión: usando base local. Puedes añadir versículos manualmente.';
+  } else {
+    barraEstado.textContent = `✅ Biblia completa cargada: ${searchIndex.length} versículos`;
+  }
+  construirSearchIndex();
+  textoVersiculoDiv.textContent = 'Selecciona un libro, capítulo y versículo, o usa el buscador.';
+  bibliaCargada = true;
+}
+
+function procesarJSON(data) {
+  const idxMap = LIBROS.map(l => l[0]);
+  data.forEach((libro, i) => {
+    const key = idxMap[i];
+    if (!key || !libro.chapters) return;
+    if (!bibliaCompleta[key]) bibliaCompleta[key] = {};
+    libro.chapters.forEach((verses, cIdx) => {
+      const cap = String(cIdx + 1);
+      if (!bibliaCompleta[key][cap]) bibliaCompleta[key][cap] = {};
+      verses.forEach((txt, vIdx) => {
+        if (txt && txt.trim()) bibliaCompleta[key][cap][String(vIdx + 1)] = txt.trim();
+      });
+    });
+  });
+}
+
+// Construye searchIndex añadiendo versión normalizada (sin tildes) para búsqueda
+function construirSearchIndex() {
+  searchIndex = [];
+  Object.keys(bibliaCompleta).forEach(libro => {
+    const nombre = (LIBROS.find(l => l[0] === libro) || [libro, libro])[1];
+    Object.keys(bibliaCompleta[libro]).forEach(cap => {
+      Object.keys(bibliaCompleta[libro][cap]).forEach(ver => {
+        const texto = bibliaCompleta[libro][cap][ver];
+        searchIndex.push({
+          libro, libroNombre: nombre,
+          capitulo: parseInt(cap), versiculo: parseInt(ver),
+          texto,
+          textoNorm: normalizar(texto)
+        });
+      });
+    });
+  });
+}
+
+// ============================================================
+// 8. MANUALES
+// ============================================================
+function cargarManuales() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  try {
+    JSON.parse(raw).forEach(v => {
+      if (!bibliaCompleta[v.libro]) bibliaCompleta[v.libro] = {};
+      if (!bibliaCompleta[v.libro][v.capitulo]) bibliaCompleta[v.libro][v.capitulo] = {};
+      bibliaCompleta[v.libro][v.capitulo][v.versiculo] = v.texto;
+    });
+  } catch(e) { console.warn(e); }
+}
+
+function guardarManual(libro, cap, ver, texto) {
+  const raw = localStorage.getItem(STORAGE_KEY) || '[]';
+  const arr = JSON.parse(raw);
+  arr.push({ libro, capitulo: cap, versiculo: ver, texto });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  if (!bibliaCompleta[libro]) bibliaCompleta[libro] = {};
+  if (!bibliaCompleta[libro][cap]) bibliaCompleta[libro][cap] = {};
+  bibliaCompleta[libro][cap][ver] = texto;
+  construirSearchIndex();
+}
+
+const modalManual = $('modalManual');
+$('manualCancelar').addEventListener('click', () => modalManual.classList.remove('active'));
+$('manualGuardar').addEventListener('click', () => {
+  const libro = ($('manualLibro').value || '').toLowerCase().replace(/\s+/g,'');
+  const cap = parseInt($('manualCapitulo').value);
+  const ver = parseInt($('manualVersiculo').value);
+  const texto = $('manualTexto').value.trim();
+  if (!libro || !cap || !ver || !texto) return alert('Completa todos los campos.');
+  guardarManual(libro, cap, ver, texto);
+  modalManual.classList.remove('active');
+  alert('✅ Versículo guardado correctamente.');
+  consultarPorReferencia(libro, cap, ver);
+});
+btnAgregarManual.addEventListener('click', () => {
+  $('manualLibro').value = selectorLibro.value;
+  $('manualCapitulo').value = inputCapitulo.value;
+  $('manualVersiculo').value = inputVersiculo.value;
+  $('manualTexto').value = '';
+  modalManual.classList.add('active');
+});
+
+// ============================================================
+// 9. BÚSQUEDA INTELIGENTE (multi-palabra + sinónimos + sin tildes)
+// ============================================================
+function buscarPorTexto(consulta) {
+  if (!consulta || consulta.trim().length < 2) return alert('Ingresa al menos 2 caracteres.');
+  
+  const { palabras, terminosExpandidos } = expandirConsulta(consulta);
+  const palabrasNorm = palabras.map(normalizar);
+  
+  // Clasificar resultados:
+  // 1º) Versículos que contienen TODAS las palabras originales (máxima relevancia)
+  // 2º) Versículos que contienen AL MENOS UNA palabra o sinónimo
+  
+  const coincidencias = [];
+  for (const v of searchIndex) {
+    // Verificar cuántas palabras originales aparecen
+    const todasOriginales = palabrasNorm.length > 0 && palabrasNorm.every(p => v.textoNorm.includes(p));
+    
+    if (todasOriginales) {
+      coincidencias.push({ ...v, prioridad: 2 });
+      continue;
+    }
+    
+    // Verificar si al menos alguna palabra o sinónimo aparece
+    const algunaExpandida = terminosExpandidos.some(t => t.length >= 2 && v.textoNorm.includes(t));
+    if (algunaExpandida) {
+      coincidencias.push({ ...v, prioridad: 1 });
+    }
+  }
+  
+  // Ordenar: primero los que tienen TODAS las palabras, luego los que tienen alguna
+  coincidencias.sort((a, b) => b.prioridad - a.prioridad);
+  
+  const resultados = coincidencias.slice(0, 50);
+  
+  if (resultados.length === 0) {
+    return mostrarError(`Sin resultados para "${consulta}". Prueba con menos palabras o sinónimos.`);
+  }
+  
+  let idx = 0;
+  const mostrar = i => {
+    const v = resultados[i];
+    const ref = `${v.libroNombre} ${v.capitulo}:${v.versiculo}`;
+    const textoResaltado = resaltar(v.texto, palabras);
+    mostrarVersiculo(ref, textoResaltado, 'búsqueda', true);
+    agregarAlHistorial(ref, v.capitulo, v.versiculo, v.libro);
+    
+    if (resultados.length > 1) {
+      const extras = document.createElement('div');
+      extras.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-top:14px;align-items:center;flex-wrap:wrap;';
+      extras.innerHTML = `
+        <button class="btn-accion" id="prevR" ${i===0?'disabled':''}>← Anterior</button>
+        <span style="font-size:.85rem;color:#888;">${i+1} / ${resultados.length}</span>
+        <button class="btn-accion" id="nextR" ${i===resultados.length-1?'disabled':''}>Siguiente →</button>
+        <span style="font-size:.72rem;color:#a89886;width:100%;text-align:center;">${v.prioridad===2?'✓ Coincide con todas las palabras':'◐ Coincidencia por sinónimo'}</span>
+      `;
+      textoVersiculoDiv.appendChild(extras);
+      $('prevR')?.addEventListener('click', () => { if (idx>0){idx--;mostrar(idx);} });
+      $('nextR')?.addEventListener('click', () => { if (idx<resultados.length-1){idx++;mostrar(idx);} });
+    }
+  };
+  mostrar(0);
+  actualizarBotonLeer();
+}
+
+// ============================================================
+// 10. BÚSQUEDA POR VOZ
+// ============================================================
+let reconocimiento;
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  reconocimiento = new SR();
+  reconocimiento.lang = 'es-ES';
+  reconocimiento.continuous = false;
+  reconocimiento.interimResults = false;
+  reconocimiento.onstart = () => { btnMicrofono.classList.add('escuchando'); btnMicrofono.textContent='🔴'; };
+  reconocimiento.onend = () => { btnMicrofono.classList.remove('escuchando'); btnMicrofono.textContent='🎤'; };
+  reconocimiento.onerror = () => { btnMicrofono.classList.remove('escuchando'); btnMicrofono.textContent='🎤'; alert('No se pudo escuchar.'); };
+  reconocimiento.onresult = e => {
+    const t = e.results[0][0].transcript;
+    inputBusqueda.value = t;
+    buscarPorTexto(t);
+  };
+}
+btnMicrofono.addEventListener('click', () => {
+  if (!reconocimiento) return alert('Reconocimiento de voz no soportado.');
+  try { reconocimiento.start(); } catch(e){}
+});
+
+// ============================================================
+// 11. CONSULTA POR REFERENCIA
+// ============================================================
+function consultarPorReferencia(libroForce, capForce, verForce) {
+  const libro = libroForce || selectorLibro.value;
+  const cap = parseInt(capForce ?? inputCapitulo.value);
+  const ver = parseInt(verForce ?? inputVersiculo.value);
+  if (!cap || !ver) return mostrarError('Completa capítulo y versículo.');
+  detenerLectura();
+  mostrarCargando();
+  
+  if (bibliaCompleta[libro] && bibliaCompleta[libro][cap] && bibliaCompleta[libro][cap][ver]) {
+    const texto = bibliaCompleta[libro][cap][ver];
+    const nombre = (LIBROS.find(l => l[0] === libro) || [libro, libro])[1];
+    const ref = `${nombre} ${cap}:${ver}`;
+    mostrarVersiculo(ref, texto, 'local');
+    agregarAlHistorial(ref, cap, ver, libro);
+    activarMusica();
+    return;
+  }
+  
+  fetch(`https://api.midvash.com/v1/rvr1960/${libro}/${cap}/${ver}`)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(d => {
+      if (d?.data?.text) {
+        mostrarVersiculo(`${libro} ${cap}:${ver}`, d.data.text, 'api');
+      } else throw new Error();
+    })
+    .catch(() => mostrarError(`No encontrado. Usa "➕ Añadir manual" para agregarlo.`));
+}
+
+// ============================================================
+// 12. UI
+// ============================================================
+function mostrarCargando() {
+  resultadoDiv.className = 'resultado';
+  referenciaDiv.textContent = '';
+  textoVersiculoDiv.innerHTML = '<span class="spinner"></span> Consultando...';
+  btnLeer.disabled = true;
+  btnCopiar.disabled = true;
+}
+
+function mostrarVersiculo(ref, texto, fuente, conHTML=false) {
+  resultadoDiv.className = 'resultado';
+  referenciaDiv.textContent = ref + (fuente==='local'?' · RVR1960':fuente==='api'?' · API':' · búsqueda');
+  if (conHTML) {
+    textoVersiculoDiv.innerHTML = `"${texto}" <span class="cita">— RVR1960</span>`;
+  } else {
+    textoVersiculoDiv.textContent = `"${texto}" `;
+    const cita = document.createElement('span');
+    cita.className = 'cita'; cita.textContent = '— RVR1960';
+    textoVersiculoDiv.appendChild(cita);
+  }
+  // Guardar el texto plano (sin HTML) para TTS y copiar
+  const textoPlano = texto.replace(/<[^>]+>/g, '');
+  versiculoActual = { referencia: ref, texto: textoPlano };
+  btnCopiar.disabled = false;
+  actualizarBotonLeer();
+}
+
+function actualizarBotonLeer() {
+  btnLeer.disabled = !versiculoActual;
+}
+
+function mostrarError(msg) {
+  resultadoDiv.className = 'resultado error';
+  referenciaDiv.textContent = '';
+  textoVersiculoDiv.innerHTML = `<span style="color:#b85c4a;">⚠️ ${msg}</span>`;
+  btnCopiar.disabled = true; btnLeer.disabled = true; versiculoActual = null;
+}
+
+function agregarAlHistorial(ref, cap, ver, libro) {
+  if (historial[0]?.ref === ref) return;
+  historial.unshift({ ref, cap, ver, libro });
+  if (historial.length > 8) historial.pop();
+  renderHistorial();
+}
+
+function renderHistorial() {
+  if (!historial.length) { historialLista.innerHTML = '<span class="historial-vacio">Aún no hay consultas.</span>'; return; }
+  historialLista.innerHTML = historial.map(h =>
+    `<button class="historial-item" data-libro="${h.libro}" data-cap="${h.cap}" data-ver="${h.ver}">${h.ref}</button>`
+  ).join('');
+  historialLista.querySelectorAll('.historial-item').forEach(b => {
+    b.addEventListener('click', () => {
+      selectorLibro.value = b.dataset.libro;
+      inputCapitulo.value = b.dataset.cap;
+      inputVersiculo.value = b.dataset.ver;
+      consultarPorReferencia();
+    });
+  });
+}
+
+// ============================================================
+// 13. VOZ (TTS)
+// ============================================================
+let voces = [], vozActual = null, utterance = null;
 function cargarVoces() {
-    vocesDisponibles = window.speechSynthesis.getVoices();
-    if (vocesDisponibles.length === 0) return;
-
-    const vocesEspanol = vocesDisponibles.filter(v => v.lang.startsWith('es'));
-    selectorVoz.innerHTML = '';
-
-    if (vocesEspanol.length > 0) {
-        const grupoEs = document.createElement('optgroup');
-        grupoEs.label = 'Español';
-        vocesEspanol.forEach(v => {
-            const opt = document.createElement('option');
-            opt.value = v.name;
-            opt.textContent = `${v.name} (${v.lang})`;
-            grupoEs.appendChild(opt);
-        });
-        selectorVoz.appendChild(grupoEs);
-    }
-
-    const otrasVoces = vocesDisponibles.filter(v => !v.lang.startsWith('es'));
-    if (otrasVoces.length > 0) {
-        const grupoOtras = document.createElement('optgroup');
-        grupoOtras.label = 'Otros idiomas';
-        otrasVoces.forEach(v => {
-            const opt = document.createElement('option');
-            opt.value = v.name;
-            opt.textContent = `${v.name} (${v.lang})`;
-            grupoOtras.appendChild(opt);
-        });
-        selectorVoz.appendChild(grupoOtras);
-    }
-
-    if (vocesEspanol.length > 0) {
-        vozSeleccionada = vocesEspanol[0];
-        selectorVoz.value = vozSeleccionada.name;
-    } else if (vocesDisponibles.length > 0) {
-        vozSeleccionada = vocesDisponibles[0];
-        selectorVoz.value = vozSeleccionada.name;
-    }
+  voces = window.speechSynthesis.getVoices();
+  if (!voces.length) return;
+  const es = voces.filter(v => v.lang.startsWith('es'));
+  selectorVoz.innerHTML = '';
+  (es.length ? es : voces).forEach(v => {
+    const o = document.createElement('option');
+    o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
+    selectorVoz.appendChild(o);
+  });
+  vozActual = es[0] || voces[0];
+  selectorVoz.value = vozActual.name;
 }
-
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = cargarVoces;
+  cargarVoces(); setTimeout(cargarVoces, 500);
+}
 function leerVersiculo() {
-    if (!versiculoActual) return;
-    window.speechSynthesis.cancel();
-
-    utteranceActual = new SpeechSynthesisUtterance(versiculoActual.texto);
-
-    if (vozSeleccionada) utteranceActual.voice = vozSeleccionada;
-    else utteranceActual.lang = 'es-ES';
-
-    utteranceActual.rate = parseFloat(velocidadVoz.value);
-    utteranceActual.volume = parseFloat(volumenVoz.value);
-    utteranceActual.pitch = 1;
-
-    utteranceActual.onstart = () => {
-        resultadoDiv.classList.add('leyendo');
-        btnLeer.textContent = '🔊 Leyendo...';
-        btnLeer.disabled = true;
-        btnDetenerVoz.disabled = false;
-    };
-    utteranceActual.onend = () => {
-        resultadoDiv.classList.remove('leyendo');
-        btnLeer.textContent = '🔊 Leer';
-        btnLeer.disabled = false;
-        btnDetenerVoz.disabled = true;
-    };
-    utteranceActual.onerror = (e) => {
-        console.warn('Error de síntesis de voz:', e);
-        resultadoDiv.classList.remove('leyendo');
-        btnLeer.textContent = '🔊 Leer';
-        btnLeer.disabled = false;
-        btnDetenerVoz.disabled = true;
-    };
-
-    window.speechSynthesis.speak(utteranceActual);
-}
-
-function detenerLectura() {
-    window.speechSynthesis.cancel();
+  if (!versiculoActual) return;
+  window.speechSynthesis.cancel();
+  utterance = new SpeechSynthesisUtterance(versiculoActual.texto);
+  if (vozActual) utterance.voice = vozActual;
+  utterance.rate = parseFloat(velocidadVoz.value);
+  utterance.volume = parseFloat(volumenVoz.value);
+  utterance.pitch = 1;
+  utterance.onstart = () => {
+    resultadoDiv.classList.add('leyendo');
+    btnLeer.textContent = '🔊 Leyendo...';
+    btnLeer.disabled = true; btnDetenerVoz.disabled = false;
+  };
+  utterance.onend = utterance.onerror = () => {
     resultadoDiv.classList.remove('leyendo');
     btnLeer.textContent = '🔊 Leer';
-    btnLeer.disabled = false;
-    btnDetenerVoz.disabled = true;
+    btnLeer.disabled = false; btnDetenerVoz.disabled = true;
+  };
+  window.speechSynthesis.speak(utterance);
 }
-
+function detenerLectura() {
+  window.speechSynthesis.cancel();
+  resultadoDiv.classList.remove('leyendo');
+  btnLeer.textContent = '🔊 Leer';
+  btnLeer.disabled = !versiculoActual;
+  btnDetenerVoz.disabled = true;
+}
 selectorVoz.addEventListener('change', () => {
-    vozSeleccionada = vocesDisponibles.find(v => v.name === selectorVoz.value);
-    if (resultadoDiv.classList.contains('leyendo')) leerVersiculo();
+  vozActual = voces.find(v => v.name === selectorVoz.value);
+  if (resultadoDiv.classList.contains('leyendo')) leerVersiculo();
 });
-
 velocidadVoz.addEventListener('input', () => {
-    valorVelocidad.textContent = parseFloat(velocidadVoz.value).toFixed(1);
-    if (utteranceActual) utteranceActual.rate = parseFloat(velocidadVoz.value);
+  valorVelocidad.textContent = parseFloat(velocidadVoz.value).toFixed(1);
+  if (utterance) utterance.rate = parseFloat(velocidadVoz.value);
 });
-
-volumenVoz.addEventListener('input', () => {
-    if (utteranceActual) utteranceActual.volume = parseFloat(volumenVoz.value);
-});
-
 btnLeer.addEventListener('click', leerVersiculo);
 btnDetenerVoz.addEventListener('click', detenerLectura);
 
-if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = cargarVoces;
-    cargarVoces();
-    setTimeout(cargarVoces, 500);
-} else {
-    selectorVoz.innerHTML = '<option>Voz no disponible</option>';
-    btnLeer.disabled = true;
-}
-
 // ============================================================
-//  MOTOR DE MÚSICA PROCEDURAL (Web Audio API)
-// ============================================================
-const MusicEngine = (() => {
-    let ctx = null;
-    let masterGain = null;
-    let reverbGain = null;
-    let isPlaying = false;
-    let currentProgression = null;
-    let loopTimer = null;
-    let activeOscillators = [];
-
-    const PROGRESIONES = {
-        celestial: {
-            chords: [[261.63, 329.63, 392.00, 523.25],[220.00, 261.63, 329.63, 440.00],[174.61, 220.00, 261.63, 349.23],[196.00, 246.94, 293.66, 392.00]],
-            melody: [523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 440.00, 523.25, 659.25, 587.33, 523.25, 440.00, 392.00, 440.00, 523.25, 587.33, 523.25, 392.00, 440.00, 493.88, 523.25, 587.33, 523.25],
-            tempo: 4.0, waveform: 'sine', melodyWave: 'triangle'
-        },
-        alegre: {
-            chords: [[174.61, 220.00, 261.63, 349.23],[261.63, 329.63, 392.00, 523.25],[196.00, 246.94, 293.66, 392.00],[220.00, 261.63, 329.63, 440.00]],
-            melody: [698.46, 659.25, 587.33, 523.25, 587.33, 659.25, 783.99, 698.46, 659.25, 587.33, 523.25, 587.33, 659.25, 587.33, 523.25, 440.00, 523.25, 587.33, 659.25, 698.46, 659.25, 587.33, 523.25, 587.33],
-            tempo: 3.5, waveform: 'triangle', melodyWave: 'sine'
-        },
-        adoracion: {
-            chords: [[261.63, 329.63, 392.00, 523.25],[246.94, 293.66, 392.00, 493.88],[220.00, 261.63, 329.63, 440.00],[174.61, 220.00, 261.63, 349.23]],
-            melody: [523.25, 659.25, 783.99, 659.25, 587.33, 523.25, 493.88, 587.33, 659.25, 587.33, 523.25, 440.00, 523.25, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 523.25, 440.00, 392.00, 440.00, 523.25],
-            tempo: 4.5, waveform: 'sine', melodyWave: 'triangle'
-        }
-    };
-
-    function init() {
-        if (ctx) return;
-        ctx = new (window.AudioContext || window.webkitAudioContext)();
-        masterGain = ctx.createGain();
-        masterGain.gain.value = 0.18;
-        masterGain.connect(ctx.destination);
-        const convolver = ctx.createConvolver();
-        convolver.buffer = crearImpulsoReverb(ctx, 3.5, 2.5);
-        reverbGain = ctx.createGain();
-        reverbGain.gain.value = 0.45;
-        reverbGain.connect(convolver);
-        convolver.connect(masterGain);
-    }
-
-    function crearImpulsoReverb(ctx, duracion, decay) {
-        const rate = ctx.sampleRate;
-        const length = rate * duracion;
-        const impulse = ctx.createBuffer(2, length, rate);
-        for (let canal = 0; canal < 2; canal++) {
-            const data = impulse.getChannelData(canal);
-            for (let i = 0; i < length; i++) {
-                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
-            }
-        }
-        return impulse;
-    }
-
-    function playNote(freq, startTime, duration, waveform, gainValue) {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = waveform;
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(gainValue, startTime + duration * 0.2);
-        gain.gain.linearRampToValueAtTime(gainValue * 0.6, startTime + duration * 0.5);
-        gain.gain.linearRampToValueAtTime(0, startTime + duration);
-        osc.connect(gain);
-        gain.connect(masterGain);
-        gain.connect(reverbGain);
-        osc.start(startTime);
-        osc.stop(startTime + duration);
-        activeOscillators.push(osc);
-        osc.onended = () => {
-            const idx = activeOscillators.indexOf(osc);
-            if (idx > -1) activeOscillators.splice(idx, 1);
-        };
-    }
-
-    function programarCiclo() {
-        if (!isPlaying || !currentProgression) return;
-        const prog = PROGRESIONES[currentProgression];
-        const now = ctx.currentTime + 0.1;
-        const segPorAcorde = prog.tempo;
-
-        prog.chords.forEach((chord, i) => {
-            const startTime = now + i * segPorAcorde;
-            chord.forEach((freq, j) => {
-                const offset = j * 0.05;
-                const ganancia = 0.12 / (j + 1);
-                playNote(freq, startTime + offset, segPorAcorde * 1.1, prog.waveform, ganancia);
-                playNote(freq * 2, startTime + offset + 0.02, segPorAcorde * 0.9, prog.waveform, ganancia * 0.35);
-            });
-        });
-
-        const duracionMelodia = segPorAcorde / 2;
-        prog.melody.forEach((freq, i) => {
-            const startTime = now + i * duracionMelodia;
-            playNote(freq, startTime, duracionMelodia * 1.4, prog.melodyWave, 0.09);
-        });
-
-        const duracionCiclo = prog.chords.length * segPorAcorde;
-        loopTimer = setTimeout(() => { if (isPlaying) programarCiclo(); }, duracionCiclo * 1000 - 100);
-    }
-
-    async function start(progression) {
-        init();
-        if (ctx.state === 'suspended') await ctx.resume();
-        currentProgression = progression;
-        if (isPlaying) return;
-        isPlaying = true;
-        masterGain.gain.cancelScheduledValues(ctx.currentTime);
-        masterGain.gain.setValueAtTime(0, ctx.currentTime);
-        masterGain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 2);
-        programarCiclo();
-    }
-
-    function stop() {
-        isPlaying = false;
-        if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
-        if (ctx && masterGain) {
-            masterGain.gain.cancelScheduledValues(ctx.currentTime);
-            masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
-            masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-        }
-        setTimeout(() => {
-            activeOscillators.forEach(osc => { try { osc.stop(); } catch (e) {} });
-            activeOscillators = [];
-        }, 1100);
-    }
-
-    function changeProgression(progression) {
-        if (currentProgression === progression) return;
-        currentProgression = progression;
-        if (isPlaying) {
-            activeOscillators.forEach(osc => { try { osc.stop(); } catch (e) {} });
-            activeOscillators = [];
-            if (loopTimer) clearTimeout(loopTimer);
-            programarCiclo();
-        }
-    }
-
-    return { start, stop, changeProgression, isPlaying: () => isPlaying };
-})();
-
-// ============================================================
-//  CONTROL DE MÚSICA
-// ============================================================
-async function activarMusica() {
-    if (!sonidoActivo) return;
-    if (modoMusica === 'url') {
-        const url = selectorMusica.value;
-        if (fuenteAudio.src !== url) { fuenteAudio.src = url; audioFondo.load(); }
-        audioFondo.currentTime = 0;
-        audioFondo.volume = 0.35;
-        const p = audioFondo.play();
-        if (p !== undefined) p.catch(() => {});
-    } else {
-        audioFondo.pause();
-        await MusicEngine.start(modoMusica);
-    }
-}
-
-function desactivarMusica() {
-    MusicEngine.stop();
-    audioFondo.pause();
-}
-
-function toggleSonido() {
-    sonidoActivo = !sonidoActivo;
-    if (sonidoActivo) {
-        btnSonido.textContent = '🔊';
-        btnSonido.title = 'Desactivar música';
-        btnSonido.classList.remove('silenciado');
-        if (versiculoActual) activarMusica();
-    } else {
-        btnSonido.textContent = '🔇';
-        btnSonido.title = 'Activar música';
-        btnSonido.classList.add('silenciado');
-        desactivarMusica();
-    }
-}
-
-selectorMusica.addEventListener('change', async () => {
-    const valor = selectorMusica.value;
-    if (valor.startsWith('http')) modoMusica = 'url';
-    else { modoMusica = valor; MusicEngine.stop(); audioFondo.pause(); }
-    if (sonidoActivo && versiculoActual) await activarMusica();
-});
-
-// ============================================================
-//  BÚSQUEDA DE VERSÍCULOS (LOCAL + API)
-// ============================================================
-async function buscarVersiculo(libro, capitulo, versiculo) {
-    // 1. Intentar base local
-    const libroLocal = BIBLIA_LOCAL[libro];
-    if (libroLocal && libroLocal[capitulo] && libroLocal[capitulo][versiculo]) {
-        return {
-            book: capitalizar(libro), chapter: Number(capitulo), verse: Number(versiculo),
-            text: libroLocal[capitulo][versiculo], fuente: 'local'
-        };
-    }
-
-    // 2. Si no está local, consultar API de Midvash
-    const url = `${API_BASE}/${VERSION}/${libro}/${capitulo}/${versiculo}`;
-    try {
-        const respuesta = await fetch(url);
-        if (!respuesta.ok) {
-            if (respuesta.status === 404) {
-                throw new Error(`No se encontró ${libro} ${capitulo}:${versiculo} en la API. Verifica los datos o usa el modo manual.`);
-            } else {
-                throw new Error(`Error en la consulta (código ${respuesta.status}).`);
-            }
-        }
-        const datos = await respuesta.json();
-        if (!datos.data || !datos.data.text) {
-            throw new Error('La respuesta de la API no contiene el texto del versículo.');
-        }
-        return {
-            book: datos.data.book || capitalizar(libro),
-            chapter: datos.data.chapter || Number(capitulo),
-            verse: datos.data.verse || Number(versiculo),
-            text: datos.data.text,
-            fuente: 'api'
-        };
-    } catch (error) {
-        // Re-lanzar el error para que sea capturado por consultarVersiculo
-        throw error;
-    }
-}
-
-// ============================================================
-//  CONSULTAR VERSÍCULO
-// ============================================================
-async function consultarVersiculo() {
-    const libro = selectorLibro.value;
-    const capitulo = inputCapitulo.value.trim();
-    const versiculo = inputVersiculo.value.trim();
-
-    if (!capitulo || !versiculo) {
-        mostrarError('Completa el capítulo y el versículo.');
-        return;
-    }
-    const capNum = Number(capitulo);
-    const verNum = Number(versiculo);
-    if (!Number.isInteger(capNum) || !Number.isInteger(verNum) || capNum < 1 || verNum < 1) {
-        mostrarError('El capítulo y el versículo deben ser números enteros positivos.');
-        return;
-    }
-
-    mostrarCargando();
-    btnCopiar.disabled = true;
-    detenerLectura();
-    panelManual.classList.remove('visible'); // Ocultar panel manual al consultar
-
-    try {
-        const datos = await buscarVersiculo(libro, capNum, verNum);
-        const ref = `${datos.book} ${datos.chapter}:${datos.verse}`;
-        const textoLimpio = datos.text.replace(/\n+/g, ' ').trim();
-
-        versiculoActual = { referencia: ref, texto: textoLimpio, fuente: datos.fuente };
-        mostrarVersiculo(ref, textoLimpio, datos.fuente);
-        agregarAlHistorial(ref, capNum, verNum, libro);
-        activarMusica();
-    } catch (error) {
-        console.error(error);
-        // Mostrar error y SUGERIR el modo manual
-        mostrarError(error.message + ' Puedes intentar con el botón "✍️ Manual".');
-        versiculoActual = null;
-    }
-}
-
-// ============================================================
-//  MODO MANUAL
-// ============================================================
-btnManual.addEventListener('click', () => {
-    panelManual.classList.toggle('visible');
-    if (panelManual.classList.contains('visible')) {
-        textoManual.focus();
-    }
-});
-
-btnCancelarManual.addEventListener('click', () => {
-    panelManual.classList.remove('visible');
-    textoManual.value = '';
-});
-
-btnGuardarManual.addEventListener('click', () => {
-    const texto = textoManual.value.trim();
-    if (!texto) {
-        alert('Por favor, escribe el texto del versículo.');
-        return;
-    }
-    const libro = selectorLibro.value;
-    const capitulo = inputCapitulo.value.trim() || '?';
-    const versiculo = inputVersiculo.value.trim() || '?';
-    const ref = `${capitalizar(libro)} ${capitulo}:${versiculo} (Manual)`;
-
-    versiculoActual = { referencia: ref, texto: texto, fuente: 'manual' };
-    mostrarVersiculo(ref, texto, 'manual');
-    agregarAlHistorial(ref, capitulo, versiculo, libro);
-    panelManual.classList.remove('visible');
-    textoManual.value = '';
-    activarMusica();
-});
-
-// ============================================================
-//  MOSTRAR ESTADOS
-// ============================================================
-function mostrarCargando() {
-    resultadoDiv.className = 'resultado';
-    referenciaDiv.textContent = '';
-    textoVersiculoDiv.innerHTML = '<span class="spinner"></span> Consultando la Palabra...';
-}
-
-function mostrarVersiculo(referencia, texto, fuente) {
-    resultadoDiv.className = 'resultado';
-    let fuenteTexto = '';
-    if (fuente === 'local') fuenteTexto = ' · local';
-    else if (fuente === 'api') fuenteTexto = ' · API';
-    else if (fuente === 'manual') fuenteTexto = ' · manual';
-    referenciaDiv.textContent = referencia + fuenteTexto;
-    textoVersiculoDiv.innerHTML = `"${texto}" <span class="cita">— RVR1960</span>`;
-    btnCopiar.disabled = false;
-    btnLeer.disabled = false;
-}
-
-function mostrarError(mensaje) {
-    resultadoDiv.className = 'resultado error';
-    referenciaDiv.textContent = '';
-    textoVersiculoDiv.innerHTML = `<span style="color:#b85c4a;">⚠️ ${mensaje}</span>`;
-    btnCopiar.disabled = true;
-    btnLeer.disabled = true;
-}
-
-function capitalizar(texto) {
-    if (!texto) return '';
-    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
-}
-
-// ============================================================
-//  COPIAR VERSÍCULO
+// 14. COPIAR
 // ============================================================
 btnCopiar.addEventListener('click', async () => {
-    if (!versiculoActual) return;
-    const textoCompleto = `"${versiculoActual.texto}" — ${versiculoActual.referencia} (RVR1960)`;
-    try {
-        await navigator.clipboard.writeText(textoCompleto);
-        btnCopiar.textContent = '✅ Copiado';
-        setTimeout(() => { btnCopiar.textContent = '📋 Copiar versículo'; }, 1800);
-    } catch (err) {
-        const textarea = document.createElement('textarea');
-        textarea.value = textoCompleto;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        btnCopiar.textContent = '✅ Copiado';
-        setTimeout(() => { btnCopiar.textContent = '📋 Copiar versículo'; }, 1800);
-    }
+  if (!versiculoActual) return;
+  const txt = `"${versiculoActual.texto}" — ${versiculoActual.referencia} (RVR1960)`;
+  try { await navigator.clipboard.writeText(txt); }
+  catch(e) {
+    const t = document.createElement('textarea'); t.value = txt;
+    document.body.appendChild(t); t.select(); document.execCommand('copy');
+    document.body.removeChild(t);
+  }
+  btnCopiar.textContent = '✅ Copiado';
+  setTimeout(() => btnCopiar.textContent = '📋 Copiar versículo', 1800);
 });
 
 // ============================================================
-//  HISTORIAL
+// 15. MÚSICA PROCEDURAL
 // ============================================================
-function agregarAlHistorial(referencia, capitulo, versiculo, libro) {
-    if (historial.length > 0 && historial[0].referencia === referencia) return;
-    historial.unshift({ referencia, capitulo, versiculo, libro });
-    if (historial.length > 8) historial.pop();
-    renderizarHistorial();
-}
-
-function renderizarHistorial() {
-    if (historial.length === 0) {
-        historialLista.innerHTML = '<span class="historial-vacio">Aún no hay consultas.</span>';
-        return;
+const MusicEngine = (() => {
+  let ctx, masterGain, reverbGain, isPlaying=false, currentProg=null, loopTimer, oscs=[];
+  const PROG = {
+    celestial:{chords:[[261.63,329.63,392,523.25],[220,261.63,329.63,440],[174.61,220,261.63,349.23],[196,246.94,293.66,392]],melody:[523.25,587.33,659.25,783.99,659.25,587.33,523.25,440,523.25,659.25,587.33,523.25,440,392,440,523.25,587.33,523.25,392,440,493.88,523.25,587.33,523.25],tempo:4,waveform:'sine',melodyWave:'triangle'},
+    alegre:{chords:[[174.61,220,261.63,349.23],[261.63,329.63,392,523.25],[196,246.94,293.66,392],[220,261.63,329.63,440]],melody:[698.46,659.25,587.33,523.25,587.33,659.25,783.99,698.46,659.25,587.33,523.25,587.33,659.25,587.33,523.25,440,523.25,587.33,659.25,698.46,659.25,587.33,523.25,587.33],tempo:3.5,waveform:'triangle',melodyWave:'sine'},
+    adoracion:{chords:[[261.63,329.63,392,523.25],[246.94,293.66,392,493.88],[220,261.63,329.63,440],[174.61,220,261.63,349.23]],melody:[523.25,659.25,783.99,659.25,587.33,523.25,493.88,587.33,659.25,587.33,523.25,440,523.25,659.25,783.99,880,783.99,659.25,587.33,523.25,440,392,440,523.25],tempo:4.5,waveform:'sine',melodyWave:'triangle'}
+  };
+  function init() {
+    if (ctx) return;
+    ctx = new (window.AudioContext||window.webkitAudioContext)();
+    masterGain = ctx.createGain(); masterGain.gain.value=.18; masterGain.connect(ctx.destination);
+    const conv = ctx.createConvolver(); conv.buffer = impulse();
+    reverbGain = ctx.createGain(); reverbGain.gain.value=.45;
+    reverbGain.connect(conv); conv.connect(masterGain);
+  }
+  function impulse() {
+    const rate = ctx.sampleRate, len = rate*3.5;
+    const buf = ctx.createBuffer(2, len, rate);
+    for (let c=0;c<2;c++){ const d=buf.getChannelData(c); for(let i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.5); } }
+    return buf;
+  }
+  function note(freq, start, dur, wave, gainValue) {
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=wave; o.frequency.value=freq;
+    g.gain.setValueAtTime(0,start);
+    g.gain.linearRampToValueAtTime(gainValue, start+dur*.2);
+    g.gain.linearRampToValueAtTime(gainValue*.6, start+dur*.5);
+    g.gain.linearRampToValueAtTime(0, start+dur);
+    o.connect(g); g.connect(masterGain); g.connect(reverbGain);
+    o.start(start); o.stop(start+dur);
+    oscs.push(o); o.onended = () => { const i=oscs.indexOf(o); if(i>-1)oscs.splice(i,1); };
+  }
+  function cycle() {
+    if (!isPlaying||!currentProg) return;
+    const p = PROG[currentProg], now = ctx.currentTime+.1, seg = p.tempo;
+    p.chords.forEach((ch,i) => { const t = now+i*seg; ch.forEach((f,j) => { note(f,t+j*.05,seg*1.1,p.waveform,.12/(j+1)); note(f*2,t+j*.05+.02,seg*.9,p.waveform,.04/(j+1)); }); });
+    const durM = seg/2;
+    p.melody.forEach((f,i) => note(f, now+i*durM, durM*1.4, p.melodyWave, .09));
+    const durC = p.chords.length*seg;
+    loopTimer = setTimeout(() => { if (isPlaying) cycle(); }, durC*1000-100);
+  }
+  async function start(prog) {
+    init(); if (ctx.state==='suspended') await ctx.resume();
+    currentProg = prog; if (isPlaying) return;
+    isPlaying = true;
+    masterGain.gain.cancelScheduledValues(ctx.currentTime);
+    masterGain.gain.setValueAtTime(0, ctx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(.18, ctx.currentTime+2);
+    cycle();
+  }
+  function stop() {
+    isPlaying = false;
+    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
+    if (ctx&&masterGain) {
+      masterGain.gain.cancelScheduledValues(ctx.currentTime);
+      masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime+1);
     }
-    historialLista.innerHTML = historial.map(item =>
-        `<button class="historial-item" data-libro="${item.libro}" data-capitulo="${item.capitulo}" data-versiculo="${item.versiculo}">${item.referencia}</button>`
-    ).join('');
+    setTimeout(() => { oscs.forEach(o => { try{o.stop();}catch(e){} }); oscs=[]; }, 1100);
+  }
+  return { start, stop };
+})();
 
-    historialLista.querySelectorAll('.historial-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-            selectorLibro.value = btn.dataset.libro;
-            inputCapitulo.value = btn.dataset.capitulo;
-            inputVersiculo.value = btn.dataset.versiculo;
-            consultarVersiculo();
-        });
-    });
+async function activarMusica() {
+  if (!sonidoActivo) return;
+  if (modoMusica === 'url') {
+    if (fuenteAudio.src !== selectorMusica.value) { fuenteAudio.src = selectorMusica.value; audioFondo.load(); }
+    audioFondo.volume = .35;
+    audioFondo.play().catch(()=>{});
+  } else {
+    audioFondo.pause();
+    await MusicEngine.start(modoMusica);
+  }
 }
-
-// ============================================================
-//  EVENTOS
-// ============================================================
-btnConsultar.addEventListener('click', consultarVersiculo);
+function desactivarMusica() { MusicEngine.stop(); audioFondo.pause(); }
+function toggleSonido() {
+  sonidoActivo = !sonidoActivo;
+  btnSonido.textContent = sonidoActivo ? '🔊' : '🔇';
+  btnSonido.classList.toggle('silenciado', !sonidoActivo);
+  if (sonidoActivo && versiculoActual) activarMusica();
+  else if (!sonidoActivo) desactivarMusica();
+}
+selectorMusica.addEventListener('change', () => {
+  const v = selectorMusica.value;
+  if (v.startsWith('http')) { modoMusica = 'url'; MusicEngine.stop(); }
+  else { modoMusica = v; audioFondo.pause(); MusicEngine.stop(); }
+  if (sonidoActivo && versiculoActual) activarMusica();
+});
 btnSonido.addEventListener('click', toggleSonido);
 
-[inputCapitulo, inputVersiculo].forEach(input => {
-    input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); consultarVersiculo(); }
-    });
-});
+// ============================================================
+// 16. EVENTOS Y ARRANQUE
+// ============================================================
+btnConsultar.addEventListener('click', () => consultarPorReferencia());
+btnBuscarTexto.addEventListener('click', () => buscarPorTexto(inputBusqueda.value));
+inputBusqueda.addEventListener('keypress', e => { if (e.key==='Enter') buscarPorTexto(inputBusqueda.value); });
+[inputCapitulo, inputVersiculo].forEach(i => i.addEventListener('keydown', e => { if (e.key==='Enter'){ e.preventDefault(); consultarPorReferencia(); } }));
+window.addEventListener('beforeunload', () => window.speechSynthesis.cancel());
 
+// ARRANQUE
+llenarSelectores();
 audioFondo.load();
-
-window.addEventListener('beforeunload', () => {
-    window.speechSynthesis.cancel();
-});
+window.addEventListener('DOMContentLoaded', cargarBiblia);
 </script>
-
 </body>
 </html>
